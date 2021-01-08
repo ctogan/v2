@@ -1,0 +1,637 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use App\Helpers\CtreeCache;
+use App\Helpers\User;
+use App\Helpers\Utils;
+use App\JobApplicant;
+use App\JobApplicantReported;
+use App\JobBookmark;
+use App\JobCompany;
+use App\JobFilter;
+use App\JobVacancyReported;
+use App\Province;
+use App\UserJobExperiences;
+use App\UserName;
+use App\Vacancy;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
+
+class ApiPartTimeController extends ApiController
+{
+
+    public function index(Request $request){
+        $config = [
+            "text"=>trans('part_time'),
+            "is_registered_employee"=>CtreeCache::is_regis_part_time($this->user->uid),
+            "is_registered_company"=>CtreeCache::is_regis_part_time($this->user->uid),
+        ];
+
+        $response = [
+            'config' => $config,
+            'user' => $this->user
+        ];
+
+        return $this->successResponse($response);
+    }
+
+    public function candidate(Request $request){
+        $job_filter = JobFilter::where('uid','=',$this->user->uid)->first();
+        $config = [
+            "text"=>trans('part_time'),
+            "filter"=>$job_filter ? json_decode($job_filter->filter) : null,
+            "is_profile_complete" => false
+        ];
+        $response = [
+            'config' => $config,
+            'user'=> $this->user,
+            'bookmark' => $this->get_job_bookmark(3), 
+            'recommendation' => $this->get_job_search_and_recomendations($request),
+        ];
+        return $this->successResponse($response);
+    }
+
+    public function get_bookmark(Request $request){
+        $response = $this->get_job_bookmark(20);
+        return $this->successResponse($response);
+    }
+
+    public function get_job_bookmark($limit = 3){
+        $result = JobBookmark::where('job_bookmark.uid','=',$this->user->uid)
+            ->select('job_bookmark.vacancy_id')
+            ->orderBy('created_at','desc')
+            ->limit($limit)
+            ->get();
+        $data = [];
+        if($result){
+            foreach ($result as $item){
+                $data[] = CtreeCache::get_job_vacancy_by_id($item->vacancy_id);
+            }
+        }
+        return count($data) > 0 ? $data : [];
+    }
+
+    public function candidate_history(Request $request){
+        $vacancy = JobApplicant::where('job_applicant.uid','=',$this->user->uid)
+            ->select('job_applicant.vacancy_id')
+            ->get();
+        $data = [];
+        if($vacancy){
+            foreach ($vacancy as $item){
+                $data[] = CtreeCache::get_job_vacancy_by_id($item->vacancy_id);
+            }
+        }
+        $result = count($data) > 0 ? $data : [];
+
+        $response =[
+            'history' => $result
+        ];
+
+        return $this->successResponse($response,static::TRANSACTION_SUCCESS, 200);
+    }
+
+    public function company(Request $request){
+        $company = JobCompany::where('uid','=',$this->user->uid)->first();
+        $config = [
+            "text"=>trans('part_time')
+        ];
+
+        $response = [
+            'company' => $company,
+            'config' => $config
+        ];
+
+        return $this->successResponse($response);
+    }
+
+    public function company_detail(Request $request){
+        $company = JobCompany::where('id','=',$request->id)
+            ->join('job_company_category','job_company_category.id','job_company.category')
+            ->join('province','province.id','job_company.province_id')
+            ->join('city','city.id','job_company.city_id')
+            ->first();
+
+        $config = [
+            "text"=>trans('part_time')
+        ];
+
+        $response = [
+            'config' => $config,
+            "company"=>$company,
+        ];
+
+        return $this->successResponse($response);
+    }
+
+    public function search(Request $request){
+        $response = $this->get_job_search_and_recomendation($request);
+        return $this->successResponse($response);
+    }
+
+    public function get_job_search_and_recomendations($request){
+        $query = Vacancy::where("job_vacancy.row_status","=","active")
+            ->join('job_company','job_company.id','=','job_vacancy.company_id')
+            ->select('job_vacancy.id');
+
+        if($request->search){
+            $query->where('position_names','ilike','%'.$request->search.'%')
+                ->orWhere('company_name','ilike','%'.$request->search.'%');
+        }
+        $job_filter = JobFilter::where('uid','=',$this->user->uid)->first();
+        if($job_filter){
+            if($job_filter->filter){
+                $filter = json_decode($job_filter->filter);
+                if($filter->province_id != "all"){
+                    $query->whereIn('job_vacancy.province_id',explode(",",$filter->province_id));
+                }
+                if($filter->city_id != "all"){
+                    $query->whereIn('job_vacancy.city_id',explode(",",$filter->city_id));
+                }
+                if($filter->company_type != "all"){
+                    $query->whereIn('job_company.category',explode(",",$filter->company_type));
+                }
+                if($filter->education_level != "all"){
+                    $query->whereIn('job_vacancy.education',explode(",",$filter->education_level));
+                }
+                if($filter->salary_to > 0){
+                    $query->whereBetween('job_vacancy.salary', [$filter->salary_from,$filter->salary_to]);
+                }
+            }
+        }
+        $data = [];
+        $query = $query->get();
+        if($query){
+            foreach ($query as $item){
+                $data[] = CtreeCache::get_job_vacancy_by_id($item->id);
+            }
+        }
+        return count($data) > 0 ? $data : [];
+    }
+
+    public function get_job_search_and_recomendation($request){
+        $query = Vacancy::where("job_vacancy.row_status","=","active")
+            ->join('job_company','job_company.id','=','job_vacancy.company_id')
+            ->select('job_vacancy.*','job_company.company_name','job_company.company_logos');
+
+        if($request->search){
+            $query->where('position_name','ilike','%'.$request->search.'%')
+                ->orWhere('company_name','ilike','%'.$request->search.'%');
+        }
+
+        $job_filter = JobFilter::where('uid','=',$this->user->uid)->first();
+
+        if($job_filter){
+            if($job_filter->filter){
+                $filter = json_decode($job_filter->filter);
+                if($filter->province_id != "all"){
+                    $query->whereIn('job_vacancy.province_id',explode(",",$filter->province_id));
+                }
+                if($filter->city_id != "all"){
+                    $query->whereIn('job_vacancy.city_id',explode(",",$filter->city_id));
+                }
+                if($filter->company_type != "all"){
+                    $query->whereIn('job_company.category',explode(",",$filter->company_type));
+                }
+                if($filter->education_level != "all"){
+                    $query->whereIn('job_vacancy.education',explode(",",$filter->education_level));
+                }
+                if($filter->salary_to > 0){
+                    $query->whereBetween('job_vacancy.salary', [$filter->salary_from,$filter->salary_to]);
+                }
+            }
+        }
+
+        $response = [
+            "result" => $query->paginate($request->per_page)
+        ];
+        return $response;
+    }
+
+    public function vacancy_detail(Request $request){
+        $vacancy = Vacancy::where("job_vacancy.id",'=',$request->id)
+            ->join('job_company','job_company.id','job_vacancy.company_id')
+            ->first();
+
+        if(!$vacancy){
+            return $this->errorResponse(static::ERROR_NOT_FOUND,static::CODE_ERROR_VALIDATION);
+        }
+
+        $config = [
+            "text"=>trans('part_time')
+        ];
+
+        $response = [
+            "option" =>$config,
+            "vacancy" => $vacancy
+        ];
+
+        return $this->successResponse($response);
+    }
+
+    public function apply_vacancy(Request $request){
+        $validation = Validator::make($request->all(), [
+            'vacancy_id' => 'required'
+        ]);
+
+        if ($validation->fails()) {
+            return $this->errorResponse($validation->errors(),static::CODE_ERROR_VALIDATION);
+        }
+
+        JobApplicant::insert(array(
+           "uid"=>$this->user->uid,
+           "vacancy_id" => $request->vacancy_id,
+            "apply_date"=>  date('yy-m-d h:m:s')
+        ));
+
+        return $this->successResponse(null, static::TRANSACTION_SUCCESS, static::CODE_SUCCESS);
+    }
+
+    public function view_location(Request $request){
+
+        $city = CtreeCache::get_all_province_and_city(true);
+        $data = [];
+        //print_r($city); exit();
+        foreach ($city as $value){
+           $data[$value['province_name']][] = $value;
+        }
+        print_r($data);exit();
+        $pageVars = [
+            "company" => $city,
+        ];
+        return View::make('admin.parttime.vacancy')->with($pageVars);
+    }
+
+    public function submit_filter(Request $request){
+        $filter = array(
+            "province_id" => $request->province_id ? $request->province_id : 'all',
+            "city_id" => $request->city_id ? $request->city_id : 'all',
+            "company_type" => $request->company_type ? $request->company_type : 'all',
+            "education_level" => $request->education_level ? $request->education_level : 'all',
+            "salary_from" => $request->salary_from ? $request->salary_from : '0',
+            "salary_to" => $request->salary_to ? $request->salary_to : '0',
+        );
+
+        $job_filter = JobFilter::where('uid','=',$this->user->uid)->first();
+
+        if($job_filter){
+            $job_filter->filter = json_encode($filter);
+            $job_filter->save();
+        }else{
+            JobFilter::insert(
+                array(
+                    "uid"=>$request->uid,
+                    "filter"=>json_encode($filter)
+                )
+            );
+        }
+
+        return $this->successResponse(null, static::TRANSACTION_SUCCESS, static::CODE_SUCCESS);
+    }
+
+    public function submit_candidate_profile(Request $request){
+        $validation = Validator::make($request->all(), [
+            'pob' => 'required',
+            'dob' => 'required',
+            'sex' => 'required',
+            'phone_number' => 'required',
+            'email' => 'required',
+            'religion' => 'required',
+            'education' => 'required',
+            'skill' => 'required',
+            'hobby' => 'required',
+        ]);
+
+        if ($validation->fails()) {
+            return $this->errorResponse($validation->errors(),static::CODE_ERROR_VALIDATION);
+        }
+
+        $user = UserName::where('uid','=',$this->user->uid)->first();
+
+        if($user){
+            $user->uid =$this->user->uid;
+            $user->dob =$request->dob;
+            $user->sex =$request->sex;
+            $user->email =$request->email;
+            $user->religion = $request->religion;
+            $user->education = $request->education;
+            $user->skill = $request->skill;
+            $user->hobby = $request->hobby;
+            $user->img = $request->img;
+
+            $user->save();
+        }else{
+            UserName::insert(
+                array(
+                    "uid"=>$this->user->uid,
+                    "dob"=>$request->dob,
+                    "sex"=>$request->sex,
+                    "email"=>$request->email,
+                    "religion"=>$request->religion,
+                    "education"=>$request->education,
+                    "skill"=>$request->skill,
+                    "hobby"=>$request->hobby,
+                    "img"=>$request->img
+                )
+            );
+        }
+
+        return $this->successResponse(null, static::TRANSACTION_SUCCESS, static::CODE_SUCCESS);
+    }
+
+    public function submit_candidate_experiences(Request $request){
+        $validation = Validator::make($request->all(), [
+            'company_name' => 'required',
+            'department' => 'required',
+            'position_name' => 'required',
+            'period' => 'required',
+            'description' => 'required'
+        ]);
+
+        if ($validation->fails()) {
+            return $this->errorResponse($validation->errors(),static::CODE_ERROR_VALIDATION);
+        }
+
+        UserJobExperiences::insert(
+            array(
+                'uid' => $this->user->uid,
+                'company_name' => $request->company_name,
+                'department' => $request->department,
+                'position_name' => $request->position_name,
+                'period' => $request->period,
+                'description' => $request->description
+            )
+        );
+
+        return $this->successResponse(null, static::TRANSACTION_SUCCESS, static::CODE_SUCCESS);
+
+    }
+
+    public function submit_vacancy_bookmark(Request $request){
+        $validation = Validator::make($request->all(), [
+            'vacancy_id' => 'required'
+        ]);
+
+        if ($validation->fails()) {
+            return $this->errorResponse($validation->errors(),static::CODE_ERROR_VALIDATION);
+        }
+
+        JobBookmark::insert(
+            array(
+                'uid' => $this->user->uid,
+                'vacancy_id' => $request->vacancy_id,
+                'created_at' => date("yy-m-d h:m:s")
+            )
+        );
+
+        return $this->successResponse(null, static::TRANSACTION_SUCCESS, static::CODE_SUCCESS);
+    }
+
+    public function delete_vacancy_bookmark(Request $request){
+        $validation = Validator::make($request->all(), [
+            'vacancy_id' => 'required'
+        ]);
+
+        if ($validation->fails()) {
+            return $this->errorResponse($validation->errors(),static::CODE_ERROR_VALIDATION);
+        }
+
+        $bookmark = JobBookmark::where('uid','=',$this->user->uid)
+            ->where('vacancy_id','=',$request->vacancy_id)
+            ->first();
+        $bookmark->row_status = 'deleted';
+        if($bookmark){
+            $bookmark->save();
+        }else{
+            return $this->errorResponse(static::TRANSACTION_SUCCESS, static::CODE_SUCCESS);
+        }
+        return $this->successResponse(null, static::TRANSACTION_SUCCESS, static::CODE_SUCCESS);
+    }
+
+    public function submit_report_vacancy(Request $request){
+        $validation = Validator::make($request->all(), [
+            'vacancy_id' => 'required',
+            'reason_id' => 'required'
+        ]);
+
+        if ($validation->fails()) {
+            return $this->errorResponse($validation->messages(),static::CODE_ERROR_VALIDATION);
+        }
+
+        $reported=JobVacancyReported::where("uid","=",$request->uid)
+            ->where("vacancy_id","=",$request->vacancy_id)
+            ->where("reason_id","=",$request->reason_id)
+            ->first();
+
+        if(!$reported){
+            JobVacancyReported::insert(
+                array(
+                    'uid' => $this->user->uid,
+                    'vacancy_id' => $request->vacancy_id,
+                    'reason_id' => $request->reason_id
+                )
+            );
+        }
+
+        return $this->successResponse(null, static::TRANSACTION_SUCCESS, static::CODE_SUCCESS);
+    }
+
+    public function submit_report_user(Request $request){
+        $validation = Validator::make($request->all(), [
+            'applicant_id' => 'required',
+            'vacancy_id' => 'required',
+            'reason_id' => 'required'
+        ]);
+
+        if ($validation->fails()) {
+            return $this->errorResponse($validation->errors(),static::CODE_ERROR_VALIDATION);
+        }
+
+        $reported = JobApplicantReported::where("uid","=",$request->uid)
+            ->where("vacancy_id","=",$request->vacancy_id)
+            ->where("reason_id","=",$request->reason_id)
+            ->first();
+
+        if(!$reported){
+            JobApplicantReported::insert(
+                array(
+                    'applicant_id' => $request->applicant_id,
+                    'vacancy_id' => $request->vacancy_id,
+                    'reason_id' => $request->reason_id
+                )
+            );
+        }
+
+        return $this->successResponse(null, static::TRANSACTION_SUCCESS, static::CODE_SUCCESS);
+    }
+
+    public function submit_company_profile(Request $request){
+        $validation = Validator::make($request->all(), [
+            'company_name' => 'required',
+            'company_logo' => 'required|image|mimes:jpg,jpeg,png',
+            'category'=> 'required',
+            'address'=> 'required',
+            'province_id'=> 'required',
+            'city_id'=> 'required',
+            'description' => 'required',
+            'email' => 'required',
+            'phone_number' => 'required'
+        ]);
+
+        if($validation->fails()) {
+            return $this->errorResponse($validation->messages(),static::CODE_ERROR_VALIDATION);
+        }
+
+        $company = JobCompany::where('uid','=',$this->user->uid)->first();
+
+        if($company){
+            $company->uid=$this->user->uid;
+            $company->company_name = $request->company_name;
+            $company->company_logo = Utils::upload($request,'company_logo','minijob/company/logo/');
+            $company->category = $request->category;
+            $company->address = $request->address;
+            $company->province_id = $request->province_id;
+            $company->city_id = $request->city_id;
+            $company->description = $request->description;
+            $company->email = $request->email;
+            $company->phone_number = $request->phone_number;
+            $company->website = $request->website;
+            $company->updated_by = $this->user->uid;
+            $company->updated_at = date('yy-m-d h:m:s');
+
+            $company->save();
+        }else{
+            $data_insert = array(
+                'row_status' => "active",
+                'uid'=>$this->user->uid,
+                'company_name' => $request->company_name,
+                'company_logo' => Utils::upload($request,'company_logo','minijob/company/logo/'),
+                'category'=> $request->category,
+                'address'=> $request->address,
+                'province_id'=> $request->province_id,
+                'city_id'=> $request->city_id,
+                'description' => $request->description,
+                'email' => $request->email,
+                'phone_number' => $request->phone_number,
+                'website' => $request->website,
+                'created_by' => $this->user->uid,
+                'created_at' => date('yy-m-d h:m:s'),
+            );
+
+            JobCompany::insert($data_insert);
+        }
+
+        return $this->successResponse(null, static::TRANSACTION_SUCCESS, static::CODE_SUCCESS);
+    }
+
+    public function submit_vacancy(Request $request){
+        $validation = Validator::make($request->all(), [
+            'company_id' => 'required',
+            'province_id'=> 'required',
+            'city_id'=> 'required',
+            'position_name'=> 'required',
+            'description'=> 'required',
+            'qualifications' => 'required',
+            'education' => 'required',
+            'experienced' => 'required',
+            'salary' => 'required',
+            'send_to_email' => 'required',
+            'active_until' => 'required',
+            'vacancy_status' => 'required'
+        ]);
+
+        if ($validation->fails()) {
+            return $this->errorResponse($validation->messages(),static::CODE_ERROR_VALIDATION);
+        }
+
+        $data_insert = array(
+            'row_status' => "active",
+            'company_id' => $request->company_id,
+            'province_id'=> $request->province_id,
+            'city_id'=> $request->city_id,
+            'position_name' => $request->position_name,
+            'description' => $request->description,
+            'qualifications' => $request->qualifications,
+            'education' => $request->education,
+            'experienced' => $request->experienced,
+            'salary' => $request->salary,
+            'salary_type' => $request->salary_type,
+            'allowance' => $request->allowance,
+            'send_to_email' => $request->send_to_email,
+            'send_to_wa' => $request->send_to_wa,
+            'active_until' => $request->active_until,
+            'vacancy_status' => $request->vacancy_status,
+            'created_by' => $this->user->uid,
+            'created_at' => date('yy-m-d h:m:s'),
+        );
+
+        Vacancy::insert($data_insert);
+
+        return $this->successResponse(null, static::TRANSACTION_SUCCESS, static::CODE_SUCCESS);
+    }
+
+    public function update_vacancy(Request $request){
+        $validation = Validator::make($request->all(), [
+            'company_id' => 'required',
+            'province_id'=> 'required',
+            'city_id'=> 'required',
+            'position_name'=> 'required',
+            'description'=> 'required',
+            'qualifications' => 'required',
+            'education' => 'required',
+            'experienced' => 'required',
+            'salary' => 'required',
+            'send_to_email' => 'required',
+            'active_until' => 'required',
+            'vacancy_status' => 'required'
+        ]);
+
+        if ($validation->fails()) {
+            return $this->errorResponse($validation->messages(),static::CODE_ERROR_VALIDATION);
+        }
+
+        $vacancy = Vacancy::where('id','=', $request->id)->first();
+
+        if(!$vacancy){
+            return $this->errorResponse(static::ERROR_NOT_FOUND,static::CODE_ERROR_VALIDATION);
+        }
+
+        $vacancy->company_id = $request->company_id;
+        $vacancy->province_id = $request->province_id;
+        $vacancy->province_id = $request->province_id;
+        $vacancy->city_id = $request->city_id;
+        $vacancy->description = $request->description;
+        $vacancy->qualifications = $request->qualifications;
+        $vacancy->education = $request->education;
+        $vacancy->experienced = $request->experienced;
+        $vacancy->salary = $request->salary;
+        $vacancy->salary_type = $request->salary_type;
+        $vacancy->allowance = $request->allowance;
+        $vacancy->send_to_email = $request->send_to_email;
+        $vacancy->send_to_wa = $request->send_to_wa;
+        $vacancy->active_until = $request->active_until;
+        $vacancy->vacancy_status = $request->vacancy_status;
+        $vacancy->updated_by =  $this->user->uid;
+        $vacancy->updated_at = date('yy-m-d h:m:s');
+
+        if(!$vacancy->save()){
+            return $this->errorResponse(static::TRANSACTION_ERROR,static::CODE_ERROR_VALIDATION);
+        }
+
+        return $this->successResponse(null, static::TRANSACTION_SUCCESS, static::CODE_SUCCESS);
+    }
+
+    public function applicant_candidate(Request $request){
+        $validation = Validator::make($request->all(), [
+            'vacancy_id' => 'required'
+        ]);
+        if ($validation->fails()) {
+            return $this->errorResponse($validation->errors(),static::CODE_ERROR_VALIDATION);
+        }
+        $response =[
+            'vacancy' => CtreeCache::get_job_vacancy_by_id($request->vacancy_id),
+            'candidate' => CtreeCache::get_candidate_vacancy($request->vacancy_id)
+        ];
+        return $this->successResponse($response, static::TRANSACTION_SUCCESS, static::CODE_SUCCESS);
+    }
+}
