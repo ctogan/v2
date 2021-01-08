@@ -46,8 +46,9 @@ class ApiPartTimeController extends ApiController
         $response = [
             'config' => $config,
             'user'=> $this->user,
-            'bookmark' => '',
-            'recommendation' => $this->get_job_search_and_recomendations($request),
+            'bookmark' => $this->get_job_bookmark(3),
+//            'recommendation' => $this->get_job_search_and_recomendations($request),
+            'recommendation' => '',
         ];
         return $this->successResponse($response);
     }
