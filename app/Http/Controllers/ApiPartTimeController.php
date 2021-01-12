@@ -52,6 +52,16 @@ class ApiPartTimeController extends ApiController
         return $this->successResponse($response);
     }
 
+    public function candidate_profile(Request $request){
+        //$user = UserName::where('uid','=',$this->user->uid)->first();
+        $response = [
+            'user'=> $this->user
+        ];
+
+        return $this->successResponse($response);
+    }
+
+
     public function get_bookmark(Request $request){
         $response = $this->get_job_bookmark(20);
         return $this->successResponse($response);
