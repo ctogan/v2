@@ -55,13 +55,13 @@ class ApiPartTimeController extends ApiController
 
     public function candidate_profile(Request $request){
         $user = $this->user;
-        $user->address = DB::table('user_address')->select('alamat_1')->where('uid' , $user->uid)->first()->alamat_1;
+        //$user->address = DB::table('user_address')->select('alamat_1')->where('uid' , $user->uid)->first()->alamat_1;
         $response = [
             'user'=> $user,
-            //'religion' => Utils::RELIGION_MASTER,
-            //'company_category' => CtreeCache::get_category(false),
-            //'education' => Utils::EDUCATION_MASTER,
-            //'experience' => UserJobExperiences::where('uid' , $user->uid)->get()
+            'religion' => Utils::RELIGION_MASTER,
+            'company_category' => CtreeCache::get_category(false),
+            'education' => Utils::EDUCATION_MASTER,
+            'experience' => UserJobExperiences::where('uid' , $user->uid)->get()
         ];
 
         return $this->successResponse($response);
