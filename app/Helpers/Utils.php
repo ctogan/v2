@@ -7,6 +7,8 @@ use Illuminate\Support\Facades\Storage;
 class Utils {
 
     protected const DEF_ENC_KEY = "aresjoyminiramdoaresjoyminiramdo";
+    public const RELIGION_MASTER = ['1'=>'Kristen','2'=>'Islam','3'=>'Hindu','4'=>'Budha','5'=>'Katolik'];
+    public const EDUCATION_MASTER = ['sd'=>'SD','smp'=>'SMP','d1'=>'D1','d2'=>'D2','d3'=>'D3','d4'=>'D4','s1'=>'S1','s2'=>'S2','s3'=>'S3'];
 
     public static function upload(Request $request, $name, $path) {
         $file = $request->file($name);

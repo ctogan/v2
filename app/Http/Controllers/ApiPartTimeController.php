@@ -17,6 +17,7 @@ use App\UserName;
 use App\Vacancy;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\DB;
 
 class ApiPartTimeController extends ApiController
 {
@@ -53,9 +54,14 @@ class ApiPartTimeController extends ApiController
     }
 
     public function candidate_profile(Request $request){
-        //$user = UserName::where('uid','=',$this->user->uid)->first();
+        $user = $this->user;
+        $user->address = DB::table('user_address')->select('alamat_1')->where('uid' , $user->uid)->first()->alamat_1;
         $response = [
-            'user'=> $this->user
+            'user'=> $user,
+            'religion' => Utils::RELIGION_MASTER,
+            'company_category' => CtreeCache::get_category(false),
+            'education' => Utils::EDUCATION_MASTER,
+            'experience' => UserJobExperiences::where('uid' , $user->uid)->get()
         ];
 
         return $this->successResponse($response);
