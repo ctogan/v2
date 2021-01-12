@@ -58,9 +58,9 @@ class ApiPartTimeController extends ApiController
         $user->address = DB::table('user_address')->select('alamat_1')->where('uid' , $user->uid)->first()->alamat_1;
         $response = [
             'user'=> $user,
-            'religion' => Utils::RELIGION_MASTER,
+            //'religion' => Utils::RELIGION_MASTER,
             'company_category' => CtreeCache::get_category(false),
-            'education' => Utils::EDUCATION_MASTER,
+            //'education' => Utils::EDUCATION_MASTER,
             'experience' => UserJobExperiences::where('uid' , $user->uid)->get()
         ];
 
