@@ -147,7 +147,7 @@ class ApiPartTimeController extends ApiController
     }
 
     public function search(Request $request){
-        $response = $this->get_job_search_and_recomendation($request);
+        $response = $this->get_job_search_and_recomendations($request);
         return $this->successResponse($response);
     }
 
