@@ -60,6 +60,7 @@ class ApiPartTimeController extends ApiController
     public function get_job_bookmark($limit = 3){
         $result = JobBookmark::where('job_bookmark.uid','=',$this->user->uid)
             ->select('job_bookmark.vacancy_id')
+            ->where('job_bookmark.row_status','!=','deleted')
             ->orderBy('created_at','desc')
             ->limit($limit)
             ->get();
