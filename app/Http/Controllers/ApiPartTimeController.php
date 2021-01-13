@@ -401,6 +401,7 @@ class ApiPartTimeController extends ApiController
 
         JobBookmark::insert(
             array(
+                'row_status'=>'active',
                 'uid' => $this->user->uid,
                 'vacancy_id' => $request->vacancy_id,
                 'created_at' => date("Y-m-d h:i:s")
