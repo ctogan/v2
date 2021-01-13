@@ -82,6 +82,7 @@ class ApiPartTimeController extends ApiController
     public function get_job_bookmark($limit = 3){
         $result = JobBookmark::where('job_bookmark.uid','=',$this->user->uid)
             ->select('job_bookmark.vacancy_id')
+            ->where('job_bookmark.row_status','!=','deleted')
             ->orderBy('created_at','desc')
             ->limit($limit)
             ->get();
@@ -400,12 +401,12 @@ class ApiPartTimeController extends ApiController
 
         JobBookmark::insert(
             array(
+                'row_status'=>'active',
                 'uid' => $this->user->uid,
                 'vacancy_id' => $request->vacancy_id,
-                'created_at' => date("yy-m-d h:m:s")
+                'created_at' => date("Y-m-d h:i:s")
             )
         );
-
         return $this->successResponse(null, static::TRANSACTION_SUCCESS, static::CODE_SUCCESS);
     }
 
