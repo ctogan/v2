@@ -17,6 +17,8 @@ use App\UserName;
 use App\Vacancy;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\DB;
+use App\UserAddress;
 
 class ApiPartTimeController extends ApiController
 {
@@ -51,6 +53,26 @@ class ApiPartTimeController extends ApiController
         ];
         return $this->successResponse($response);
     }
+
+    public function candidate_profile(Request $request){
+        $user = $this->user;
+        $field_address= UserAddress::select('alamat_1')->where('uid' , $user->uid)->first();
+        $address = '';
+        if($field_address){
+            $address = $field_address->alamat_1;
+        }
+        $response = [
+            'user'=> $user,
+            'address'=> $address,
+            'religion' => Utils::RELIGION_MASTER,
+            'company_category' => CtreeCache::get_category(false),
+            'education' => Utils::EDUCATION_MASTER,
+            'experience' => UserJobExperiences::where('uid' , $user->uid)->get()
+        ];
+
+        return $this->successResponse($response);
+    }
+
 
     public function get_bookmark(Request $request){
         $response = $this->get_job_bookmark(20);

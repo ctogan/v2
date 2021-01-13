@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class UserJobExperiences extends Model
 {
     protected $connection = 'users';
-    protected $table = 'user_job_experiences';
+    protected $table = 'user_job_part_time_experience';
 
     protected $fillable = [
         'uid',
