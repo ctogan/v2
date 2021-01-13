@@ -8,7 +8,7 @@ class Utils {
 
     protected const DEF_ENC_KEY = "aresjoyminiramdoaresjoyminiramdo";
     public const RELIGION_MASTER = [['id'=>'1','name'=>'Kristen'],['id'=>'2','name'=>'Islam'],['id'=>'3','name'=>'Hindu'],['id'=>'4','name'=>'Budha'],['id'=>'5','name'=>'Katolik']];
-    public const EDUCATION_MASTER = ['SD','SMP','D1','D2','D3','D4','S1','S2','S3'];
+    public const EDUCATION_MASTER = ['SD','SMP','SMA','D1','D2','D3','D4','S1','S2','S3'];
 
     public static function upload(Request $request, $name, $path) {
         $file = $request->file($name);
