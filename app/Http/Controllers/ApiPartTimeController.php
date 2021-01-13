@@ -403,10 +403,9 @@ class ApiPartTimeController extends ApiController
             array(
                 'uid' => $this->user->uid,
                 'vacancy_id' => $request->vacancy_id,
-                'created_at' => date("yy-m-d h:m:s")
+                'created_at' => date("Y-m-d h:i:s")
             )
         );
-
         return $this->successResponse(null, static::TRANSACTION_SUCCESS, static::CODE_SUCCESS);
     }
 
