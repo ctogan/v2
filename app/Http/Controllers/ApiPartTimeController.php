@@ -371,7 +371,7 @@ class ApiPartTimeController extends ApiController
             'company_name' => 'required',
             'department' => 'required',
             'position' => 'required',
-            'work_period' => 'required',
+            'work_periode' => 'required',
             'work_description' => 'required'
         ]);
 
@@ -385,7 +385,7 @@ class ApiPartTimeController extends ApiController
                 'company_name' => $request->company_name,
                 'department' => $request->department,
                 'position' => $request->position_name,
-                'work_period' => $request->period,
+                'work_periode' => $request->period,
                 'work_description' => $request->description
             )
         );
