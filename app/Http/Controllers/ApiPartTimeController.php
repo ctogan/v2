@@ -384,9 +384,9 @@ class ApiPartTimeController extends ApiController
                 'uid' => $this->user->uid,
                 'company_name' => $request->company_name,
                 'department' => $request->department,
-                'position' => $request->position_name,
-                'work_periode' => $request->period,
-                'work_description' => $request->description
+                'position' => $request->position,
+                'work_periode' => $request->work_periode,
+                'work_description' => $request->work_description
             )
         );
 
