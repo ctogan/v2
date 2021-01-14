@@ -370,8 +370,8 @@ class ApiPartTimeController extends ApiController
         $validation = Validator::make($request->all(), [
             'company_name' => 'required',
             'department' => 'required',
-            'position_name' => 'required',
-            'period' => 'required',
+            'position' => 'required',
+            'work_period' => 'required',
             'description' => 'required'
         ]);
 
@@ -384,9 +384,9 @@ class ApiPartTimeController extends ApiController
                 'uid' => $this->user->uid,
                 'company_name' => $request->company_name,
                 'department' => $request->department,
-                'position_name' => $request->position_name,
-                'period' => $request->period,
-                'description' => $request->description
+                'position' => $request->position_name,
+                'work_period' => $request->period,
+                'work_description' => $request->description
             )
         );
 
