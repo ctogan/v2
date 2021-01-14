@@ -372,7 +372,7 @@ class ApiPartTimeController extends ApiController
             'department' => 'required',
             'position' => 'required',
             'work_period' => 'required',
-            'description' => 'required'
+            'work_description' => 'required'
         ]);
 
         if ($validation->fails()) {
