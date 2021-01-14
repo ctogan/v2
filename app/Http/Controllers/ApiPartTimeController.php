@@ -261,6 +261,10 @@ class ApiPartTimeController extends ApiController
             return $this->errorResponse($validation->errors(),static::CODE_ERROR_VALIDATION);
         }
 
+        if(!$this->check_profile($this->user)){
+            return $this->errorResponse(static::PROFILE_UNCOMPLETE, static::PROFILE_UNCOMPLETE_CODE);
+        }
+
         JobApplicant::insert(array(
            "uid"=>$this->user->uid,
            "vacancy_id" => $request->vacancy_id,
@@ -656,5 +660,25 @@ class ApiPartTimeController extends ApiController
             'candidate' => CtreeCache::get_candidate_vacancy($request->vacancy_id)
         ];
         return $this->successResponse($response, static::TRANSACTION_SUCCESS, static::CODE_SUCCESS);
+    }
+    
+    public static function check_profile($user){
+        $profile_validator = [
+            'pob' => 'required',
+            'dob' => 'required',
+            'sex' => 'required',
+            'phone_number' => 'required',
+            'email' => 'required',
+            'religion' => 'required',
+            'education' => 'required',
+            'skill' => 'required',
+            'hobby' => 'required',
+        ];
+        foreach($profile_validator as $key=>$value){
+            if($user->$key == '' ||  $user->$key == null) {
+                return false;
+            }
+        }
+        return true;
     }
 }
