@@ -15,6 +15,6 @@ class UserJobExperiences extends Model
         'department',
         'position',
         'work_periode',
-        'wprk_description'
+        'work_description'
     ];
 }
