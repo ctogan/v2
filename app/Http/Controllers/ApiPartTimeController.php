@@ -343,7 +343,7 @@ class ApiPartTimeController extends ApiController
                 $user->weight =$request->weight;
                 $user->height =$request->height;
                 $user->religion = $request->religion;
-                $user->education = $request->education;
+                $user->last_education = $request->education;
                 $user->skill = $request->skill;
                 $user->hobby = $request->hobby;
                 $user->img = $request->img;
@@ -357,7 +357,7 @@ class ApiPartTimeController extends ApiController
                     "sex"=>$request->sex,
                     "email"=>$request->email,
                     "religion"=>$request->religion,
-                    "education"=>$request->education,
+                    "last_education"=>$request->education,
                     "skill"=>$request->skill,
                     "hobby"=>$request->hobby,
                     "img"=>$request->img
