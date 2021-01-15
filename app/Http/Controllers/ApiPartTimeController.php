@@ -335,17 +335,19 @@ class ApiPartTimeController extends ApiController
 
         $user = UserName::where('uid','=',$this->user->uid)->first();
 
-        if($user){
-            $user->uid =$this->user->uid;
-            $user->dob =$request->dob;
-            $user->sex =$request->sex;
-            $user->email =$request->email;
-            $user->religion = $request->religion;
-            $user->education = $request->education;
-            $user->skill = $request->skill;
-            $user->hobby = $request->hobby;
-            $user->img = $request->img;
-
+            if($user){
+                $user->uid =$this->user->uid;
+                $user->dob =$request->dob;
+                $user->sex =$request->sex;
+                $user->email =$request->email;
+                $user->weight =$request->weight;
+                $user->height =$request->height;
+                $user->religion = $request->religion;
+                $user->education = $request->education;
+                $user->skill = $request->skill;
+                $user->hobby = $request->hobby;
+                $user->img = $request->img;
+                $user->address = $request->address;
             $user->save();
         }else{
             UserName::insert(

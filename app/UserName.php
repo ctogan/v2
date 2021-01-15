@@ -34,6 +34,7 @@ class UserName extends Model
         'height',
         'religion',
         'skills',
-        'hobby'
+        'hobby',
+        'last_education'
     ];
 }
