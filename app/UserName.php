@@ -8,7 +8,6 @@ class UserName extends Model
 {
     protected $connection = 'users';
     protected $table = 'user_name';
-    public $timestamps = false;
     protected $fillable = [
         'uid',
         'name',
