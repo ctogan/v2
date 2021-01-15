@@ -796,7 +796,7 @@ abstract class Model implements Arrayable, ArrayAccess, Jsonable, JsonSerializab
         // update timestamp on the model which are maintained by us for developer
         // convenience. Then we will just continue saving the model instances.
         if ($this->usesTimestamps()) {
-            $this->updateTimestamps();
+            //$this->updateTimestamps();
         }
 
         // Once we have run the update operation, we will fire the "updated" event for
