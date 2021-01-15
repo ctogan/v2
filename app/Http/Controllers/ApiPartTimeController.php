@@ -394,6 +394,28 @@ class ApiPartTimeController extends ApiController
 
     }
 
+    public function delete_candidate_experiences(Request $request){
+        $validation = Validator::make($request->all(), [
+            'experience_id' => 'required'
+        ]);
+
+        if ($validation->fails()) {
+            return $this->errorResponse($validation->errors(),static::CODE_ERROR_VALIDATION);
+        }
+        $experience = UserJobExperiences::where('id' , $request->experience_id)->where('uid' , $this->user->uid)->first();
+        if(!$experience){
+            return $this->errorResponse(static::TRANSACTION_ERROR_NOT_FOUND,static::ERROR_DATA_SAVE_CODE);
+        }
+        $experience->status = 1;
+        
+        if(!$experience->save()){
+            return $this->errorResponse(static::ERROR_DATA_SAVE,static::ERROR_DATA_SAVE_CODE);
+        }
+
+        return $this->successResponse(null, static::TRANSACTION_SUCCESS, static::CODE_SUCCESS);
+
+    }
+
     public function submit_vacancy_bookmark(Request $request){
         $validation = Validator::make($request->all(), [
             'vacancy_id' => 'required'

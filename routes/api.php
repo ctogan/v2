@@ -43,6 +43,7 @@ Route::post('/part-time/candidate/profile/submit', 'ApiPartTimeController@submit
 Route::post('/part-time/candidate/profile', 'ApiPartTimeController@candidate_profile')->name('api.pt.candidate_profile')->middleware('localization');
 
 Route::post('/part-time/candidate/profile/experiences', 'ApiPartTimeController@submit_candidate_experiences')->name('api.pt.candidate_profile_experience')->middleware('localization');
+Route::post('/part-time/candidate/profile/experiences/delete', 'ApiPartTimeController@delete_candidate_experiences')->name('api.pt.candidate_profile_experience')->middleware('localization');
 
 Route::post('/part-time/candidate/bookmark/submit', 'ApiPartTimeController@submit_vacancy_bookmark')->name('api.pt.submit_bookmark')->middleware('localization');
 Route::post('/part-time/candidate/bookmark/delete', 'ApiPartTimeController@delete_vacancy_bookmark')->name('api.pt.delete_bookmark')->middleware('localization');
