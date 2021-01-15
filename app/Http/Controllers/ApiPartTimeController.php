@@ -67,7 +67,7 @@ class ApiPartTimeController extends ApiController
             'religion' => Utils::RELIGION_MASTER,
             'company_category' => CtreeCache::get_category(false),
             'education' => Utils::EDUCATION_MASTER,
-            'experience' => UserJobExperiences::where('uid' , $user->uid)->get()
+            'experience' => UserJobExperiences::where('uid' , $user->uid)->where('status' , '1')->get()
         ];
 
         return $this->successResponse($response);
