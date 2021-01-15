@@ -72,10 +72,9 @@ trait HasTimestamps
      */
     public function setUpdatedAt($value)
     {
-        //$this->{$this->getUpdatedAtColumn()} = $value;
+        $this->{$this->getUpdatedAtColumn()} = $value;
 
-        //return $this;
-        return NULL;
+        return $this;
     }
 
     /**
