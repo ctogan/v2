@@ -348,7 +348,7 @@ class ApiPartTimeController extends ApiController
                 $user->hobby = $request->hobby;
                 $user->img = $request->img;
                 $user->address = $request->address;
-            $user->save();
+            $user->save(['touch' => false]);
         }else{
             UserName::insert(
                 array(
