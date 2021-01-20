@@ -121,7 +121,9 @@ class ApiPartTimeController extends ApiController
         ];
 
         $response = [
-            'company' => $company,
+            'waiting_confirm_vacancy' => $company,
+            'active_vacancy' => $company,
+            'rejected_vacancy' => $company,
             'config' => $config
         ];
 
