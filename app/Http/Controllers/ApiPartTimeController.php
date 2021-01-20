@@ -153,7 +153,7 @@ class ApiPartTimeController extends ApiController
     }
 
     public function my_company(Request $request){
-        print_r('a'); exit;
+    
         $company = JobCompany::where('uid','=',$this->user->uid)->first();
         $config = [
             "text"=>trans('part_time')
