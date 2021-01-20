@@ -41,6 +41,9 @@ Route::get('/part-time/mycompany/detail', 'ApiPartTimeController@my_company_deta
 Route::get('/part-time/applicant/candidate', 'ApiPartTimeController@applicant_candidate')->name('api.pt.applicant_candidate')->middleware('localization');
 //web view
 Route::get('/part-time/view/location', 'ApiPartTimeController@view_location')->name('api.pt.applicant_candidate')->middleware('localization');
+Route::get('/web/filter/location/province', 'ApiPartTimeController@filter_location_province')->name('api.pt.filter.location')->middleware('localization');
+
+
 
 Route::post('/part-time/filter/submit', 'ApiPartTimeController@submit_filter')->name('api.pt.submit_filter')->middleware('localization');
 Route::post('/part-time/vacancy/apply', 'ApiPartTimeController@apply_vacancy')->name('api.pt.apply_vacancy')->middleware('localization');
