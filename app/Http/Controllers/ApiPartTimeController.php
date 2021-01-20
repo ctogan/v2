@@ -19,6 +19,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\DB;
 use App\UserAddress;
+use Illuminate\Support\Facades\View;
 
 class ApiPartTimeController extends ApiController
 {
