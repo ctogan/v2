@@ -135,19 +135,61 @@ class ApiPartTimeController extends ApiController
             ->join('job_company_category','job_company_category.id','job_company.category')
             ->join('province','province.id','job_company.province_id')
             ->join('city','city.id','job_company.city_id')
-            ->first();
-
+            ->first();  
+        //$waiting_confirm = Vacancy::where('company_id' , $request->id)->where('status','waiting_confirm')->get();
         $config = [
             "text"=>trans('part_time')
         ];
 
         $response = [
             'config' => $config,
+            'waiting_confirm_vacancy' =>Vacancy::where('company_id' , $request->id)->where('vacancy_status','waiting_confirm')->get(),
+            'reported_vacancy' => Vacancy::where('company_id' , $request->id)->where('vacancy_status','failed')->get(),
+            'active_vacancy' => Vacancy::where('company_id' , $request->id)->where('vacancy_status','publisher')->get(),
             "company"=>$company,
         ];
 
         return $this->successResponse($response);
     }
+
+    public function my_company(Request $request){
+        print_r('a'); exit;
+        $company = JobCompany::where('uid','=',$this->user->uid)->first();
+        $config = [
+            "text"=>trans('part_time')
+        ];
+        $response = [
+            'waiting_confirm_vacancy' => Vacancy::where('company_id' , $this->user->uid)->where('vacancy_status','waiting_confirm')->get(),
+            'active_vacancy' => Vacancy::where('company_id' , $this->user->uid)->where('vacancy_status','published')->get(),
+            'rejected_vacancy' => Vacancy::where('company_id' , $this->user->uid)->where('vacancy_status','failed')->get(),
+            'config' => $config
+        ];
+
+        return $this->successResponse($response);
+    }
+    public function my_company_detail(Request $request){
+
+        $company = JobCompany::where('id','=',$request->id)
+            ->join('job_company_category','job_company_category.id','job_company.category')
+            ->join('province','province.id','job_company.province_id')
+            ->join('city','city.id','job_company.city_id')
+            ->first();  
+        //$waiting_confirm = Vacancy::where('company_id' , $request->id)->where('status','waiting_confirm')->get();
+        $config = [
+            "text"=>trans('part_time')
+        ];
+
+        $response = [
+            'config' => $config,
+            'waiting_confirm_vacancy' =>Vacancy::where('company_id' , $request->id)->where('vacancy_status','waiting_confirm')->get(),
+            'reported_vacancy' => Vacancy::where('company_id' , $request->id)->where('vacancy_status','failed')->get(),
+            'active_vacancy' => Vacancy::where('company_id' , $request->id)->where('vacancy_status','publisher')->get(),
+            "company"=>$company,
+        ];
+
+        return $this->successResponse($response);
+    }
+
 
     public function search(Request $request){
         $response = $this->get_job_search_and_recomendations($request);
