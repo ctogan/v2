@@ -26,12 +26,17 @@ Route::get('/part-time', 'ApiPartTimeController@index')->name('api.pt.index')->m
 Route::get('/part-time/candidate', 'ApiPartTimeController@candidate')->name('api.pt.candidate')->middleware('localization');
 Route::get('/part-time/candidate/history', 'ApiPartTimeController@candidate_history')->name('api.pt.candidate_history')->middleware('localization');
 Route::get('/part-time/company', 'ApiPartTimeController@company')->name('api.pt.company')->middleware('localization');
-Route::get('/part-time/company/detail', 'ApiPartTimeController@company')->name('api.pt.detail')->middleware('localization');
+Route::get('/part-time/company/detail', 'ApiPartTimeController@company_detail')->name('api.pt.detail')->middleware('localization');
 Route::get('/part-time/filter/get', 'ApiPartTimeController@search_filter')->name('api.pt.search_filter')->middleware('localization');
 Route::get('/part-time/search', 'ApiPartTimeController@search')->name('api.pt.search')->middleware('localization');
 Route::get('/part-time/vacancy/detail', 'ApiPartTimeController@vacancy_detail')->name('api.pt.vacancy_detail')->middleware('localization');
 Route::get('/part-time/candidate/bookmark/get', 'ApiPartTimeController@get_bookmark')->name('api.pt.get_bookmark')->middleware('localization');
 Route::get('/part-time/home', 'ApiPartTimeController@candidate_home')->name('api.pt.home')->middleware('localization');
+
+Route::get('/part-time/mycompany', 'ApiPartTimeController@my_company')->name('api.pt.mycompany')->middleware('localization');
+Route::get('/part-time/mycompany/detail', 'ApiPartTimeController@my_company_detail')->name('api.pt.mycompanydetail')->middleware('localization');
+
+
 //FOR JOB PROVIDER
 Route::get('/part-time/applicant/candidate', 'ApiPartTimeController@applicant_candidate')->name('api.pt.applicant_candidate')->middleware('localization');
 //web view
