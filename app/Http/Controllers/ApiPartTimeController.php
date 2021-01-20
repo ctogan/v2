@@ -749,7 +749,6 @@ class ApiPartTimeController extends ApiController
     }
 
     public function filter_location_province(Request $request){
-        print_r('a'); exit;
         $province = CtreeCache::get_province();
         $pageVars = [
             "province" => $province,
