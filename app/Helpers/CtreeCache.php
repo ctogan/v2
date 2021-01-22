@@ -22,6 +22,7 @@ class CtreeCache {
     protected const SES_GET_COMPANY_REGISTERED="__sess__get__company_registered";
     protected const SES_GET_EMPLOYEE_REGISTERED="__sess__get__employee_registered";
     protected const SES_GET_ALL_PROVINCE_AND_CITY = "__sess__get_province__and_city";
+    protected const SES_GET_USER_BY_ID="__sess__get__user__by_id";
     protected const CACHE_PER_MINUTE = 60;
     protected const CACHE_PER_HOURS = 60 * 60;
     protected const CACHE_PER_DAY = 60 * 60 * 24;
@@ -119,7 +120,31 @@ class CtreeCache {
         }
          $result = JobApplicant::where('job_applicant.vacancy_id','=',$vacancy_id)
                 ->get();
+        if($result){
+            foreach($result as $applicant_detail){
+
+            }
+        }
         return $result;
+    }
+
+    public static function user_cache($uid, $forget = false){
+        if($forget) static::forget_cache(static::SES_GET_USER_BY_ID.'_'.$uid);
+        $result = Cache::get(static::SES_GET_USER_BY_ID.'_'.$uid);
+        if(!$result){
+            $result = JobApplicant::where('job_applicant.vacancy_id','=',$vacancy_id)
+                ->get();
+            Cache::put(static::SES_GET_USER_BY_ID.'_'.$vacancy_id , $result , static::CACHE_PER_MONTH);
+        }
+         $result = JobApplicant::select('uid')->where('job_applicant.vacancy_id','=',$vacancy_id)
+                ->get();
+        $result2 = [];
+        if($result){
+            foreach($result as $applicant_detail){
+                $result2 = DB::connection("users")->table("view_user_2")->whereIn("uid",'=',$$result)->get();
+            }
+        }
+        return $result2;
     }
 
     static function forget_cache($code){
