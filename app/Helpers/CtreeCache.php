@@ -120,10 +120,10 @@ class CtreeCache {
         }
          $result = JobApplicant::where('job_applicant.vacancy_id','=',$vacancy_id)
                 ->get();
-        $user = new ArrayObject();
+        $user = [];
         if($result){
             foreach($result as $applicant_detail){
-                $user->append = static::user_cache($applicant_detail->uid);
+                array_push(static::user_cache($applicant_detail->uid));
             }
         }
         return $user;
