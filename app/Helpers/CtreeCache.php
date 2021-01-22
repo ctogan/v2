@@ -123,7 +123,7 @@ class CtreeCache {
         $user = [];
         if($result){
             foreach($result as $applicant_detail){
-                array_push(static::user_cache($applicant_detail->uid));
+                $user= static::user_cache($applicant_detail->uid);
             }
         }
         return $user;
