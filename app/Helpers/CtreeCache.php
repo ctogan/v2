@@ -139,11 +139,9 @@ class CtreeCache {
          $result = JobApplicant::select('uid')->where('job_applicant.vacancy_id','=',$vacancy_id)
                 ->get();
         $result2 = [];
-        if($result){
-            foreach($result as $applicant_detail){
-                $result2 = DB::connection("users")->table("view_user_2")->whereIn("uid",'=',$$result)->get();
-            }
-        }
+        
+        $result2 = DB::connection("users")->table("view_user_2")->whereIn("uid",'=',$result)->get();
+
         return $result2;
     }
 
