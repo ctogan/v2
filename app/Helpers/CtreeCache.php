@@ -109,7 +109,7 @@ class CtreeCache {
         return $result;
     }
 
-    public function get_candidate_vacancy($vacancy_id , $forget = false){
+    public static function get_candidate_vacancy($vacancy_id , $forget = false){
         if($forget) static::forget_cache(static::SES_GET_CANDIDATE_BY_VANCANCY_ID.'_'.$vacancy_id);
         $result = Cache::get(static::SES_GET_CANDIDATE_BY_VANCANCY_ID.'_'.$vacancy_id);
         if(!$result){
