@@ -120,29 +120,23 @@ class CtreeCache {
         }
          $result = JobApplicant::where('job_applicant.vacancy_id','=',$vacancy_id)
                 ->get();
+        $user = [];
         if($result){
             foreach($result as $applicant_detail){
-
+                $user[] = static::user_cache($applicant_detail->uid);
             }
         }
-        return $result;
+        return $user;
     }
 
     public static function user_cache($uid, $forget = false){
         if($forget) static::forget_cache(static::SES_GET_USER_BY_ID.'_'.$uid);
         $result = Cache::get(static::SES_GET_USER_BY_ID.'_'.$uid);
         if(!$result){
-            $result = JobApplicant::where('job_applicant.vacancy_id','=',$vacancy_id)
-                ->get();
-            Cache::put(static::SES_GET_USER_BY_ID.'_'.$vacancy_id , $result , static::CACHE_PER_MONTH);
+            $result = DB::connection("users")->table("view_user_2")->where("uid",'=',$uid)->get();
+            Cache::put(static::SES_GET_USER_BY_ID.'_'.$uid , $result , static::CACHE_PER_MONTH);
         }
-         $result = JobApplicant::select('uid')->where('job_applicant.vacancy_id','=',$vacancy_id)
-                ->get();
-        $result2 = [];
-        
-        $result2 = DB::connection("users")->table("view_user_2")->whereIn("uid",'=',$result)->get();
-
-        return $result2;
+        return $result;
     }
 
     static function forget_cache($code){
