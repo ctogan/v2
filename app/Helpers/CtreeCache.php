@@ -117,7 +117,9 @@ class CtreeCache {
                 ->get();
             Cache::put(static::SES_GET_CANDIDATE_BY_VANCANCY_ID.'_'.$vacancy_id , $result , static::CACHE_PER_MONTH);
         }
-        $result = JobApplicant::where('job_applicant.vacancy_id','=',$vacancy_id)
+        $result = JobApplicant::leftJoin('job_applicant.uid' ,'=' ,'view_user_2.uid')
+        ->select('job_applicant.vacancy_id' ,'view_user_2.*')
+        ->where('job_applicant.vacancy_id','=',$vacancy_id)
         ->get();
         return $result;
     }
