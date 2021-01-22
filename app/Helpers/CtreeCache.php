@@ -9,7 +9,7 @@ use App\JobCompany;
 use App\Province;
 use App\Vacancy;
 use Illuminate\Support\Facades\Cache;
-
+use Illuminate\Support\Facades\DB;
 
 class CtreeCache {
 
