@@ -170,7 +170,12 @@ class ApiPartTimeController extends ApiController
     }
     public function my_company_detail(Request $request){
 
-        $company = $company = JobCompany::where('uid','=',$this->user->uid)->first();
+        $company = $company = JobCompany::select('job_company.*','province.province_name','city.city_name')
+                                ->where('uid','=',$this->user->uid)
+                                ->leftJoin('category' ,'job_company.category' ,'job_company_category.id')
+                                ->leftJoin('province' ,'job_company.province_id' ,'province.id')
+                                ->leftJoin('city' ,'job_company.city_id' ,'city.id')
+                                ->first();
 
        // $waiting_confirm = Vacancy::join('job_company' ,'job_company.id' , '=' , 'job_vacancy.company_id')
                            // ->where('job_company.uid' , $this->user->uid)->where('vacancy_status','waiting_confirm')->get();
