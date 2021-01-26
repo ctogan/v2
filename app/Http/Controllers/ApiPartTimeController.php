@@ -787,7 +787,7 @@ class ApiPartTimeController extends ApiController
         $response =[
             'province' => CtreeCache::get_province(),
             'company_catogory' => CtreeCache::get_category(),
-            'working_time' =>json_encode(array(['name' => 'hourly'] , ['name' => 'monthly'])),
+            'working_time' =>array(['name' => 'hourly'] , ['name' => 'monthly']),
             'education' => Utils::EDUCATION_MASTER,
 
         ];
