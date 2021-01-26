@@ -148,7 +148,7 @@ class ApiPartTimeController extends ApiController
             'config' => $config,
             'waiting_confirm_vacancy' =>Vacancy::where('company_id' , $request->id)->where('vacancy_status','waiting_confirm')->get(),
             'reported_vacancy' => Vacancy::where('company_id' , $request->id)->where('vacancy_status','failed')->get(),
-            'active_vacancy' => Vacancy::where('company_id' , $request->id)->where('vacancy_status','publisher')->get(),
+            'active_vacancy' => Vacancy::where('company_id' , $request->id)->where('vacancy_status','published')->get(),
             "company"=>$company,
         ];
 
@@ -207,7 +207,7 @@ class ApiPartTimeController extends ApiController
             ->leftJoin('province', 'province.id' ,'job_vacancy.province_id')
             ->leftJoin('city', 'city.id' ,'job_vacancy.city_id')
             ->leftJoin('job_company_category','job_company_category.id','job_company.category')
-            ->where('vacancy_status','publisher')->get(),
+            ->where('vacancy_status','published')->get(),
             "company"=>$company,
         ];
 
