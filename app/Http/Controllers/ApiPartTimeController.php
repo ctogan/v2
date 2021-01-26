@@ -174,22 +174,30 @@ class ApiPartTimeController extends ApiController
 
        // $waiting_confirm = Vacancy::join('job_company' ,'job_company.id' , '=' , 'job_vacancy.company_id')
                            // ->where('job_company.uid' , $this->user->uid)->where('vacancy_status','waiting_confirm')->get();
-                           $data = Vacancy::select('job_vacancy.*','job_company.company_name','province.province_name','city.city_name')
-                           ->where('company_id' , $company->id)
-                           ->leftJoin('job_company', 'job_company.id' ,'job_vacancy.company_id')
-                           ->leftJoin('province', 'province.id' ,'job_vacancy.province_id')
-                           ->leftJoin('city', 'city.id' ,'job_vacancy.city_id')
-                           ->where('vacancy_status','waiting_confirm')->get();
-                           print_r($data); exit();
         $config = [
             "text"=>trans('part_time')
         ];
 
         $response = [
             'config' => $config,
-            'waiting_confirm_vacancy' => Vacancy::select('job_vacancy.*','job_company.company_name')->where('company_id' , $company->id)->leftJoin('job_company', 'job_company.id' ,'job_vacancy.company_id')->where('vacancy_status','waiting_confirm')->get(),
-            'reported_vacancy' => Vacancy::where('company_id' , $company->id)->where('vacancy_status','failed')->get(),
-            'active_vacancy' => Vacancy::where('company_id' , $company->id)->where('vacancy_status','publisher')->get(),
+            'waiting_confirm_vacancy' => Vacancy::select('job_vacancy.*','job_company.company_name','province.province_name','city.city_name')
+            ->where('company_id' , $company->id)
+            ->leftJoin('job_company', 'job_company.id' ,'job_vacancy.company_id')
+            ->leftJoin('province', 'province.id' ,'job_vacancy.province_id')
+            ->leftJoin('city', 'city.id' ,'job_vacancy.city_id')
+            ->where('vacancy_status','waiting_confirm')->get(),
+            'reported_vacancy' => Vacancy::select('job_vacancy.*','job_company.company_name','province.province_name','city.city_name')
+            ->where('company_id' , $company->id)
+            ->leftJoin('job_company', 'job_company.id' ,'job_vacancy.company_id')
+            ->leftJoin('province', 'province.id' ,'job_vacancy.province_id')
+            ->leftJoin('city', 'city.id' ,'job_vacancy.city_id')
+            ->where('vacancy_status','failed')->get(),
+            'active_vacancy' => Vacancy::select('job_vacancy.*','job_company.company_name','province.province_name','city.city_name')
+            ->where('company_id' , $company->id)
+            ->leftJoin('job_company', 'job_company.id' ,'job_vacancy.company_id')
+            ->leftJoin('province', 'province.id' ,'job_vacancy.province_id')
+            ->leftJoin('city', 'city.id' ,'job_vacancy.city_id')
+            ->where('vacancy_status','publisher')->get(),
             "company"=>$company,
         ];
 
