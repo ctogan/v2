@@ -180,7 +180,7 @@ class ApiPartTimeController extends ApiController
 
         $response = [
             'config' => $config,
-            'waiting_confirm_vacancy' => Vacancy::select('job_vacancy.*','job_company.company_name','province.province_name','city.city_name','job_company_category.category_name')
+            'waiting_confirm_vacancy' => Vacancy::select('job_vacancy.*','job_company.company_name','province.province_name','city.city_name')
             ->where('company_id' , $company->id)
             ->leftJoin('job_company', 'job_company.id' ,'job_vacancy.company_id')
             ->leftJoin('job_company_category', 'job_company_category.id' ,'job_company.category')
