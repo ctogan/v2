@@ -174,7 +174,7 @@ class ApiPartTimeController extends ApiController
 
        // $waiting_confirm = Vacancy::join('job_company' ,'job_company.id' , '=' , 'job_vacancy.company_id')
                            // ->where('job_company.uid' , $this->user->uid)->where('vacancy_status','waiting_confirm')->get();
-                           $data = Vacancy::select('job_vacancy.*','job_company.company_name','province.name','city.name')
+                           $data = Vacancy::select('job_vacancy.*','job_company.company_name','province.province_name','city.city_name')
                            ->where('company_id' , $company->id)
                            ->leftJoin('job_company', 'job_company.id' ,'job_vacancy.company_id')
                            ->leftJoin('province', 'province.id' ,'job_vacancy.province_id')
