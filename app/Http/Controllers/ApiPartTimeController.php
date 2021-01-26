@@ -20,6 +20,8 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\DB;
 use App\UserAddress;
 use Illuminate\Support\Facades\View;
+use App\CompanyCategory;
+use function GuzzleHttp\json_decode;
 
 class ApiPartTimeController extends ApiController
 {
@@ -778,5 +780,17 @@ class ApiPartTimeController extends ApiController
             "province" => $province,
         ];
         return View::make('webapp.filter_province')->with($pageVars);
+    }
+
+
+    public function form_employer(){
+        $response =[
+            'province' => CtreeCache::get_province(),
+            'company_catogory' => CtreeCache::get_category(),
+            'working_time' =>json_decode(array(['name' => 'hourly'] , ['name' => 'monthly'])),
+            'education' => Utils::EDUCATION_MASTER,
+            
+        ];
+        return $this->successResponse($response, static::TRANSACTION_SUCCESS, static::CODE_SUCCESS);
     }
 }
