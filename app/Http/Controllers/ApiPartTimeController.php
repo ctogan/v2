@@ -172,7 +172,7 @@ class ApiPartTimeController extends ApiController
 
         $company = $company = JobCompany::select('job_company.*','province.province_name','city.city_name')
                                 ->where('uid','=',$this->user->uid)
-                                ->leftJoin('category' ,'job_company.category' ,'job_company_category.id')
+                                ->leftJoin('job_company_category' ,'job_company.category' ,'job_company_category.id')
                                 ->leftJoin('province' ,'job_company.province_id' ,'province.id')
                                 ->leftJoin('city' ,'job_company.city_id' ,'city.id')
                                 ->first();
