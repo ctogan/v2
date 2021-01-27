@@ -643,6 +643,36 @@ class ApiPartTimeController extends ApiController
         return $this->successResponse(null, static::TRANSACTION_SUCCESS, static::CODE_SUCCESS);
     }
 
+    public function submit_company_profile_logo(Request $request){
+        $validation = Validator::make($request->all(), [
+           'company_logo' => 'required|image|mimes:jpg,jpeg,png'
+        ]);
+
+        if($validation->fails()) {
+            return $this->errorResponse($validation->messages(),static::CODE_ERROR_VALIDATION);
+        }
+
+        $company = JobCompany::where('uid','=',$this->user->uid)->first();
+
+        if($company){
+            $company->uid=$this->user->uid;
+            $company->company_logo = Utils::upload($request,'company_logo','minijob/company/logo/');
+            $company->updated_by = $this->user->uid;
+            $company->updated_at = date('yy-m-d h:m:s');
+            $company->save();
+        }else{
+            $data_insert = array(
+                'row_status' => "notactive",
+                'uid'=>$this->user->uid,
+                'company_logo' => Utils::upload($request,'company_logo','minijob/company/logo/'),
+                'created_by' => $this->user->uid,
+                'created_at' => date('yy-m-d h:m:s')
+            );
+            JobCompany::insert($data_insert);
+        }
+        return $this->successResponse(null, static::TRANSACTION_SUCCESS, static::CODE_SUCCESS);
+    }
+
     public function submit_vacancy(Request $request){
         $validation = Validator::make($request->all(), [
             'company_id' => 'required',
