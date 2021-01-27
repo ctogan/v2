@@ -104,7 +104,10 @@ class CtreeCache {
             ->join('city','job_vacancy.city_id','city.id')
             ->join('job_company','job_company.id','job_vacancy.company_id')
             ->select('job_vacancy.*','job_company.company_name','city.city_name')
-            ->first()->toArray();
+            ->first();
+            if($result){
+                $result->toArray();
+            }
             Cache::put(static::SES_GET_VACANCY_BY_ID.'_'.$vacancy_id , $result , static::CACHE_PER_MONTH);
         }
         return $result;
