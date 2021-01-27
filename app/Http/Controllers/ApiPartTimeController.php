@@ -813,12 +813,13 @@ class ApiPartTimeController extends ApiController
     }
 
 
-    public function form_employer(){
+    public function form_employer(Request $request){
         $response =[
             'province' => CtreeCache::get_province(),
             'company_catogory' => CtreeCache::get_category(),
             'working_time' =>array(['name' => 'hourly'] , ['name' => 'monthly']),
             'education' => Utils::EDUCATION_MASTER,
+            'company' => JobCompany::where('uid' , $this->user->uid)->first()
 
         ];
         return $this->successResponse($response, static::TRANSACTION_SUCCESS, static::CODE_SUCCESS);
