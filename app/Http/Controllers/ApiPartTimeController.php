@@ -587,7 +587,7 @@ class ApiPartTimeController extends ApiController
     public function submit_company_profile(Request $request){
         $validation = Validator::make($request->all(), [
             'company_name' => 'required',
-            'company_logo' => 'required|image|mimes:jpg,jpeg,png',
+           // 'company_logo' => 'required|image|mimes:jpg,jpeg,png',
             'category'=> 'required',
             'address'=> 'required',
             'province_id'=> 'required',
@@ -606,7 +606,7 @@ class ApiPartTimeController extends ApiController
         if($company){
             $company->uid=$this->user->uid;
             $company->company_name = $request->company_name;
-            $company->company_logo = Utils::upload($request,'company_logo','minijob/company/logo/');
+           // $company->company_logo = Utils::upload($request,'company_logo','minijob/company/logo/');
             $company->category = $request->category;
             $company->address = $request->address;
             $company->province_id = $request->province_id;
@@ -624,7 +624,7 @@ class ApiPartTimeController extends ApiController
                 'row_status' => "active",
                 'uid'=>$this->user->uid,
                 'company_name' => $request->company_name,
-                'company_logo' => Utils::upload($request,'company_logo','minijob/company/logo/'),
+               // 'company_logo' => Utils::upload($request,'company_logo','minijob/company/logo/'),
                 'category'=> $request->category,
                 'address'=> $request->address,
                 'province_id'=> $request->province_id,
