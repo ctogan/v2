@@ -105,7 +105,7 @@ class ApiPartTimeController extends ApiController
                 $data[] = CtreeCache::get_job_vacancy_by_id($item->vacancy_id);
             }
         }
-        $result = count($data) > 0 ? $data : [];
+        $result = count($data) > 0 ? $data : '';
 
         $response =[
             'history' => $result
