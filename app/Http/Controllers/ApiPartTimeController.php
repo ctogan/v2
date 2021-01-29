@@ -138,31 +138,23 @@ class ApiPartTimeController extends ApiController
     }
 
     public function company_detail(Request $request){
-//        $company = JobCompany::where('id','=',$request->id)
-//            ->join('job_company_category','job_company_category.id','job_company.category')
-//            ->join('province','province.id','job_company.province_id')
-//            ->join('city','city.id','job_company.city_id')
-//            ->first();
+        $company = JobCompany::where('job_company.id','=',$request->id)
+            ->join('job_company_category','job_company_category.id','job_company.category')
+            ->join('province','province.id','job_company.province_id')
+            ->join('city','city.id','job_company.city_id')
+            ->first();
         //$waiting_confirm = Vacancy::where('company_id' , $request->id)->where('status','waiting_confirm')->get();
-//        $config = [
-//            "text"=>trans('part_time')
-//        ];
+        $config = [
+            "text"=>trans('part_time')
+        ];
 
-      /*  $response = [
+      $response = [
             'config' => $config,
             'waiting_confirm_vacancy' =>Vacancy::where('company_id' , $request->id)->where('vacancy_status','waiting_confirm')->get(),
             'reported_vacancy' => Vacancy::where('company_id' , $request->id)->where('vacancy_status','failed')->get(),
             'active_vacancy' => Vacancy::where('company_id' , $request->id)->where('vacancy_status','published')->get(),
             "company"=>$company,
-        ];*/
-
-        $response = [
-            'config' => '',
-            'waiting_confirm_vacancy'=>'',
-            'reported_vacancy'=>'',
-            'active_vacancy'=>'',
-            'company'=>'',
-            ];
+        ];
 
         return $this->successResponse($response);
     }
