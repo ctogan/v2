@@ -97,7 +97,7 @@ class CtreeCache {
     }
 
     public static function get_job_vacancy_by_id($vacancy_id , $forget=false){
-        if($forget) static::forget_cache(static::SES_GET_VACANCY_BY_ID.'_'.$vacancy_id);
+     /*   if($forget) static::forget_cache(static::SES_GET_VACANCY_BY_ID.'_'.$vacancy_id);
         $result = Cache::get(static::SES_GET_VACANCY_BY_ID.'_'.$vacancy_id);
         if(!$result){
             $result = Vacancy::where('job_vacancy.id','=',$vacancy_id)
@@ -109,6 +109,14 @@ class CtreeCache {
                 $result->toArray();
             }
             Cache::put(static::SES_GET_VACANCY_BY_ID.'_'.$vacancy_id , $result , static::CACHE_PER_MONTH);
+        }*/
+        $result = Vacancy::where('job_vacancy.id','=',$vacancy_id)
+            ->join('city','job_vacancy.city_id','city.id')
+            ->join('job_company','job_company.id','job_vacancy.company_id')
+            ->select('job_vacancy.*','job_company.company_name','city.city_name')
+            ->first();
+        if($result){
+            $result->toArray();
         }
         return $result;
     }
