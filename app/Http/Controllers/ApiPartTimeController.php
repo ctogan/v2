@@ -102,7 +102,7 @@ class ApiPartTimeController extends ApiController
         $vacancy = JobApplicant::where('job_applicant.uid','=',$this->user->uid)
             ->select('job_applicant.vacancy_id')
             ->get();
-        $data = [];
+        $data = array();
         if($vacancy){
             foreach ($vacancy as $item){
                 $data[] = CtreeCache::get_job_vacancy_by_id($item->vacancy_id);
