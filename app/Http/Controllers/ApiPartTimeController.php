@@ -111,7 +111,7 @@ class ApiPartTimeController extends ApiController
         $result = count($data) > 0 ? $data : '';
 
         $response =[
-            'history' => $result
+            'history' => ''
         ];
 
         return $this->successResponse($response,static::TRANSACTION_SUCCESS, 200);
