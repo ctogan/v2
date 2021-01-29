@@ -128,10 +128,10 @@ class ApiPartTimeController extends ApiController
         ];
 
         $response = [
-            'waiting_confirm_vacancy' => $company,
-            'active_vacancy' => $company,
-            'rejected_vacancy' => $company,
-            'config' => $config
+            'waiting_confirm_vacancy' => '',
+            'active_vacancy' => '',
+            'rejected_vacancy' => '',
+            'config' => ''
         ];
 
         return $this->successResponse($response);
