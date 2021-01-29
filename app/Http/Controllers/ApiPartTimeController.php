@@ -144,9 +144,9 @@ class ApiPartTimeController extends ApiController
             ->join('city','city.id','job_company.city_id')
             ->first();  
         //$waiting_confirm = Vacancy::where('company_id' , $request->id)->where('status','waiting_confirm')->get();
-        $config = [
-            "text"=>trans('part_time')
-        ];
+//        $config = [
+//            "text"=>trans('part_time')
+//        ];
 
       /*  $response = [
             'config' => $config,
