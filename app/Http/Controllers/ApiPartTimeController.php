@@ -128,10 +128,10 @@ class ApiPartTimeController extends ApiController
         ];
 
         $response = [
-            'waiting_confirm_vacancy' => '',
-            'active_vacancy' => '',
-            'rejected_vacancy' => '',
-            'config' => ''
+            'waiting_confirm_vacancy' => $company,
+            'active_vacancy' => $company,
+            'rejected_vacancy' => $company,
+            'config' => $config
         ];
 
         return $this->successResponse($response);
@@ -148,13 +148,21 @@ class ApiPartTimeController extends ApiController
             "text"=>trans('part_time')
         ];
 
-        $response = [
+      /*  $response = [
             'config' => $config,
             'waiting_confirm_vacancy' =>Vacancy::where('company_id' , $request->id)->where('vacancy_status','waiting_confirm')->get(),
             'reported_vacancy' => Vacancy::where('company_id' , $request->id)->where('vacancy_status','failed')->get(),
             'active_vacancy' => Vacancy::where('company_id' , $request->id)->where('vacancy_status','published')->get(),
             "company"=>$company,
-        ];
+        ];*/
+
+        $response = [
+            'config' => '',
+            'waiting_confirm_vacancy'=>'',
+            'reported_vacancy'=>'',
+            'active_vacancy'=>'',
+            'company'=>'',
+            ];
 
         return $this->successResponse($response);
     }
