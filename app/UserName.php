@@ -8,7 +8,7 @@ class UserName extends Model
 {
     protected $connection = 'users';
     protected $table = 'user_name';
-
+    public $timestamps = false;
     protected $fillable = [
         'uid',
         'name',
@@ -34,6 +34,7 @@ class UserName extends Model
         'height',
         'religion',
         'skills',
-        'hobby'
+        'hobby',
+        'last_education'
     ];
 }

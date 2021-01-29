@@ -9,7 +9,7 @@ use App\JobCompany;
 use App\Province;
 use App\Vacancy;
 use Illuminate\Support\Facades\Cache;
-
+use Illuminate\Support\Facades\DB;
 
 class CtreeCache {
 
@@ -22,6 +22,7 @@ class CtreeCache {
     protected const SES_GET_COMPANY_REGISTERED="__sess__get__company_registered";
     protected const SES_GET_EMPLOYEE_REGISTERED="__sess__get__employee_registered";
     protected const SES_GET_ALL_PROVINCE_AND_CITY = "__sess__get_province__and_city";
+    protected const SES_GET_USER_BY_ID="__sess__get__user__by_id";
     protected const CACHE_PER_MINUTE = 60;
     protected const CACHE_PER_HOURS = 60 * 60;
     protected const CACHE_PER_DAY = 60 * 60 * 24;
@@ -103,19 +104,40 @@ class CtreeCache {
             ->join('city','job_vacancy.city_id','city.id')
             ->join('job_company','job_company.id','job_vacancy.company_id')
             ->select('job_vacancy.*','job_company.company_name','city.city_name')
-            ->first()->toArray();
+            ->first();
+            if($result){
+                $result->toArray();
+            }
             Cache::put(static::SES_GET_VACANCY_BY_ID.'_'.$vacancy_id , $result , static::CACHE_PER_MONTH);
         }
         return $result;
     }
 
-    public function get_candidate_vacancy($vacancy_id , $forget = false){
+    public static function get_candidate_vacancy($vacancy_id , $forget = false){
         if($forget) static::forget_cache(static::SES_GET_CANDIDATE_BY_VANCANCY_ID.'_'.$vacancy_id);
         $result = Cache::get(static::SES_GET_CANDIDATE_BY_VANCANCY_ID.'_'.$vacancy_id);
         if(!$result){
             $result = JobApplicant::where('job_applicant.vacancy_id','=',$vacancy_id)
                 ->get();
             Cache::put(static::SES_GET_CANDIDATE_BY_VANCANCY_ID.'_'.$vacancy_id , $result , static::CACHE_PER_MONTH);
+        }
+         $result = JobApplicant::where('job_applicant.vacancy_id','=',$vacancy_id)
+                ->get();
+        $user = [];
+        if($result){
+            foreach($result as $applicant_detail){
+                $user = static::user_cache($applicant_detail->uid);
+            }
+        }
+        return $user;
+    }
+
+    public static function user_cache($uid, $forget = false){
+        if($forget) static::forget_cache(static::SES_GET_USER_BY_ID.'_'.$uid);
+        $result = Cache::get(static::SES_GET_USER_BY_ID.'_'.$uid);
+        if(!$result){
+            $result = DB::connection("users")->table("view_user_2")->where("uid",'=',$uid)->get();
+            Cache::put(static::SES_GET_USER_BY_ID.'_'.$uid , $result , static::CACHE_PER_MONTH);
         }
         return $result;
     }

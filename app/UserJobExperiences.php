@@ -13,8 +13,8 @@ class UserJobExperiences extends Model
         'uid',
         'company_name',
         'department',
-        'position_name',
-        'period',
-        'description'
+        'position',
+        'work_periode',
+        'work_description'
     ];
 }

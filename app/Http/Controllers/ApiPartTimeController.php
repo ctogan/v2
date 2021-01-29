@@ -19,6 +19,9 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\DB;
 use App\UserAddress;
+use Illuminate\Support\Facades\View;
+use App\CompanyCategory;
+use function GuzzleHttp\json_decode;
 
 class ApiPartTimeController extends ApiController
 {
@@ -67,7 +70,7 @@ class ApiPartTimeController extends ApiController
             'religion' => Utils::RELIGION_MASTER,
             'company_category' => CtreeCache::get_category(false),
             'education' => Utils::EDUCATION_MASTER,
-            'experience' => UserJobExperiences::where('uid' , $user->uid)->get()
+            'experience' => UserJobExperiences::where('uid' , $user->uid)->where('status' , '0')->get()
         ];
 
         return $this->successResponse($response);
@@ -121,7 +124,9 @@ class ApiPartTimeController extends ApiController
         ];
 
         $response = [
-            'company' => $company,
+            'waiting_confirm_vacancy' => $company,
+            'active_vacancy' => $company,
+            'rejected_vacancy' => $company,
             'config' => $config
         ];
 
@@ -133,22 +138,85 @@ class ApiPartTimeController extends ApiController
             ->join('job_company_category','job_company_category.id','job_company.category')
             ->join('province','province.id','job_company.province_id')
             ->join('city','city.id','job_company.city_id')
-            ->first();
-
+            ->first();  
+        //$waiting_confirm = Vacancy::where('company_id' , $request->id)->where('status','waiting_confirm')->get();
         $config = [
             "text"=>trans('part_time')
         ];
 
         $response = [
             'config' => $config,
+            'waiting_confirm_vacancy' =>Vacancy::where('company_id' , $request->id)->where('vacancy_status','waiting_confirm')->get(),
+            'reported_vacancy' => Vacancy::where('company_id' , $request->id)->where('vacancy_status','failed')->get(),
+            'active_vacancy' => Vacancy::where('company_id' , $request->id)->where('vacancy_status','published')->get(),
             "company"=>$company,
         ];
 
         return $this->successResponse($response);
     }
 
+    public function my_company(Request $request){
+    
+        $company = JobCompany::where('uid','=',$this->user->uid)->first();
+        $config = [
+            "text"=>trans('part_time')
+        ];
+        $response = [
+            'waiting_confirm_vacancy' => Vacancy::where('company_id' , $this->user->uid)->where('vacancy_status','waiting_confirm')->get(),
+            'active_vacancy' => Vacancy::where('company_id' , $this->user->uid)->where('vacancy_status','published')->get(),
+            'rejected_vacancy' => Vacancy::where('company_id' , $this->user->uid)->where('vacancy_status','failed')->get(),
+            'config' => $config
+        ];
+
+        return $this->successResponse($response);
+    }
+    public function my_company_detail(Request $request){
+
+        $company = $company = JobCompany::select('job_company.*','province.province_name','city.city_name')
+                                ->where('uid','=',$this->user->uid)
+                                ->leftJoin('job_company_category' ,'job_company.category' ,'job_company_category.id')
+                                ->leftJoin('province' ,'job_company.province_id' ,'province.id')
+                                ->leftJoin('city' ,'job_company.city_id' ,'city.id')
+                                ->first();
+
+       // $waiting_confirm = Vacancy::join('job_company' ,'job_company.id' , '=' , 'job_vacancy.company_id')
+                           // ->where('job_company.uid' , $this->user->uid)->where('vacancy_status','waiting_confirm')->get();
+        $config = [
+            "text"=>trans('part_time')
+        ];
+
+        $response = [
+            'config' => $config,
+            'waiting_confirm_vacancy' => Vacancy::select('job_vacancy.*','job_company.company_name','province.province_name','city.city_name','job_company_category.category_name')
+            ->where('company_id' , $company->id)
+            ->leftJoin('job_company', 'job_company.id' ,'job_vacancy.company_id')
+            ->leftJoin('province', 'province.id' ,'job_vacancy.province_id')
+            ->leftJoin('city', 'city.id' ,'job_vacancy.city_id')
+            ->leftJoin('job_company_category','job_company_category.id','job_company.category')
+            ->where('vacancy_status','waiting_confirm')->get(),
+            'reported_vacancy' => Vacancy::select('job_vacancy.*','job_company.company_name','province.province_name','city.city_name','job_company_category.category_name')
+            ->where('company_id' , $company->id)
+            ->leftJoin('job_company', 'job_company.id' ,'job_vacancy.company_id')
+            ->leftJoin('province', 'province.id' ,'job_vacancy.province_id')
+            ->leftJoin('city', 'city.id' ,'job_vacancy.city_id')
+            ->leftJoin('job_company_category','job_company_category.id','job_company.category')
+            ->where('vacancy_status','failed')->get(),
+            'active_vacancy' => Vacancy::select('job_vacancy.*','job_company.company_name','province.province_name','city.city_name','job_company_category.category_name')
+            ->where('company_id' , $company->id)
+            ->leftJoin('job_company', 'job_company.id' ,'job_vacancy.company_id')
+            ->leftJoin('province', 'province.id' ,'job_vacancy.province_id')
+            ->leftJoin('city', 'city.id' ,'job_vacancy.city_id')
+            ->leftJoin('job_company_category','job_company_category.id','job_company.category')
+            ->where('vacancy_status','published')->get(),
+            "company"=>$company,
+        ];
+
+        return $this->successResponse($response);
+    }
+
+
     public function search(Request $request){
-        $response = $this->get_job_search_and_recomendation($request);
+        $response = $this->get_job_search_and_recomendations($request);
         return $this->successResponse($response);
     }
 
@@ -261,6 +329,10 @@ class ApiPartTimeController extends ApiController
             return $this->errorResponse($validation->errors(),static::CODE_ERROR_VALIDATION);
         }
 
+        if(!$this->check_profile($this->user)){
+            return $this->errorResponse(static::PROFILE_UNCOMPLETE, static::PROFILE_UNCOMPLETE_CODE);
+        }
+
         JobApplicant::insert(array(
            "uid"=>$this->user->uid,
            "vacancy_id" => $request->vacancy_id,
@@ -331,17 +403,19 @@ class ApiPartTimeController extends ApiController
 
         $user = UserName::where('uid','=',$this->user->uid)->first();
 
-        if($user){
-            $user->uid =$this->user->uid;
-            $user->dob =$request->dob;
-            $user->sex =$request->sex;
-            $user->email =$request->email;
-            $user->religion = $request->religion;
-            $user->education = $request->education;
-            $user->skill = $request->skill;
-            $user->hobby = $request->hobby;
-            $user->img = $request->img;
-
+            if($user){
+                $user->uid =$this->user->uid;
+                $user->dob = date('Y-m-d' , strtotime($request->dob));
+                $user->sex =$request->sex;
+                $user->email =$request->email;
+                $user->weight =$request->weight;
+                $user->height =$request->height;
+                $user->religion = $request->religion;
+                $user->last_education = $request->education;
+                $user->skills = $request->skill;
+                $user->hobby = $request->hobby;
+                $user->img = $request->img;
+                $user->address = $request->address;
             $user->save();
         }else{
             UserName::insert(
@@ -351,8 +425,8 @@ class ApiPartTimeController extends ApiController
                     "sex"=>$request->sex,
                     "email"=>$request->email,
                     "religion"=>$request->religion,
-                    "education"=>$request->education,
-                    "skill"=>$request->skill,
+                    "last_education"=>$request->education,
+                    "skills"=>$request->skill,
                     "hobby"=>$request->hobby,
                     "img"=>$request->img
                 )
@@ -366,9 +440,9 @@ class ApiPartTimeController extends ApiController
         $validation = Validator::make($request->all(), [
             'company_name' => 'required',
             'department' => 'required',
-            'position_name' => 'required',
-            'period' => 'required',
-            'description' => 'required'
+            'position' => 'required',
+            'work_periode' => 'required',
+            'work_description' => 'required'
         ]);
 
         if ($validation->fails()) {
@@ -380,11 +454,33 @@ class ApiPartTimeController extends ApiController
                 'uid' => $this->user->uid,
                 'company_name' => $request->company_name,
                 'department' => $request->department,
-                'position_name' => $request->position_name,
-                'period' => $request->period,
-                'description' => $request->description
+                'position' => $request->position,
+                'work_periode' => $request->work_periode,
+                'work_description' => $request->work_description
             )
         );
+
+        return $this->successResponse(null, static::TRANSACTION_SUCCESS, static::CODE_SUCCESS);
+
+    }
+
+    public function delete_candidate_experiences(Request $request){
+        $validation = Validator::make($request->all(), [
+            'experience_id' => 'required'
+        ]);
+
+        if ($validation->fails()) {
+            return $this->errorResponse($validation->errors(),static::CODE_ERROR_VALIDATION);
+        }
+        $experience = UserJobExperiences::where('id' , $request->experience_id)->where('uid' , $this->user->uid)->first();
+        if(!$experience){
+            return $this->errorResponse(static::TRANSACTION_ERROR_NOT_FOUND,static::ERROR_DATA_SAVE_CODE);
+        }
+        $experience->status = 1;
+        
+        if(!$experience->save()){
+            return $this->errorResponse(static::ERROR_DATA_SAVE,static::ERROR_DATA_SAVE_CODE);
+        }
 
         return $this->successResponse(null, static::TRANSACTION_SUCCESS, static::CODE_SUCCESS);
 
@@ -491,7 +587,7 @@ class ApiPartTimeController extends ApiController
     public function submit_company_profile(Request $request){
         $validation = Validator::make($request->all(), [
             'company_name' => 'required',
-            'company_logo' => 'required|image|mimes:jpg,jpeg,png',
+           // 'company_logo' => 'required|image|mimes:jpg,jpeg,png',
             'category'=> 'required',
             'address'=> 'required',
             'province_id'=> 'required',
@@ -510,7 +606,7 @@ class ApiPartTimeController extends ApiController
         if($company){
             $company->uid=$this->user->uid;
             $company->company_name = $request->company_name;
-            $company->company_logo = Utils::upload($request,'company_logo','minijob/company/logo/');
+           // $company->company_logo = Utils::upload($request,'company_logo','minijob/company/logo/');
             $company->category = $request->category;
             $company->address = $request->address;
             $company->province_id = $request->province_id;
@@ -528,7 +624,7 @@ class ApiPartTimeController extends ApiController
                 'row_status' => "active",
                 'uid'=>$this->user->uid,
                 'company_name' => $request->company_name,
-                'company_logo' => Utils::upload($request,'company_logo','minijob/company/logo/'),
+               // 'company_logo' => Utils::upload($request,'company_logo','minijob/company/logo/'),
                 'category'=> $request->category,
                 'address'=> $request->address,
                 'province_id'=> $request->province_id,
@@ -544,6 +640,36 @@ class ApiPartTimeController extends ApiController
             JobCompany::insert($data_insert);
         }
 
+        return $this->successResponse(null, static::TRANSACTION_SUCCESS, static::CODE_SUCCESS);
+    }
+
+    public function submit_company_profile_logo(Request $request){
+        $validation = Validator::make($request->all(), [
+           'company_logo' => 'required|image|mimes:jpg,jpeg,png'
+        ]);
+
+        if($validation->fails()) {
+            return $this->errorResponse($validation->messages(),static::CODE_ERROR_VALIDATION);
+        }
+
+        $company = JobCompany::where('uid','=',$this->user->uid)->first();
+
+        if($company){
+            $company->uid=$this->user->uid;
+            $company->company_logo = Utils::upload($request,'company_logo','minijob/company/logo/');
+            $company->updated_by = $this->user->uid;
+            $company->updated_at = date('yy-m-d h:m:s');
+            $company->save();
+        }else{
+            $data_insert = array(
+                'row_status' => "notactive",
+                'uid'=>$this->user->uid,
+                'company_logo' => Utils::upload($request,'company_logo','minijob/company/logo/'),
+                'created_by' => $this->user->uid,
+                'created_at' => date('yy-m-d h:m:s')
+            );
+            JobCompany::insert($data_insert);
+        }
         return $this->successResponse(null, static::TRANSACTION_SUCCESS, static::CODE_SUCCESS);
     }
 
@@ -653,7 +779,48 @@ class ApiPartTimeController extends ApiController
         }
         $response =[
             'vacancy' => CtreeCache::get_job_vacancy_by_id($request->vacancy_id),
-            'candidate' => CtreeCache::get_candidate_vacancy($request->vacancy_id)
+            'candidates' => CtreeCache::get_candidate_vacancy($request->vacancy_id)
+        ];
+        return $this->successResponse($response, static::TRANSACTION_SUCCESS, static::CODE_SUCCESS);
+    }
+    
+    public static function check_profile($user){
+        $profile_validator = [
+            'pob' => 'required',
+            'dob' => 'required',
+            'sex' => 'required',
+            'phone_number' => 'required',
+            'email' => 'required',
+            'religion' => 'required',
+            'education' => 'required',
+            'skill' => 'required',
+            'hobby' => 'required',
+        ];
+        foreach($profile_validator as $key=>$value){
+            if($user->$key == '' ||  $user->$key == null) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    public function filter_location_province(Request $request){
+        $province = CtreeCache::get_province();
+        $pageVars = [
+            "province" => $province,
+        ];
+        return View::make('webapp.filter_province')->with($pageVars);
+    }
+
+
+    public function form_employer(Request $request){
+        $response =[
+            'province' => CtreeCache::get_province(),
+            'company_catogory' => CtreeCache::get_category(),
+            'working_time' =>array(['name' => 'hourly'] , ['name' => 'monthly']),
+            'education' => Utils::EDUCATION_MASTER,
+            'company' => JobCompany::where('uid' , $this->user->uid)->first()
+
         ];
         return $this->successResponse($response, static::TRANSACTION_SUCCESS, static::CODE_SUCCESS);
     }
