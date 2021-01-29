@@ -97,7 +97,7 @@ class CtreeCache {
     }
 
     public static function get_job_vacancy_by_id($vacancy_id , $forget=false){
-     /*   if($forget) static::forget_cache(static::SES_GET_VACANCY_BY_ID.'_'.$vacancy_id);
+     /* if($forget) static::forget_cache(static::SES_GET_VACANCY_BY_ID.'_'.$vacancy_id);
         $result = Cache::get(static::SES_GET_VACANCY_BY_ID.'_'.$vacancy_id);
         if(!$result){
             $result = Vacancy::where('job_vacancy.id','=',$vacancy_id)
