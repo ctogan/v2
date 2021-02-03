@@ -27,6 +27,17 @@ class ApiMasterController extends ApiController
         return $this->successResponse($reponse, static::TRANSACTION_SUCCESS);
     }
 
+    public function get_all_locate(Request $request){
+
+        $get_all_location = Province::select('province_name','city_name')->join('city','city.province_id','=','province.id')->get();
+        $reponse =[
+            'get_location'=>$get_all_location
+        ];
+
+        return $this->successResponse($reponse, static::TRANSACTION_SUCCESS);
+
+    }
+
     public function get_company_category(Request $request){
         $category = CtreeCache::get_category(false);
         $reponse =[
