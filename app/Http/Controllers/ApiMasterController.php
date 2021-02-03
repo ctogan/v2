@@ -29,8 +29,21 @@ class ApiMasterController extends ApiController
 
     public function get_all_locate(Request $request){
 
-        $get_all_location = Province::select('province.province_name','city.city_name')
-            ->join('city','city.province_id','=','province.id')->get();
+//        $get_all_location = Province::select('province.province_name','city.city_name')
+//            ->join('city','city.province_id','=','province.id')->get();
+        $get_all_location = array();
+        $provincies = Province::where('row_status','=','active')->select('id','province_name')->get();
+
+
+        foreach ($provincies as $key => $province ){
+            $get_all_location .= $province->province_name;
+
+            $cities = City::where('province_id','=',$province->id)->first();
+            foreach ($cities as $key => $city)
+            {
+                $get_all_location .= $city->city_name;
+            }
+        }
 
         $reponse =[
             'get_location'=>$get_all_location
