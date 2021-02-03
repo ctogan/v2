@@ -21,7 +21,7 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 //API
 Route::get('/master/province', 'ApiMasterController@get_province')->name('api.master.province')->middleware('localization');
 Route::get('/master/city', 'ApiMasterController@get_city')->name('api.master.city')->middleware('localization');
-Route::get('/master/get_location', 'ApiMasterController@get_all_locate')->name('api.master.get_location')->middleware('getlocation');
+Route::get('/master/all/location', 'ApiMasterController@get_all_locate')->name('api.master.all.location')->middleware('localization');
 Route::get('/master/company-category', 'ApiMasterController@get_company_category')->name('api.master.company_category')->middleware('localization');
 Route::get('/part-time', 'ApiPartTimeController@index')->name('api.pt.index')->middleware('localization');
 Route::get('/part-time/candidate', 'ApiPartTimeController@candidate')->name('api.pt.candidate')->middleware('localization');
