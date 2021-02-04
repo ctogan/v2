@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Helpers\CtreeCache;
 use App\Province;
 use App\City;
+use App\JobNotification;
 use Illuminate\Http\Request;
 
 class ApiMasterController extends ApiController
@@ -44,6 +45,18 @@ class ApiMasterController extends ApiController
         $category = CtreeCache::get_category(false);
         $reponse =[
             'category'=>$category
+        ];
+
+        return $this->successResponse($reponse, static::TRANSACTION_SUCCESS);
+    }
+
+    public function get_notification(Request $request){
+
+        $uid =  $request->uid;
+        $type = $request->type;
+        $notification = JobNotification::where('uid',$uid)->where('type',$type)->get();
+        $reponse =[
+            'notifications'=>$notification
         ];
 
         return $this->successResponse($reponse, static::TRANSACTION_SUCCESS);
