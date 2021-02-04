@@ -16,6 +16,7 @@ class CtreeCache {
     protected const SES_GET_PROVINCE="__sess__get__province";
     protected const SES_GET_ALL_CITY="__sess__get__all_city";
     protected const SES_GET_CITY_BY_ID="__sess__get__city__by_id";
+    protected const SES_GET_ALL_LOCATE="__sess__get__all__locate";
     protected const SES_GET_CATEGORY="__sess__get__all_category";
     protected const SES_GET_VACANCY_BY_ID="__sess__get__category__by_id";
     protected const SES_GET_CANDIDATE_BY_VANCANCY_ID="__sess__get__category__by_id";
@@ -71,6 +72,42 @@ class CtreeCache {
             Cache::put(static::SES_GET_CITY_BY_ID , $result , static::CACHE_PER_MONTH);
         }
         return $result;
+    }
+
+    public static function get_all_location( $forget=false)
+    {
+        if($forget) static::forget_cache(static::SES_GET_ALL_LOCATE);
+        $result = Cache::get(static::SES_GET_ALL_LOCATE);
+        if(!$result){
+
+            $provincies = Province::where('row_status','=','active')->select('id','province_name')->get();
+            $result = [];
+            $city_name =[];
+            foreach ($provincies as $province)
+            {
+                $cities = City::where('province_id','=',$province->id)->where('row_status','=','active')->get();
+                $fc = City::where('province_id',$province->id)->first();
+
+
+                foreach ($cities as $city){
+                    if($fc){
+                        $city_name[] = $city->city_name;
+                    }
+
+                }
+                $result[] = [
+                    'province'      => $province->province_name,
+                    'city'          => $city_name
+                ];
+
+                $city_name = null;
+
+            }
+            Cache::put(static::SES_GET_CITY_BY_ID , $result , static::CACHE_PER_MONTH);
+        }
+
+        return $result;
+
     }
 
     public static function get_category($forget=false){
