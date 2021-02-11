@@ -846,7 +846,8 @@ class ApiPartTimeController extends ApiController
 
             $data_insert = array(
                 'id_province'=> $val,
-                'created_at' => date('Y-m-d H:i:s')
+                'created_at' => date('Y-m-d H:i:s'),
+                'uid'=>$request->uid
             );
             JobUserPreferenceProvince::insert($data_insert);
         }
