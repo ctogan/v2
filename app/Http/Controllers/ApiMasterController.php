@@ -77,7 +77,6 @@ class ApiMasterController extends ApiController
 
     public function get_education(){
         $education = JobEducation::get();
-
         $reponse =[
             'education'=>$education
         ];
