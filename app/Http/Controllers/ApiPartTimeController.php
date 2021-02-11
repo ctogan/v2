@@ -60,17 +60,17 @@ class ApiPartTimeController extends ApiController
     public function candidate_profile(Request $request){
         $user = $this->user;
 
-       /* $field_address= UserAddress::select('alamat_1')->where('uid' , $user->uid)->first();
+       $field_address= UserAddress::select('alamat_1')->where('uid' , $user->uid)->first();
         $address = '';
         if($field_address){
             $address = $field_address->alamat_1;
-        }*/
+        }
 
-        $field_address= UserName::select('address')->where('uid' , $user->uid)->first();
+//        $field_address= UserName::select('address')->where('uid' , $user->uid)->first();
 
         $response = [
             'user'=> $user,
-            'address'=> $field_address,
+            'address'=> $address,
             'religion' => Utils::RELIGION_MASTER,
             'company_category' => CtreeCache::get_category(false),
             'education' => Utils::EDUCATION_MASTER,
