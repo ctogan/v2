@@ -7,6 +7,7 @@ use App\Province;
 use App\City;
 use App\JobNotification;
 use Illuminate\Http\Request;
+use App\JobMainCategory;
 
 class ApiMasterController extends ApiController
 {
@@ -59,6 +60,17 @@ class ApiMasterController extends ApiController
             'notifications'=>$notification
         ];
 
+        return $this->successResponse($reponse, static::TRANSACTION_SUCCESS);
+    }
+
+    public function get_main_company_category(Request $request){
+        $category = JobMainCategory::with('get_category_child')
+            ->where('job_company_main_category.row_status','active')
+            ->get();
+
+        $reponse =[
+            'category'=>$category
+        ];
         return $this->successResponse($reponse, static::TRANSACTION_SUCCESS);
     }
 

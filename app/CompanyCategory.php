@@ -10,6 +10,8 @@ class CompanyCategory extends Model
     protected $table = 'job_company_category';
 
     protected $fillable = [
-        'row_status','category_name'
+        'row_status','category_name','id_main_category'
     ];
+
+
 }
