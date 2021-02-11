@@ -66,11 +66,11 @@ class ApiPartTimeController extends ApiController
 //            $address = $field_address->alamat_1;
 //        }
 
-//        $field_address= UserName::select('address')->where('uid' , $user->uid)->first();
+        $field_address= UserName::select('address')->where('uid' , $user->uid)->first();
 
         $response = [
             'user'=> $user,
-            'address'=> 'Atlon 50',
+            'address'=> $field_address->address,
             'religion' => Utils::RELIGION_MASTER,
             'company_category' => CtreeCache::get_category(false),
             'education' => Utils::EDUCATION_MASTER,
