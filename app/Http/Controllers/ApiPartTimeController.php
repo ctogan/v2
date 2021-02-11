@@ -10,6 +10,7 @@ use App\JobApplicantReported;
 use App\JobBookmark;
 use App\JobCompany;
 use App\JobFilter;
+use App\JobUserPreferenceProvince;
 use App\JobVacancyReported;
 use App\Province;
 use App\UserJobExperiences;
@@ -835,5 +836,20 @@ class ApiPartTimeController extends ApiController
 
         ];
         return $this->successResponse($response, static::TRANSACTION_SUCCESS, static::CODE_SUCCESS);
+    }
+
+    public function insert_preference_province(Request $request){
+
+        $province = $request->id_province;
+        $provincies = explode(',',$province);
+        foreach ($provincies as $val){
+
+            $data_insert = array(
+                'id_province'=> $val,
+                'created_at' => date('Y-m-d H:i:s')
+            );
+
+        }
+        JobUserPreferenceProvince::insert($data_insert);
     }
 }
