@@ -8,6 +8,7 @@ use App\City;
 use App\JobNotification;
 use Illuminate\Http\Request;
 use App\JobMainCategory;
+use App\JobEducation;
 
 class ApiMasterController extends ApiController
 {
@@ -70,6 +71,15 @@ class ApiMasterController extends ApiController
 
         $reponse =[
             'category'=>$category
+        ];
+        return $this->successResponse($reponse, static::TRANSACTION_SUCCESS);
+    }
+
+    public function get_education(){
+        $education = JobEducation::get();
+
+        $reponse =[
+            'education'=>$education
         ];
         return $this->successResponse($reponse, static::TRANSACTION_SUCCESS);
     }

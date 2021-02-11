@@ -25,6 +25,7 @@ Route::get('/master/all/location', 'ApiMasterController@get_all_locate')->name('
 Route::get('/master/notification', 'ApiMasterController@get_notification')->name('api.master.notification')->middleware('localization');
 Route::get('/master/company-category', 'ApiMasterController@get_company_category')->name('api.master.company_category')->middleware('localization');
 Route::get('/master/main-category', 'ApiMasterController@get_main_company_category')->name('api.master.main_category')->middleware('localization');
+Route::get('/master/education', 'ApiMasterController@get_education')->name('api.master.get_education')->middleware('localization');
 
 Route::get('/part-time', 'ApiPartTimeController@index')->name('api.pt.index')->middleware('localization');
 Route::get('/part-time/candidate', 'ApiPartTimeController@candidate')->name('api.pt.candidate')->middleware('localization');
