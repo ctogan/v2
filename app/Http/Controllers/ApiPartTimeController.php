@@ -851,5 +851,6 @@ class ApiPartTimeController extends ApiController
 
         }
         JobUserPreferenceProvince::insert($data_insert);
+        return $this->successResponse(null, static::TRANSACTION_SUCCESS, static::CODE_SUCCESS);
     }
 }
