@@ -427,6 +427,7 @@ class ApiPartTimeController extends ApiController
                     "uid"=>$this->user->uid,
                     "dob"=>$request->dob,
                     "sex"=>$request->sex,
+                    "address"=>$request->address,
                     "email"=>$request->email,
                     "religion"=>$request->religion,
                     "last_education"=>$request->education,
