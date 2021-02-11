@@ -529,7 +529,7 @@ class ApiPartTimeController extends ApiController
             ->first();
         $bookmark->row_status = 'deleted';
         if($bookmark){
-            $bookmark->save();
+            $bookmark->delete();
         }else{
             return $this->errorResponse(static::TRANSACTION_SUCCESS, static::CODE_SUCCESS);
         }
