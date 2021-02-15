@@ -72,3 +72,4 @@ Route::post('/part-time/vacancy/update', 'ApiPartTimeController@update_vacancy')
 Route::post('/part-time/employe/form', 'ApiPartTimeController@form_employer')->name('api.pt.employe.form')->middleware('localization');
 
 Route::post('/part-time/preference/province/submit', 'ApiPartTimeController@insert_preference_province')->name('api.pt.preference.province.submit')->middleware('localization');
+Route::post('/part-time/preference/education/submit', 'ApiPartTimeController@insert_preference_education')->name('api.pt.preference.education.submit')->middleware('localization');
