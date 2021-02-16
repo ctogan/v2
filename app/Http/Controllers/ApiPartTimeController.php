@@ -859,7 +859,7 @@ class ApiPartTimeController extends ApiController
     public function insert_preference_education(Request $request){
 
         $education = $request->id_education;
-        $educations = explode('.',$education);
+        $educations = explode(',',$education);
         foreach ($educations as $val){
 
             $data_insert = array(
@@ -876,7 +876,7 @@ class ApiPartTimeController extends ApiController
     public function insert_preference_category(Request $request){
 
         $category = $request->id_category;
-        $categories = explode('.',$category);
+        $categories = explode(',',$category);
         foreach ($categories as $val){
 
             $data_insert = array(
