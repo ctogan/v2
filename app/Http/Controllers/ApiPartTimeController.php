@@ -843,7 +843,7 @@ class ApiPartTimeController extends ApiController
     public function insert_preference_province(Request $request){
 
         $province = $request->id_province;
-        $provincies = explode('.',$province);
+        $provincies = explode(',',$province);
         foreach ($provincies as $val){
 
             $data_insert = array(
