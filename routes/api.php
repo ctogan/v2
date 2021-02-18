@@ -41,7 +41,7 @@ Route::get('/part-time/home', 'ApiPartTimeController@candidate_home')->name('api
 
 Route::get('/part-time/mycompany', 'ApiPartTimeController@my_company')->name('api.pt.mycompany')->middleware('localization');
 Route::get('/part-time/mycompany/detail', 'ApiPartTimeController@my_company_detail')->name('api.pt.mycompanydetail')->middleware('localization');
-
+Route::get('/part-time/mycompany/candidate/bookmark', 'ApiPartTimeController@my_company_candidate_bookmark')->name('api.pt.mycompany.candidate.bookmark')->middleware('localization');
 
 //FOR JOB PROVIDER
 Route::get('/part-time/applicant/candidate', 'ApiPartTimeController@applicant_candidate')->name('api.pt.applicant_candidate')->middleware('localization');
@@ -72,6 +72,7 @@ Route::post('/part-time/company/profile/logo/submit', 'ApiPartTimeController@sub
 
 Route::post('/part-time/vacancy/submit', 'ApiPartTimeController@submit_vacancy')->name('api.pt.submit_vacancy')->middleware('localization');
 Route::post('/part-time/vacancy/update', 'ApiPartTimeController@update_vacancy')->name('api.pt.update_vacancy')->middleware('localization');
+
 //END API
 
 Route::post('/part-time/employe/form', 'ApiPartTimeController@form_employer')->name('api.pt.employe.form')->middleware('localization');

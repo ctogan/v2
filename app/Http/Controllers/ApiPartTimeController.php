@@ -961,4 +961,20 @@ class ApiPartTimeController extends ApiController
         }
         return $this->successResponse(null, static::TRANSACTION_SUCCESS, static::CODE_SUCCESS);
     }
+
+    public function my_company_candidate_bookmark(Request $request){
+        $company = JobCompany::where('uid','=',$this->user->uid)->first();
+        $candidate_bookmark = JobCandidateBookmark::select('uid')->where('company_id' , $company->id);
+        $candidate_list = [];
+        if($candidate_bookmark){
+            foreach($candidate_bookmark as $k){
+                $candidate_list[] = CtreeCache::user_cache($k->uid , false);
+            }
+        }
+        $response = [
+            'candidate_bookmark' => $candidate_list
+        ];
+
+        return $this->successResponse($response);
+    }
 }
