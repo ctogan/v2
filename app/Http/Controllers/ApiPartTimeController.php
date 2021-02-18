@@ -964,6 +964,8 @@ class ApiPartTimeController extends ApiController
 
     public function my_company_candidate_bookmark(Request $request){
         $company = JobCompany::where('uid','=',$this->user->uid)->first();
+        print_r(company);
+    
         $candidate_bookmark = JobCandidateBookmark::select('uid')->where('company_id' , $company->id);
         $candidate_list = [];
         if($candidate_bookmark){
