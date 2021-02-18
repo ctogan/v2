@@ -544,14 +544,14 @@ class ApiPartTimeController extends ApiController
 
         JobCandidateBookmark::updateOrCreate(
             array(
+                'uid' => $request->uid,
+                'company_id' => $request->company_id,
+            ),
+            array(
                 'row_status'=>'active',
                 'uid' => $request->uid,
                 'company_id' => $request->company_id,
                 'created_at' => date("Y-m-d h:i:s")
-            ),
-            array(
-                'uid' => $request->uid,
-                'company_id' => $request->company_id,
             )
         );
         return $this->successResponse(null, static::TRANSACTION_SUCCESS, static::CODE_SUCCESS);
