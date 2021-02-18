@@ -31,6 +31,7 @@ Route::get('/part-time', 'ApiPartTimeController@index')->name('api.pt.index')->m
 Route::get('/part-time/candidate', 'ApiPartTimeController@candidate')->name('api.pt.candidate')->middleware('localization');
 Route::get('/part-time/candidate/history', 'ApiPartTimeController@candidate_history')->name('api.pt.candidate_history')->middleware('localization');
 Route::get('/part-time/company', 'ApiPartTimeController@company')->name('api.pt.company')->middleware('localization');
+Route::get('/part-time/company/history', 'ApiPartTimeController@company_history')->name('api.pt.company')->middleware('localization');
 Route::get('/part-time/company/detail', 'ApiPartTimeController@company_detail')->name('api.pt.detail')->middleware('localization');
 Route::get('/part-time/filter/get', 'ApiPartTimeController@search_filter')->name('api.pt.search_filter')->middleware('localization');
 Route::get('/part-time/search', 'ApiPartTimeController@search')->name('api.pt.search')->middleware('localization');

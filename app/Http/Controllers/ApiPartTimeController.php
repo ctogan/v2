@@ -144,6 +144,19 @@ class ApiPartTimeController extends ApiController
         return $this->successResponse($response);
     }
 
+    public function company_history(Request $request){
+        $company = JobCompany::where('uid','=',$this->user->uid)->first();
+        $config = [
+            "text"=>trans('part_time')
+        ];
+        $response = [
+            'history' => $company,
+            'config' => $config
+        ];
+
+        return $this->successResponse($response);
+    }
+
     public function company_detail(Request $request){
 
         $company = JobCompany::where('job_company.id','=',$request->id)
