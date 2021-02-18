@@ -892,6 +892,19 @@ class ApiPartTimeController extends ApiController
 
 
     public function upload_image_profile(Request $request){
+        $validation = Validator::make($request->all(), [
+            'img' => 'required|image|mimes:jpg,jpeg,png'
+         ]);
+         if($validation->fails()) {
+             return $this->errorResponse($validation->messages(),static::CODE_ERROR_VALIDATION);
+         }
 
+         $user = UserName::where('uid','=',$this->user->uid)->first();
+
+        if($user){
+            $user->img = Utils::upload($request,'img','minijob/profile/image/');
+            $user->save();
+        }
+        return $this->successResponse(null, static::TRANSACTION_SUCCESS, static::CODE_SUCCESS);
     }
 }

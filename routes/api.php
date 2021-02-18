@@ -74,3 +74,6 @@ Route::post('/part-time/employe/form', 'ApiPartTimeController@form_employer')->n
 Route::post('/part-time/preference/province/submit', 'ApiPartTimeController@insert_preference_province')->name('api.pt.preference.province.submit')->middleware('localization');
 Route::post('/part-time/preference/education/submit', 'ApiPartTimeController@insert_preference_education')->name('api.pt.preference.education.submit')->middleware('localization');
 Route::post('/part-time/preference/category/submit', 'ApiPartTimeController@insert_preference_category')->name('api.pt.preference.category.submit')->middleware('localization');
+
+
+Route::post('/part-time/candidate/profile/image/save', 'ApiPartTimeController@upload_image_profile')->name('api.pt.upload_image_profile')->middleware('localization');
