@@ -542,12 +542,16 @@ class ApiPartTimeController extends ApiController
             return $this->errorResponse($validation->errors(),static::CODE_ERROR_VALIDATION);
         }
 
-        JobCandidateBookmark::insert(
+        JobCandidateBookmark::updateOrCreate(
             array(
                 'row_status'=>'active',
                 'uid' => $request->uid,
                 'company_id' => $request->company_id,
                 'created_at' => date("Y-m-d h:i:s")
+            ),
+            array(
+                'uid' => $request->uid,
+                'company_id' => $request->company_id,
             )
         );
         return $this->successResponse(null, static::TRANSACTION_SUCCESS, static::CODE_SUCCESS);
@@ -964,9 +968,7 @@ class ApiPartTimeController extends ApiController
 
     public function my_company_candidate_bookmark(Request $request){
         $company = JobCompany::where('uid','=',$this->user->uid)->first();
-       
-        echo $company->id;
-        $candidate_bookmark = JobCandidateBookmark::select('uid')->where('company_id' , $company->id)->get();
+        $candidate_bookmark = JobCandidateBookmark::select('uid')->where('company_id' , $company->id)->get;
         $candidate_list = [];
         if($candidate_bookmark){
             foreach($candidate_bookmark as $k){
