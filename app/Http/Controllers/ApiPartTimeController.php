@@ -25,6 +25,7 @@ use App\UserAddress;
 use Illuminate\Support\Facades\View;
 use App\CompanyCategory;
 use function GuzzleHttp\json_decode;
+use App\JobCandidateBookmark;
 
 class ApiPartTimeController extends ApiController
 {
@@ -531,6 +532,27 @@ class ApiPartTimeController extends ApiController
         return $this->successResponse(null, static::TRANSACTION_SUCCESS, static::CODE_SUCCESS);
     }
 
+    public function submit_candidate_bookmark(Request $request){
+        $validation = Validator::make($request->all(), [
+            'company_id' => 'required',
+            'uid' => 'required'
+        ]);
+
+        if ($validation->fails()) {
+            return $this->errorResponse($validation->errors(),static::CODE_ERROR_VALIDATION);
+        }
+
+        JobCandidateBookmark::insert(
+            array(
+                'row_status'=>'active',
+                'uid' => $request->uid,
+                'company_id' => $request->company_id,
+                'created_at' => date("Y-m-d h:i:s")
+            )
+        );
+        return $this->successResponse(null, static::TRANSACTION_SUCCESS, static::CODE_SUCCESS);
+    }
+
     public function delete_vacancy_bookmark(Request $request){
         $validation = Validator::make($request->all(), [
             'vacancy_id' => 'required'
@@ -542,6 +564,28 @@ class ApiPartTimeController extends ApiController
 
         $bookmark = JobBookmark::where('uid','=',$this->user->uid)
             ->where('vacancy_id','=',$request->vacancy_id)
+            ->first();
+        $bookmark->row_status = 'deleted';
+        if($bookmark){
+            $bookmark->delete();
+        }else{
+            return $this->errorResponse(static::TRANSACTION_SUCCESS, static::CODE_SUCCESS);
+        }
+        return $this->successResponse(null, static::TRANSACTION_SUCCESS, static::CODE_SUCCESS);
+    }
+
+    public function delete_candidate_bookmark(Request $request){
+        $validation = Validator::make($request->all(), [
+            'company_id' => 'required',
+            'uid' => 'required'
+        ]);
+
+        if ($validation->fails()) {
+            return $this->errorResponse($validation->errors(),static::CODE_ERROR_VALIDATION);
+        }
+
+        $bookmark = JobCandidateBookmark::where('uid','=', $request->uid)
+            ->where('vacancy_id','=',$request->comapny_id)
             ->first();
         $bookmark->row_status = 'deleted';
         if($bookmark){
