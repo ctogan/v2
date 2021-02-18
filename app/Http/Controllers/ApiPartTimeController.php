@@ -26,6 +26,7 @@ use Illuminate\Support\Facades\View;
 use App\CompanyCategory;
 use function GuzzleHttp\json_decode;
 use App\JobCandidateBookmark;
+use App\JobCandidateReported;
 
 class ApiPartTimeController extends ApiController
 {
@@ -631,6 +632,37 @@ class ApiPartTimeController extends ApiController
 
         return $this->successResponse(null, static::TRANSACTION_SUCCESS, static::CODE_SUCCESS);
     }
+
+
+    public function submit_report_candidate(Request $request){
+        $validation = Validator::make($request->all(), [
+            'uid' => 'required',
+        ]);
+
+        if ($validation->fails()) {
+            return $this->errorResponse($validation->messages(),static::CODE_ERROR_VALIDATION);
+        }
+
+        $reported = JobCandidateReported::updateOrCreate(
+            array(
+                'uid' => $request->uid,
+                'reported_by' => $this->user->uid,
+            ),
+            array(
+                'row_status'=>'active',
+                'uid' => $request->uid,
+                'reported_by' => $this->user->uid,
+                'created_at' => date("Y-m-d h:i:s")
+            )
+        );
+
+        if(!$reported){
+            return $this->errorResponse(static::ERROR_DATA_SAVE,static::CODE_ERROR_VALIDATION);
+        }
+
+        return $this->successResponse(null, static::TRANSACTION_SUCCESS, static::CODE_SUCCESS);
+    }
+
 
     public function submit_report_user(Request $request){
         $validation = Validator::make($request->all(), [
