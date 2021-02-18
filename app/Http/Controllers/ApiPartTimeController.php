@@ -147,9 +147,13 @@ class ApiPartTimeController extends ApiController
 
     public function company_history(Request $request){
         $company = JobCompany::where('uid','=',$this->user->uid)->first();
-        
+        $vacancy = [];
+        if($company){
+            $vacancy = Vacancy::where('company_id' , $company->id)->get();
+        }
+
         $response = [
-            'history' => $company,
+            'history' => $vacancy,
         ];
 
         return $this->successResponse($response);
