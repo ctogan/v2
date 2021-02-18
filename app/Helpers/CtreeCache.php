@@ -96,8 +96,7 @@ class CtreeCache {
 
                 }
                 $result[] = [
-                    'province'      => ['id' => $province->id , 'province_name'=> $province->province_name],
-                    'city'          => $city_name
+                    'province'      => ['id' => $province->id , 'province_name'=> $province->province_name , 'city'=> $city_name ],
                 ];
 
                 $city_name = null;

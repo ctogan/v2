@@ -37,6 +37,8 @@ class ApiMasterController extends ApiController
         $reponse =[
             'get_location'=>$array_locate
         ];
+
+
         return $this->successResponse($reponse, static::TRANSACTION_SUCCESS);
 
     }
