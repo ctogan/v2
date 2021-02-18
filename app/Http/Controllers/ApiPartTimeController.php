@@ -585,7 +585,7 @@ class ApiPartTimeController extends ApiController
         }
 
         $bookmark = JobCandidateBookmark::where('uid','=', $request->uid)
-            ->where('vacancy_id','=',$request->comapny_id)
+            ->where('vacancy_id','=',$request->company_id)
             ->first();
         $bookmark->row_status = 'deleted';
         if($bookmark){
