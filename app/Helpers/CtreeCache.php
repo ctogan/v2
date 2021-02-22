@@ -91,13 +91,12 @@ class CtreeCache {
 
                 foreach ($cities as $city){
                     if($fc){
-                        $city_name[] = $city->city_name;
+                        $city_name[] = ['id' => $city->id , 'city_name'=> $city->city_name];
                     }
 
                 }
                 $result[] = [
-                    'province'      => $province->province_name,
-                    'city'          => $city_name
+                    'province'      => ['id' => $province->id , 'province_name'=> $province->province_name , 'city'=> $city_name ],
                 ];
 
                 $city_name = null;

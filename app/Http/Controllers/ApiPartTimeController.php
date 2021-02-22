@@ -25,6 +25,10 @@ use App\UserAddress;
 use Illuminate\Support\Facades\View;
 use App\CompanyCategory;
 use function GuzzleHttp\json_decode;
+use App\JobCandidateBookmark;
+use App\JobCandidateReported;
+use App\City;
+use App\JobEducation;
 
 class ApiPartTimeController extends ApiController
 {
@@ -46,6 +50,25 @@ class ApiPartTimeController extends ApiController
 
     public function candidate(Request $request){
         $job_filter = JobFilter::where('uid','=',$this->user->uid)->first();
+        /*print_r($job_filter);
+
+        if($job_filter){
+            $json = json_decode($job_filter->filter);
+            print_r(explode(',' ,$json->province_id));
+            print_r(Province::
+             select(DB::raw("STRING_AGG(city_name ,',')"))
+             ->whereIn('id', explode(',' ,$json->province_id))
+             ->first();
+            exit;
+            if(count($json > 0)){
+                $job_filter['province_id'] = Province::select('province_name')->whereIn('id' , explode(',' ,$json->province_id));
+                $job_filter['city_id']= City::select('city_name')->whereIn('id' , explode(',' ,$json->city_id));
+                $job_filter['company_type'] = CompanyCategory::select('category_name')->whereIn('id' , explode(',' ,$json->company_type));
+                $job_filter['education_level'] = JobEducation::select('education_level')->whereIn('id' , explode(',' ,$json->education_level));
+            }
+        }
+
+        print_r($job_filter);*/
         $config = [
             "text"=>trans('part_time'),
             "filter"=>$job_filter ? json_decode($job_filter->filter) : null,
@@ -55,7 +78,8 @@ class ApiPartTimeController extends ApiController
             'config' => $config,
             'user'=> $this->user,
             'bookmark' => $this->get_job_bookmark(3),
-            'recommendation' => $this->get_job_search_and_recomendations($request),
+            //'recommendation' => $this->get_job_search_and_recomendations($request),
+            'recommendation' => $this->get_job_search_and_recomendation($request),
         ];
         return $this->successResponse($response);
     }
@@ -139,6 +163,20 @@ class ApiPartTimeController extends ApiController
             'active_vacancy' => $company,
             'rejected_vacancy' => $company,
             'config' => $config
+        ];
+
+        return $this->successResponse($response);
+    }
+
+    public function company_history(Request $request){
+        $company = JobCompany::where('uid','=',$this->user->uid)->first();
+        $vacancy = [];
+        if($company){
+            $vacancy = Vacancy::where('company_id' , $company->id)->get();
+        }
+
+        $response = [
+            'history' => $vacancy,
         ];
 
         return $this->successResponse($response);
@@ -521,6 +559,31 @@ class ApiPartTimeController extends ApiController
         return $this->successResponse(null, static::TRANSACTION_SUCCESS, static::CODE_SUCCESS);
     }
 
+    public function submit_candidate_bookmark(Request $request){
+        $validation = Validator::make($request->all(), [
+            'company_id' => 'required',
+            'uid' => 'required'
+        ]);
+
+        if ($validation->fails()) {
+            return $this->errorResponse($validation->errors(),static::CODE_ERROR_VALIDATION);
+        }
+
+        JobCandidateBookmark::updateOrCreate(
+            array(
+                'uid' => $request->uid,
+                'company_id' => $request->company_id,
+            ),
+            array(
+                'row_status'=>'active',
+                'uid' => $request->uid,
+                'company_id' => $request->company_id,
+                'created_at' => date("Y-m-d h:i:s")
+            )
+        );
+        return $this->successResponse(null, static::TRANSACTION_SUCCESS, static::CODE_SUCCESS);
+    }
+
     public function delete_vacancy_bookmark(Request $request){
         $validation = Validator::make($request->all(), [
             'vacancy_id' => 'required'
@@ -532,6 +595,28 @@ class ApiPartTimeController extends ApiController
 
         $bookmark = JobBookmark::where('uid','=',$this->user->uid)
             ->where('vacancy_id','=',$request->vacancy_id)
+            ->first();
+        $bookmark->row_status = 'deleted';
+        if($bookmark){
+            $bookmark->delete();
+        }else{
+            return $this->errorResponse(static::TRANSACTION_SUCCESS, static::CODE_SUCCESS);
+        }
+        return $this->successResponse(null, static::TRANSACTION_SUCCESS, static::CODE_SUCCESS);
+    }
+
+    public function delete_candidate_bookmark(Request $request){
+        $validation = Validator::make($request->all(), [
+            'company_id' => 'required',
+            'uid' => 'required'
+        ]);
+
+        if ($validation->fails()) {
+            return $this->errorResponse($validation->errors(),static::CODE_ERROR_VALIDATION);
+        }
+
+        $bookmark = JobCandidateBookmark::where('uid','=', $request->uid)
+            ->where('vacancy_id','=',$request->company_id)
             ->first();
         $bookmark->row_status = 'deleted';
         if($bookmark){
@@ -569,6 +654,37 @@ class ApiPartTimeController extends ApiController
 
         return $this->successResponse(null, static::TRANSACTION_SUCCESS, static::CODE_SUCCESS);
     }
+
+
+    public function submit_report_candidate(Request $request){
+        $validation = Validator::make($request->all(), [
+            'uid' => 'required',
+        ]);
+
+        if ($validation->fails()) {
+            return $this->errorResponse($validation->messages(),static::CODE_ERROR_VALIDATION);
+        }
+
+        $reported = JobCandidateReported::updateOrCreate(
+            array(
+                'uid' => $request->uid,
+                'reported_by' => $this->user->uid,
+            ),
+            array(
+                'row_status'=>'active',
+                'uid' => $request->uid,
+                'reported_by' => $this->user->uid,
+                'created_at' => date("Y-m-d h:i:s")
+            )
+        );
+
+        if(!$reported){
+            return $this->errorResponse(static::ERROR_DATA_SAVE,static::CODE_ERROR_VALIDATION);
+        }
+
+        return $this->successResponse(null, static::TRANSACTION_SUCCESS, static::CODE_SUCCESS);
+    }
+
 
     public function submit_report_user(Request $request){
         $validation = Validator::make($request->all(), [
@@ -892,6 +1008,39 @@ class ApiPartTimeController extends ApiController
 
 
     public function upload_image_profile(Request $request){
+        $validation = Validator::make($request->all(), [
+            'img' => 'required|image|mimes:jpg,jpeg,png'
+         ]);
+         if($validation->fails()) {
+             return $this->errorResponse($validation->messages(),static::CODE_ERROR_VALIDATION);
+         }
 
+         $user = UserName::where('uid','=',$this->user->uid)->first();
+
+        if($user){
+            $user->img = Utils::upload($request,'img','minijob/profile/image/');
+            $user->save();
+        }
+        return $this->successResponse(null, static::TRANSACTION_SUCCESS, static::CODE_SUCCESS);
+    }
+
+    public function my_company_candidate_bookmark(Request $request){
+        
+        $company = JobCompany::where('uid','=',$this->user->uid)->first();
+        if(!$company){
+            return $this->errorResponse("Please Register As Company", static::PROFILE_UNCOMPLETE_CODE);
+        }
+        $candidate_bookmark = JobCandidateBookmark::select('uid')->where('company_id' , $company->id)->get;
+        $candidate_list = [];
+        if($candidate_bookmark){
+            foreach($candidate_bookmark as $k){
+                $candidate_list[] = CtreeCache::user_cache($k->uid , false);
+            }
+        }
+        $response = [
+            'candidate_bookmark' => $candidate_list
+        ];
+
+        return $this->successResponse($response);
     }
 }
