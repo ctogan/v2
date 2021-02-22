@@ -55,6 +55,7 @@ class ApiPartTimeController extends ApiController
         if($job_filter){
             $json = json_decode($job_filter->filter);
             print_r(explode(',' ,$json->province_id));
+            print_r(Province::select('province_name')->whereIn('id' , explode(',' ,$json->province_id))->get());
             exit;
             if(count($json > 0)){
                 $job_filter['province_id'] = Province::select('province_name')->whereIn('id' , explode(',' ,$json->province_id));
