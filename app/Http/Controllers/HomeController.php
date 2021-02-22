@@ -25,7 +25,7 @@ class HomeController extends Controller
      */
     public function index()
     {
-        phpinfo(); exit();
+//        phpinfo(); exit();
         return view('home');
     }
 }
