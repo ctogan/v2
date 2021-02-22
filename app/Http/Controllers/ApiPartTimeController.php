@@ -79,7 +79,10 @@ class ApiPartTimeController extends ApiController
             'user'=> $this->user,
             'bookmark' => $this->get_job_bookmark(3),
             //'recommendation' => $this->get_job_search_and_recomendations($request),
-            'recommendation' => Vacancy::where('row_status' ,'active')->get(),
+            'recommendation' => Vacancy::
+            where('row_status' ,'active')
+            ->where('vacancy_status' ,'published')
+            ->get(),
         ];
         return $this->successResponse($response);
     }
