@@ -1027,7 +1027,7 @@ class ApiPartTimeController extends ApiController
         
         $company = JobCompany::where('uid','=',$this->user->uid)->first();
         if(!$company){
-            return $this->errorResponse(static::PROFILE_UNCOMPLETE, static::PROFILE_UNCOMPLETE_CODE);
+            return $this->errorResponse("Please Register As Company", static::PROFILE_UNCOMPLETE_CODE);
         }
         $candidate_bookmark = JobCandidateBookmark::select('uid')->where('company_id' , $company->id)->get;
         $candidate_list = [];
