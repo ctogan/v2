@@ -56,7 +56,7 @@ class ApiPartTimeController extends ApiController
             $json = json_decode($job_filter->filter);
             print_r($json);
             
-            if(count(json_decode($job_filter->filter)) > 0){
+            if(count($json > 0)){
                 $job_filter['province_id'] = Province::select('province_name')->whereIn('id' , explode(',' ,$json->province_id));
                 $job_filter['city_id']= City::select('city_name')->whereIn('id' , explode(',' ,$json->city_id));
                 $job_filter['company_type'] = CompanyCategory::select('category_name')->whereIn('id' , explode(',' ,$json->company_type));
