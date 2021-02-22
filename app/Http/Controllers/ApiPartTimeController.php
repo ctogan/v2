@@ -50,8 +50,12 @@ class ApiPartTimeController extends ApiController
 
     public function candidate(Request $request){
         $job_filter = JobFilter::where('uid','=',$this->user->uid)->first();
+        print_r($job_filter);
+
         if($job_filter){
             $json = json_decode($job_filter->filter);
+            print_r($json);
+            exit;
             if(count(json_decode($job_filter->filter)) > 0){
                 $job_filter['province_id'] = Province::select('province_name')->whereIn('id' , explode(',' ,$json['province_id']));
                 $job_filter['city_id']= City::select('city_name')->whereIn('id' , explode(',' ,$json['city_id']));
