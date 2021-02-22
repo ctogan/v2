@@ -27,6 +27,8 @@ use App\CompanyCategory;
 use function GuzzleHttp\json_decode;
 use App\JobCandidateBookmark;
 use App\JobCandidateReported;
+use App\City;
+use App\JobEducation;
 
 class ApiPartTimeController extends ApiController
 {
@@ -48,6 +50,15 @@ class ApiPartTimeController extends ApiController
 
     public function candidate(Request $request){
         $job_filter = JobFilter::where('uid','=',$this->user->uid)->first();
+        if($job_filter){
+            $json = json_decode($job_filter->filter);
+            if(count(json_decode($job_filter->filter)) > 0){
+                $job_filter['province_id'] = Province::select('province_name')->whereIn('id' , explode(',' ,$json['province_id']));
+                $job_filter['city_id']= City::select('city_name')->whereIn('id' , explode(',' ,$json['city_id']));
+                $job_filter['company_type'] = CompanyCategory::select('category_name')->whereIn('id' , explode(',' ,$json['company_type']));
+                $job_filter['education_level'] = JobEducation::select('education_level')->whereIn('id' , explode(',' ,$json['education_level']));
+            }
+        }
         $config = [
             "text"=>trans('part_time'),
             "filter"=>$job_filter ? json_decode($job_filter->filter) : null,
