@@ -55,8 +55,7 @@ class ApiPartTimeController extends ApiController
         if($job_filter){
             $json = json_decode($job_filter->filter);
             print_r(explode(',' ,$json->province_id));
-            print_r(DB::table('province')
-             ->select(DB::raw("STRING_AGG(city_name ,',')"))
+            print_r(Province::select(DB::raw("STRING_AGG(city_name ,',')"))
              ->whereIn('id', explode(',' ,$json->province_id))
              ->first());
             exit;
