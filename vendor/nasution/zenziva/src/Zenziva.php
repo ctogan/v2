@@ -55,8 +55,8 @@ class Zenziva
     }
 
     public function url(): string {
-        $url = 'https://{domain}/api';
-//https://alpha.zenziva.net/apps/smsapi.php?
+        $url = 'https://alpha.zenziva.net/apps/smsapi.php';
+
         if ($this->options['domain']) {
           return str_replace('{domain}', $this->options['domain'], $url);
         }

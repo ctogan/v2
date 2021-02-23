@@ -37,7 +37,7 @@ return [
         'database' => [
             'connection' => 'common',
             'driver' => 'database',
-            'table' => 'sms_blast',
+            'table' => 'jobs_que',
             'queue' => 'default',
             'retry_after' => 90,
         ],

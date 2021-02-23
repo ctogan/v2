@@ -2,7 +2,10 @@
 
 namespace App\Imports;
 
+
+use App\Jobs\SendSmsJob;
 use App\SmsBlast;
+use App\Helpers\Cache;
 use Maatwebsite\Excel\Concerns\ToModel;
 
 class ContactImport implements ToModel
@@ -14,13 +17,16 @@ class ContactImport implements ToModel
     */
     public function model(array $row)
     {
+
         return new SmsBlast([
-            //
+
             'uid'               => $row['0'],
             'phone_number'      => $row['1'],
-            'point_ballance'    => $row['2'],
+            'point_balance'     => $row['2'],
             'message'           => $row['3'],
             'status'            => $row['4'],
         ]);
+
+
     }
 }

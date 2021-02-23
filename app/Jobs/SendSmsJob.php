@@ -2,28 +2,29 @@
 
 namespace App\Jobs;
 
+use App\SmsBlast;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
-use Nasution\Zenziva\Zenziva;
 
 class SendSmsJob implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
-    const ZENZIVA_USER_KEY = 'dwzrko';
-    const ZENZIVA_PASS_KEY = 'kotakasabla';
-    protected $details;
+
+    protected $phoneNumber, $message,$uid;
 
     /**
      * Create a new job instance.
      *
      * @return void
      */
-    public function __construct($details)
+    public function __construct($phoneNumber, $message,$uid)
     {
-        $this->details = $details;
+        $this->phoneNumber = $phoneNumber;
+        $this->message = $message;
+        $this->uid = $uid;
     }
 
     /**
@@ -33,23 +34,31 @@ class SendSmsJob implements ShouldQueue
      */
     public function handle()
     {
-//        $msg = $this->details['message'];
-//        $num = $this->details['phone_number'];
-//
-//
-//        $url = 'https://alpha.zenziva.net/apps/smsapi.php?'.http_build_query([
-//                'userkey' => 'dwzrko',
-//                'passkey' => 'kotakasabla',
-//                'nohp' => "0".$num,
-//                'pesan' => $msg,
-//                'type' => 'Notification'
-//            ]);
-//
-//        $res = HTTPFactory::get($url);
-//        return !!strpos($res[0], 'status');
-        require 'vendor/autoload.php';
-        $zenziva = new Zenziva('dwzrko', 'kotakasabla');
-        $zenziva->sms('085275608369', 'Halo');
+
+        $endpoint = "https://alpha.zenziva.net/apps/smsapi.php";
+        $client = new \GuzzleHttp\Client();
+        $userkey = "dwzrko";
+        $passkey = "kotakasabla";
+
+        $response = $client->request('POST', $endpoint, [
+            'form_params' => [
+                'userkey' => $userkey,
+                'passkey' => $passkey,
+                'nohp' =>$this->phoneNumber,
+                'pesan' => $this->message
+            ]
+        ]);
+
+        SmsBlast::where([
+            ['uid', $this->uid ],
+        ])->update
+        ([
+            "status" => 'send',
+            "updated_at"=>date('Y-m-d H:i:s'),
+        ]);
+
+        $statusCode = $response->getStatusCode();
+        $content = $response->getBody();
 
     }
 }

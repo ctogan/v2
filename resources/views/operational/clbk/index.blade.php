@@ -13,6 +13,7 @@
         <div class="row justify-content-center">
             <div class="col-md-12 text-right">
                 <a href="{{url('/admin/operational/clbk/event/upload')}}" class="btn btn-primary"><i data-feather="plus"></i>Add New</a>
+                <a href="{{url('/sms-job')}}" class="btn btn-primary"><i data-feather="plus"></i>Start</a>
             </div>
             <div class="col-md-12 mt-3">
                 <div class="card">

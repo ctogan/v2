@@ -33,6 +33,7 @@ $('#form_import_excel').on('submit', function(event){
                 });
             }else{
                 close_loading();
+                text = [];
                 $.each(res.message, function( index, value ) {
                     text += '<p class="error"><i data-feather="x-square"></i> '+ value[0]+'</p>';
                 });
