@@ -84,3 +84,17 @@ Route::get('/admin/settings/user-admin/edit/{id}', 'UserAdminController@edit')->
 Route::post('/admin/settings/user-admin/submit', 'UserAdminController@submit')->name('admin.user.submit');
 Route::post('/admin/settings/user-admin/update', 'UserAdminController@update')->name('admin.user.update');
 Route::post('/admin/settings/user-admin/delete', 'UserAdminController@delete')->name('admin.user.delete');
+
+//operational
+Route::get('/admin/operational/clbk/event', 'OperationalController@clbk_event')->name('admin.operational.clbk.event');
+Route::get('/admin/operational/clbk/event/upload', 'OperationalController@clbk_upload')->name('admin.operational.clbk.event.upload');
+Route::post('/admin/operational/clbk/event/submit', 'OperationalController@clbk_submit')->name('admin.operational.clbk.event.submit');
+
+Route::get('/sms-test', 'OperationalController@sms_test')->name('sms.test');
+
+Route::get('send_sms', function(){
+    $details['message'] = 'Hai rifa Sisa Poin mu sebesar 282727 ayo gunakan cashtree lagi';
+    $details['phone_number'] = '85275608369';
+    dispatch(new App\Jobs\SendSmsJob($details));
+    dd('Berhasil');
+});
