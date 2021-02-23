@@ -36,7 +36,7 @@
                             <tr>
                                 <td>{{$val->uid}}</td>
                                 <td>{{$val->uid}}</td>
-                                <td>{{$val->phone_number}}</td>
+                                <td>+62{{$val->phone_number}}</td>
                                 <td>{{$val->message}}</td>
                                 <td>{{$val->status}}</td>
                             </tr>

@@ -44,7 +44,7 @@ class SendSmsJob implements ShouldQueue
             'form_params' => [
                 'userkey' => $userkey,
                 'passkey' => $passkey,
-                'nohp' =>$this->phoneNumber,
+                'nohp' => $this->phoneNumber,
                 'pesan' => $this->message
             ]
         ]);
