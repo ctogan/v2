@@ -471,6 +471,7 @@ class ApiPartTimeController extends ApiController
                 $user->hobby = $request->hobby;
                 $user->img = $request->img;
                 $user->address = $request->address;
+                $user->phone = $request->phone_number;
             $user->save();
         }else{
             UserName::insert(
@@ -484,7 +485,8 @@ class ApiPartTimeController extends ApiController
                     "last_education"=>$request->education,
                     "skills"=>$request->skill,
                     "hobby"=>$request->hobby,
-                    "img"=>$request->img
+                    "img"=>$request->img,
+                    "phone"=>$request->phone_number
                 )
             );
         }
