@@ -180,7 +180,7 @@ class CtreeCache {
         if($forget) static::forget_cache(static::SES_GET_USER_BY_ID.'_'.$uid);
         $result = Cache::get(static::SES_GET_USER_BY_ID.'_'.$uid);
         if(!$result){
-            $result = DB::connection("users")->table("view_user_2")->where("uid",'=',$uid)->get();
+            $result = DB::connection("users")->table("view_user_2")->where("uid",'=',$uid)->first();
             Cache::put(static::SES_GET_USER_BY_ID.'_'.$uid , $result , static::CACHE_PER_MONTH);
         }
         return $result;

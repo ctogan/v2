@@ -1037,7 +1037,7 @@ class ApiPartTimeController extends ApiController
         $candidate_list = [];
         if($candidate_bookmark){
             foreach($candidate_bookmark as $k){
-                $candidate_list[] = array('1'=>'satu');
+                $candidate_list[] = CtreeCache::user_cache($k->uid , false);
             }
         }
         $response = [
