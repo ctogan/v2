@@ -78,11 +78,11 @@ class ApiPartTimeController extends ApiController
             'config' => $config,
             'user'=> $this->user,
             'bookmark' => $this->get_job_bookmark(3),
-            //'recommendation' => $this->get_job_search_and_recomendations($request),
-            'recommendation' => Vacancy::
-            where('row_status' ,'active')
-            ->where('vacancy_status' ,'published')
-            ->get(),
+            'recommendation' => $this->get_job_search_and_recomendations($request),
+            // 'recommendation' => Vacancy::
+            // where('row_status' ,'active')
+            // ->where('vacancy_status' ,'published')
+            // ->get(),
         ];
         return $this->successResponse($response);
     }
@@ -1037,7 +1037,8 @@ class ApiPartTimeController extends ApiController
         $candidate_list = [];
         if($candidate_bookmark){
             foreach($candidate_bookmark as $k){
-                $candidate_list[] = CtreeCache::user_cache($k->uid , false);
+                // $candidate_list[CtreeCache::user_cache($k->uid , false)];
+                array_push($candidate_list, CtreeCache::user_cache($k->uid , false));
             }
         }
         $response = [
