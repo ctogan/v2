@@ -1034,13 +1034,11 @@ class ApiPartTimeController extends ApiController
             return $this->errorResponse("Please Register As Company", static::PROFILE_UNCOMPLETE_CODE);
         }
         $candidate_bookmark = JobCandidateBookmark::select('uid')->where('company_id' , $company->id)->get();
-        
+        $candidate_list = [];
         if($candidate_bookmark){
             foreach($candidate_bookmark as $k){
-                $candidate_list[] = CtreeCache::user_cache($k->uid , false);
+                $candidate_list[] = 1;
             }
-        }else{
-            $candidate_list = [];
         }
         $response = [
             'candidate_bookmark' => $candidate_list
