@@ -1,0 +1,24 @@
+{
+    "name": "nasution/zenziva",
+    "description": "Zenziva - Indonesia Online SMS Gateway",
+    "version": "2.1.0",
+    "type": "library",
+    "license": "MIT",
+    "keywords": ["zenziva", "sms", "whatsapp", "voice-message"],
+    "authors": [
+        {
+            "name": "Mulia Arifandi Nasution",
+            "email": "mul14.net@gmail.com",
+            "homepage": "http://mul14.net"
+        }
+    ],
+    "require": {
+        "rmccue/requests": "~1.7.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "Nasution\\Zenziva\\": "src/"
+        }
+    },
+    "minimum-stability": "stable"
+}

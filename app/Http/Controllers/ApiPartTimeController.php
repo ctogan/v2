@@ -78,11 +78,11 @@ class ApiPartTimeController extends ApiController
             'config' => $config,
             'user'=> $this->user,
             'bookmark' => $this->get_job_bookmark(3),
-            //'recommendation' => $this->get_job_search_and_recomendations($request),
-            'recommendation' => Vacancy::
-            where('row_status' ,'active')
-            ->where('vacancy_status' ,'published')
-            ->get(),
+            'recommendation' => $this->get_job_search_and_recomendations($request),
+            // 'recommendation' => Vacancy::
+            // where('row_status' ,'active')
+            // ->where('vacancy_status' ,'published')
+            // ->get(),
         ];
         return $this->successResponse($response);
     }
@@ -460,6 +460,7 @@ class ApiPartTimeController extends ApiController
 
             if($user){
                 $user->uid =$this->user->uid;
+                $user->name = $request->name;
                 $user->dob = date('Y-m-d' , strtotime($request->dob));
                 $user->sex =$request->sex;
                 $user->email =$request->email;
@@ -471,11 +472,13 @@ class ApiPartTimeController extends ApiController
                 $user->hobby = $request->hobby;
                 $user->img = $request->img;
                 $user->address = $request->address;
+                // $user->phone = $request->phone_number;
             $user->save();
         }else{
             UserName::insert(
                 array(
                     "uid"=>$this->user->uid,
+                    "name"=>$request->name,
                     "dob"=>$request->dob,
                     "sex"=>$request->sex,
                     "address"=>$request->address,
@@ -486,7 +489,8 @@ class ApiPartTimeController extends ApiController
                     "last_education"=>$request->education,
                     "skills"=>$request->skill,
                     "hobby"=>$request->hobby,
-                    "img"=>$request->img
+                    "img"=>$request->img,
+                    // "phone"=>$request->phone_number
                 )
             );
         }
@@ -1039,7 +1043,7 @@ class ApiPartTimeController extends ApiController
         $candidate_list = [];
         if($candidate_bookmark){
             foreach($candidate_bookmark as $k){
-                $candidate_list[] = CtreeCache::user_cache($k->uid , false);
+                $candidate_list[] = CtreeCache::user_cache($k->uid , true);
             }
         }
         $response = [

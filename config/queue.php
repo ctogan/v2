@@ -35,8 +35,9 @@ return [
         ],
 
         'database' => [
+            'connection' => 'common',
             'driver' => 'database',
-            'table' => 'jobs',
+            'table' => 'jobs_que',
             'queue' => 'default',
             'retry_after' => 90,
         ],
@@ -81,9 +82,9 @@ return [
     */
 
     'failed' => [
-        'driver' => env('QUEUE_FAILED_DRIVER', 'database'),
-        'database' => env('DB_CONNECTION', 'mysql'),
-        'table' => 'failed_jobs',
+        'connection' => 'common',
+        'driver' => 'database',
+        'table' => 'failed_jobs_cron',
     ],
 
 ];
