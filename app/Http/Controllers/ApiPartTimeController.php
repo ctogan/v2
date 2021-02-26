@@ -457,7 +457,7 @@ class ApiPartTimeController extends ApiController
         }
 
         $user = UserName::where('uid','=',$this->user->uid)->first();
-        print_r($user); exit;
+        
             if($user){
                 $user->uid =$this->user->uid;
                 $user->name = $request->name;
@@ -473,7 +473,9 @@ class ApiPartTimeController extends ApiController
                 $user->img = $request->img;
                 $user->address = $request->address;
                 // $user->phone = $request->phone_number;
-            $user->save();
+                print_r($user); exit;
+                $user->save();
+
         }else{
             UserName::insert(
                 array(
