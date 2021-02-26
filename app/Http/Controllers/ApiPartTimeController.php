@@ -457,7 +457,7 @@ class ApiPartTimeController extends ApiController
         }
 
         $user = UserName::where('uid','=',$this->user->uid)->first();
-
+        print_r($user); exit;
             if($user){
                 $user->uid =$this->user->uid;
                 $user->name = $request->name;
