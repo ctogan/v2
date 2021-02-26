@@ -462,7 +462,9 @@ class ApiPartTimeController extends ApiController
                 $user->uid =$this->user->uid;
                 $user->name = $request->name;
                 $user->dob = date('Y-m-d' , strtotime($request->dob));
-                //print_r($user); exit;
+                $user->sex =$request->sex;
+                // $user->phone = $request->phone_number;
+               //print_r($user); exit;
                 $user->save();
 
         }else{
@@ -486,7 +488,7 @@ class ApiPartTimeController extends ApiController
             );
         }
 
-        return 'asd';$this->successResponse(null, static::TRANSACTION_SUCCESS, static::CODE_SUCCESS);
+        return $this->successResponse(null, static::TRANSACTION_SUCCESS, static::CODE_SUCCESS);
     }
 
     public function submit_candidate_experiences(Request $request){
