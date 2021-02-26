@@ -481,7 +481,7 @@ class ApiPartTimeController extends ApiController
                 array(
                     "uid"=>$this->user->uid,
                     "name"=>$request->name,
-                    "dob"=>$request->dob,
+                    "dob"=>date('Y-m-d' , strtotime($request->dob)),
                     "sex"=>$request->sex,
                     "address"=>$request->address,
                     "email"=>$request->email,
