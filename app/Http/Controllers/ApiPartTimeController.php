@@ -473,7 +473,7 @@ class ApiPartTimeController extends ApiController
                 $user->img = $request->img;
                 $user->address = $request->address;
                 // $user->phone = $request->phone_number;
-            print_r($user); exit;
+                print_r($user); exit;
                 $user->save();
 
         }else{
@@ -481,7 +481,7 @@ class ApiPartTimeController extends ApiController
                 array(
                     "uid"=>$this->user->uid,
                     "name"=>$request->name,
-                    "dob"=>$request->dob,
+                    "dob"=>date('Y-m-d' , strtotime($request->dob)),
                     "sex"=>$request->sex,
                     "address"=>$request->address,
                     "email"=>$request->email,
