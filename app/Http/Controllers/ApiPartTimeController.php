@@ -497,7 +497,7 @@ class ApiPartTimeController extends ApiController
             );
         }
 
-        return $this->successResponse(null, static::TRANSACTION_SUCCESS, static::CODE_SUCCESS);
+        return 'asd';$this->successResponse(null, static::TRANSACTION_SUCCESS, static::CODE_SUCCESS);
     }
 
     public function submit_candidate_experiences(Request $request){
