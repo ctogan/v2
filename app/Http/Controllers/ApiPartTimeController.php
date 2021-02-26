@@ -461,7 +461,7 @@ class ApiPartTimeController extends ApiController
             if($user){
                 $user->uid =$this->user->uid;
                 $user->name = $request->name;
-                $user->dob =  '1970-01-01';
+                $user->dob = date('Y-m-d' , strtotime($request->dob));
                 $user->sex =$request->sex;
                 $user->email =$request->email;
                 $user->weight =$request->weight;
@@ -472,7 +472,7 @@ class ApiPartTimeController extends ApiController
                 $user->hobby = $request->hobby;
                 $user->img = $request->img;
                 $user->address = $request->address;
-                $user->phone = $request->phone_number;
+                //$user->phone = $request->phone_number;
                 
                 $user->save();
 
@@ -481,7 +481,7 @@ class ApiPartTimeController extends ApiController
                 array(
                     "uid"=>$this->user->uid,
                     "name"=>$request->name,
-                    "dob"=>date('Y-m-d' , strtotime($request->dob)),
+                    "dob"=>$request->dob,
                     "sex"=>$request->sex,
                     "address"=>$request->address,
                     "email"=>$request->email,
