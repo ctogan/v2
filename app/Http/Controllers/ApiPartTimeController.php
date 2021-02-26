@@ -473,7 +473,7 @@ class ApiPartTimeController extends ApiController
                 $user->img = $request->img;
                 $user->address = $request->address;
                 // $user->phone = $request->phone_number;
-               // print_r($user); exit;
+               print_r($user); exit;
                 $user->save();
 
         }else{
