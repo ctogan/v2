@@ -462,18 +462,7 @@ class ApiPartTimeController extends ApiController
                 $user->uid =$this->user->uid;
                 $user->name = $request->name;
                 $user->dob = date('Y-m-d' , strtotime($request->dob));
-                $user->sex =$request->sex;
-                $user->email =$request->email;
-                $user->weight =$request->weight;
-                $user->height =$request->height;
-                $user->religion = $request->religion ? $request->religion : '';
-                $user->last_education = $request->education ? $request->education : '';
-                $user->skills = $request->skill ? $request->skill : '';
-                $user->hobby = $request->hobby ? $request->hobby : '';
-                $user->img = $request->img ? $request->img : '';
-                $user->address = $request->address ? $request->address : '';
-                $user->phone = $request->phone_number ? $request->phone_number : '';
-               //print_r($user); exit;
+                //print_r($user); exit;
                 $user->save();
 
         }else{
