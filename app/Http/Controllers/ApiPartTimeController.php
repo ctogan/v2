@@ -463,10 +463,6 @@ class ApiPartTimeController extends ApiController
                 $user->name = $request->name;
                 //$user->dob = $request->dob;//date('Y-m-d' , strtotime($request->dob));
                 $user->sex =$request->sex;
-                $user->email =$request->email;
-                $user->weight =$request->weight;
-                $user->height =$request->height;
-                //$user->phone = $request->phone_number;
                 
                 $user->save();
 
