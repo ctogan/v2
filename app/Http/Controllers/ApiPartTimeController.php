@@ -480,6 +480,8 @@ class ApiPartTimeController extends ApiController
                     "sex"=>$request->sex,
                     "address"=>$request->address,
                     "email"=>$request->email,
+                    "weight" => $request->height,
+                    "height" => $request->height,
                     "religion"=>$request->religion,
                     "last_education"=>$request->education,
                     "skills"=>$request->skill,
