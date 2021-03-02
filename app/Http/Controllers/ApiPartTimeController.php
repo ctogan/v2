@@ -285,29 +285,28 @@ class ApiPartTimeController extends ApiController
                 ->orWhere('company_name','ilike','%'.$request->search.'%');
         }
         $job_filter = JobFilter::where('uid','=',$this->user->uid)->first();
-        if($job_filter){
-            if($job_filter->filter){
-                $filter = json_decode($job_filter->filter);
-                if($filter->province_id != "all"){
-                    $query->whereIn('job_vacancy.province_id',explode(",",$filter->province_id));
-                }
-                if($filter->city_id != "all"){
-                    $query->whereIn('job_vacancy.city_id',explode(",",$filter->city_id));
-                }
-                if($filter->company_type != "all"){
-                    $query->whereIn('job_company.category',explode(",",$filter->company_type));
-                }
-                if($filter->education_level != "all"){
-                    $query->whereIn('job_vacancy.education',explode(",",$filter->education_level));
-                }
-                if($filter->salary_to > 0){
-                    $query->whereBetween('job_vacancy.salary', [$filter->salary_from,$filter->salary_to]);
-                }
-            }
-        }
+        // if($job_filter){
+        //     if($job_filter->filter){
+        //         $filter = json_decode($job_filter->filter);
+        //         if($filter->province_id != "all"){
+        //             $query->whereIn('job_vacancy.province_id',explode(",",$filter->province_id));
+        //         }
+        //         if($filter->city_id != "all"){
+        //             $query->whereIn('job_vacancy.city_id',explode(",",$filter->city_id));
+        //         }
+        //         if($filter->company_type != "all"){
+        //             $query->whereIn('job_company.category',explode(",",$filter->company_type));
+        //         }
+        //         if($filter->education_level != "all"){
+        //             $query->whereIn('job_vacancy.education',explode(",",$filter->education_level));
+        //         }
+        //         if($filter->salary_to > 0){
+        //             $query->whereBetween('job_vacancy.salary', [$filter->salary_from,$filter->salary_to]);
+        //         }
+        //     }
+        // }
         $data = [];
         print_r($query);
-        exit();
         $query = $query->get();
         if($query){
             foreach ($query as $item){
