@@ -271,8 +271,6 @@ class ApiPartTimeController extends ApiController
 
 
     public function search(Request $request){
-        echo $request->search;
-        exit();
         $response = $this->get_job_search_and_recomendations($request);
         return $this->successResponse($response);
     }
@@ -308,6 +306,8 @@ class ApiPartTimeController extends ApiController
             }
         }
         $data = [];
+        print_r($query);
+        exit();
         $query = $query->get();
         if($query){
             foreach ($query as $item){
