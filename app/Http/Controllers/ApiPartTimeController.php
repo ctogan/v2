@@ -285,7 +285,7 @@ class ApiPartTimeController extends ApiController
                 ->orWhere('company_name','ilike','%'.$request->search.'%');
         }
         $job_filter = JobFilter::where('uid','=',$this->user->uid)->first();
-        /*if($job_filter){
+        if($job_filter){
             if($job_filter->filter){
                 $filter = json_decode($job_filter->filter);
                 if($filter->province_id != "all"){
@@ -304,7 +304,7 @@ class ApiPartTimeController extends ApiController
                     $query->whereBetween('job_vacancy.salary', [$filter->salary_from,$filter->salary_to]);
                 }
             }
-        }*/
+        }
         $data = [];
         $query = $query->get();
         if($query){
