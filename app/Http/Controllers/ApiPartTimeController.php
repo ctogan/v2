@@ -305,6 +305,8 @@ class ApiPartTimeController extends ApiController
                 }
             }
         }
+        print_r($job_filter);
+        exit();
         $data = [];
         $query = $query->get();
         if($query){
