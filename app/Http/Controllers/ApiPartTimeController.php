@@ -940,7 +940,7 @@ class ApiPartTimeController extends ApiController
         ];
         foreach($profile_validator as $key=>$value){
             if($user->$key == '' ||  $user->$key == null) {
-                return false;
+                return true; //Check again
             }
         }
         return true;
