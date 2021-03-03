@@ -83,14 +83,14 @@
                             <div class="form-group row">
                                 <label for="position_name" class="col-sm-2 col-form-label">Employee Size*</label>
                                 <div class="col-sm-6">
-                                    <select class="form-control custom-select" name="employee_size" id="">
+                                    <select class="form-control custom-select" name="employee_size_id" id="">
                                         <option value="0">Choose</option>
-                                        <option value="1 - 20">1 - 20</option>
-                                        <option value="21 - 50">21 - 50</option>
-                                        <option value="51 - 100">51 - 100</option>
-                                        <option value="101 - 500">101 - 500</option>
-                                        <option value="501 - 1000">501 - 1000</option>
-                                        <option value="> 1000">> 1000 </option>
+                                        <option value="1">1 - 20</option>
+                                        <option value="2">21 - 50</option>
+                                        <option value="3">51 - 100</option>
+                                        <option value="4">101 - 500</option>
+                                        <option value="5">501 - 1000</option>
+                                        <option value="6">> 1000 </option>
                                     </select>
                                 </div>
                             </div>

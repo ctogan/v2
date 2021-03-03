@@ -353,6 +353,7 @@ class AdminPartTimeController extends Controller
         $company->address = $request->address;
         $company->province_id = $request->province_id;
         $company->city_id = $request->city_id;
+        $company->employee_size_id = $request->employee_size_id;
         $company->description = $request->description;
         $company->email = $request->email;
         $company->phone_number = $request->phone_number;

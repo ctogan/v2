@@ -92,6 +92,20 @@
                                 </div>
                             </div>
                             <div class="form-group row">
+                                <label for="position_name" class="col-sm-2 col-form-label">Employee Size*</label>
+                                <div class="col-sm-6">
+                                    <select class="form-control custom-select" name="employee_size_id" id="">
+                                        <option value="0" {{$company->employee_size_id == 0 ? "selected" : ""}}>-</option>
+                                        <option value="1" {{$company->employee_size_id == 1 ? "selected" : ""}}>1 - 20</option>
+                                        <option value="2" {{$company->employee_size_id == 2 ? "selected" : ""}}>21 - 50</option>
+                                        <option value="3" {{$company->employee_size_id == 3 ? "selected" : ""}}>51 - 100</option>
+                                        <option value="4" {{$company->employee_size_id == 4 ? "selected" : ""}}>101 - 500</option>
+                                        <option value="5" {{$company->employee_size_id == 5 ? "selected" : ""}}>501 - 1000</option>
+                                        <option value="6" {{$company->employee_size_id == 6 ? "selected" : ""}}>> 1000 </option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-group row">
                                 <label for="company" class="col-sm-2 col-form-label">Description*</label>
                                 <div class="col-sm-10">
                                     <textarea placeholder="Describe about the company" name="description" class="form-control" style="white-space: pre-line;" cols="100" rows="8">{{$company->description}}</textarea>
