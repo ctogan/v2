@@ -71,18 +71,18 @@
                                     <li><a href="{{url('/admin/part-time/applicant')}}">Applicants</a></li>
                                 </ul>
                             </li>
-                            <li><a href="#">Drop Down 2</a></li>
-                            <li><a href="#">Drop Down 3</a></li>
-                            <li><a href="#">Drop Down 4</a></li>
+                            {{--<li><a href="#">Drop Down 2</a></li>--}}
+                            {{--<li><a href="#">Drop Down 3</a></li>--}}
+                            {{--<li><a href="#">Drop Down 4</a></li>--}}
                         </ul>
                     </li>
                     <li class="drop-down"><a href="">Operational</a>
                         <ul>
                             <li><a href="#">Drop Down 1</a></li>
                             <li><a href="{{url('/admin/operational/clbk/event')}}">CLBK Event</a></li>
-                            <li><a href="#">Drop Down 2</a></li>
-                            <li><a href="#">Drop Down 3</a></li>
-                            <li><a href="#">Drop Down 4</a></li>
+                            {{--<li><a href="#">Drop Down 2</a></li>--}}
+                            {{--<li><a href="#">Drop Down 3</a></li>--}}
+                            {{--<li><a href="#">Drop Down 4</a></li>--}}
                         </ul>
                     </li>
                     <li class="drop-down"><a href="javascript:void(0)">Settings</a>
