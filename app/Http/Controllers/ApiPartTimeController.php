@@ -167,8 +167,7 @@ class ApiPartTimeController extends ApiController
 
     public function company_detail(Request $request){
 
-        $company = JobCompany::select('job_company.*','job_employee_size.employee_size','province.province_name','city.city_name','job_company_category.category_name')
-            ->where('job_company.id','=',$request->id)
+        $company = JobCompany::where('job_company.id','=',$request->id)
             ->join('job_company_category','job_company_category.id','job_company.category')
             ->join('province','province.id','job_company.province_id')
             ->join('city','city.id','job_company.city_id')
