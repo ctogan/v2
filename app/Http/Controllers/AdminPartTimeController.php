@@ -435,4 +435,8 @@ class AdminPartTimeController extends Controller
         return DataTables::of($query->get())->addIndexColumn()->make(true);
     }
 
+    public function applicant(Request $request){
+        return view('admin.parttime.applicant');
+    }
+
 }

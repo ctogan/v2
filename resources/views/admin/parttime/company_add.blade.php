@@ -34,7 +34,7 @@
                             <div class="form-group row">
                                 <label for="company" class="col-sm-2 col-form-label">Company Logo*</label>
                                 <div class="col-sm-3">
-                                    <div class="preview mb-1" style="width: 100%;border:1px dotted">
+                                    <div class="preview-logo mb-1" style="width: 100%;border:1px dotted">
                                         <img id="image-preview" src="{{url('/assets/images/default.png')}}" width="100%">
                                     </div>
                                     <div class="custom-file">

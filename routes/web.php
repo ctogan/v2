@@ -40,6 +40,8 @@ Route::post('/admin/part-time/company/submit', 'AdminPartTimeController@company_
 Route::post('/admin/part-time/company/update', 'AdminPartTimeController@company_update')->name('admin.pt.company_update');
 Route::post('/admin/part-time/company/delete', 'AdminPartTimeController@company_delete')->name('admin.pt.company_delete');
 
+Route::get('/admin/part-time/applicant', 'AdminPartTimeController@applicant')->name('admin.pt.applicant');
+
 Route::get('/admin/data/city/', 'AdminPartTimeController@company')->name('admin.pt.company');
 Route::get('/admin/data/city/{id}', function ($id) {
     return Cache::get_city($id);
