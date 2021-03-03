@@ -28,6 +28,7 @@
                             <tr>
                                 <th></th>
                                 <th>No</th>
+                                <th>Photo</th>
                                 <th>UID</th>
                                 <th>Name</th>
                                 <th>Company Name</th>
@@ -36,6 +37,18 @@
                                 <th>Province</th>
                                 <th>City</th>
                                 <th>Applied At</th>
+                                <th>POB</th>
+                                <th>DOB</th>
+                                <th>Sex</th>
+                                <th>Phone</th>
+                                <th>Email</th>
+                                <th>Weight</th>
+                                <th>Height</th>
+                                <th>Religion</th>
+                                <th>Education</th>
+                                <th>Skills</th>
+                                <th>Hobby</th>
+                                <th>Address</th>
                             </tr>
                             </thead>
                             <tbody>

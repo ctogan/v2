@@ -2,7 +2,7 @@ function init_data_table() {
     let table = $('#dt_applicant');
     if (table != null) {
         table.DataTable({
-            order:[8,'desc'],
+            order:[10,'desc'],
             responsive: true,
             processing: true,
             serverSide: true,
@@ -18,14 +18,27 @@ function init_data_table() {
             columns: [
                 { defaultContent: '<td></td>' },
                 { data: 'DT_RowIndex', name: 'DT_RowIndex'},
+                { data: 'img', name: 'img'},
                 { data: 'uid', name: 'uid' },
-                { data: 'applicant_name', name: 'applicant_name' },
+                { data: 'applicant_name', name: 'applicant_name'},
                 { data: 'company_name', name: 'company_name' },
                 { data: 'position_name', name: 'position_name'},
                 { data: 'category_name', name: 'category_name'},
                 { data: 'province_name', name: 'province_name'},
                 { data: 'city_name', name: 'city_name'},
                 { data: 'apply_date', name: 'apply_date'},
+                { data: 'pob', name: 'pob'},
+                { data: 'dob', name: 'dob'},
+                { data: 'sex', name: 'sex'},
+                { data: 'phone', name: 'phone'},
+                { data: 'email', name: 'email'},
+                { data: 'weight', name: 'weight'},
+                { data: 'height', name: 'height'},
+                { data: 'religion', name: 'religion'},
+                { data: 'education', name: 'education'},
+                { data: 'skills', name: 'skills'},
+                { data: 'hobby', name: 'hobby'},
+                { data: 'address', name: 'address'},
             ],
             columnDefs: [
                 {
@@ -38,19 +51,23 @@ function init_data_table() {
                 },
                 {
                     targets: 2,
+                    className: "text-center"
+                },
+                {
+                    targets: 3,
                     className: "text-center",
                     render: function(data, type, full, meta) {
                         return '<a href="http://admin.ctree.id/admin/user/detail?uid='+full.uid+'">'+data+'</a>'
                     }
                 },
                 {
-                    targets: 4,
+                    targets: 5,
                     render: function(data, type, full, meta) {
                         return '<a href="/admin/part-time/company/edit/'+full.company_id+'">'+data+'</a>'
                     }
                 },
                 {
-                    targets: 5,
+                    targets: 6,
                     render: function(data, type, full, meta) {
                         return '<a href="/admin/part-time/vacancy/edit/'+full.vacancy_id+'">'+data+'</a>'
                     }
