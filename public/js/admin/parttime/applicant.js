@@ -35,7 +35,7 @@ function init_data_table() {
                 { data: 'weight', name: 'weight'},
                 { data: 'height', name: 'height'},
                 { data: 'religion', name: 'religion'},
-                { data: 'education', name: 'education'},
+                { data: 'last_education', name: 'last_education'},
                 { data: 'skills', name: 'skills'},
                 { data: 'hobby', name: 'hobby'},
                 { data: 'address', name: 'address'},
@@ -47,11 +47,14 @@ function init_data_table() {
                 },
                 {
                     targets: 1,
-                    className: "text-center"
+                    className: "text-center",
                 },
                 {
                     targets: 2,
-                    className: "text-center"
+                    className: "text-center",
+                    render: function(data, type, full, meta) {
+                        return '<img src="'+data+'" class="applicant-profile">'
+                    }
                 },
                 {
                     targets: 3,

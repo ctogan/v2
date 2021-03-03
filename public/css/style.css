@@ -1865,11 +1865,11 @@ section {
 }
 
 table.dataTable.dtr-inline.collapsed>tbody>tr[role="row"]>td.dtr-control:before, table.dataTable.dtr-inline.collapsed>tbody>tr[role="row"]>th.dtr-control:before{
-  top:30%!important;
+  top:23px!important;
   margin-left: 5px;
+  background-color: #8e60ef!important;
   /*margin-top: 12px!important;*/
 }
-
 textarea{
   white-space: pre-line!important;
 }
@@ -1888,4 +1888,11 @@ textarea{
   width: 250px;
   height: 250px;
   object-fit: cover;
+}
+
+.applicant-profile{
+  width: 75px;
+  height: 75px;
+  object-fit: cover;
+  border-radius: 10px;
 }
