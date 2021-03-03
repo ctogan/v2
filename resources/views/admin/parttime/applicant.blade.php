@@ -37,8 +37,8 @@
                                 <th>Province</th>
                                 <th>City</th>
                                 <th>Applied At</th>
-                                <th>POB</th>
-                                <th>DOB</th>
+                                <th>Place Of Birth</th>
+                                <th>Date Of Birth</th>
                                 <th>Sex</th>
                                 <th>Phone</th>
                                 <th>Email</th>

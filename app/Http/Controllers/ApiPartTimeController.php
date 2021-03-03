@@ -387,7 +387,7 @@ class ApiPartTimeController extends ApiController
             "email" => $this->user->email,
             "weight" => $this->user->weight,
             "height" => $this->user->height,
-            "religion" => $this->user->religion,
+            "religion" => Utils::RELIGION_MASTER[$this->user->religion]['name'],
             "last_education" => $this->user->last_education,
             "skills" => $this->user->skills,
             "hobby" => $this->user->hobby,

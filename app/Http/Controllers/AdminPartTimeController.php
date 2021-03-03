@@ -458,21 +458,23 @@ class AdminPartTimeController extends Controller
         $query = JobApplicant::join('job_vacancy','job_vacancy.id','job_applicant.vacancy_id')
             ->join('job_company','job_company.id','job_vacancy.company_id')
             ->join('province','province.id','job_vacancy.province_id')
+            ->join('province as p','p.id','job_applicant.pob')
             ->join('city','city.id','job_vacancy.city_id')
             ->join('job_company_category','job_company_category.id','job_company.category')
+            ->join('job_education','job_education.id','job_applicant.last_education')
             ->select('job_applicant.applicant_name',
                 'job_applicant.uid',
                 'job_applicant.apply_date',
                 'job_applicant.img',
                 'job_applicant.dob',
                 'job_applicant.sex',
-                'job_applicant.pob',
+                'p.province_name as pob',
                 'job_applicant.phone',
                 'job_applicant.email',
                 'job_applicant.weight',
                 'job_applicant.height',
                 'job_applicant.religion',
-                'job_applicant.last_education',
+                'job_education.education as last_education',
                 'job_applicant.skills',
                 'job_applicant.hobby',
                 'job_applicant.address',

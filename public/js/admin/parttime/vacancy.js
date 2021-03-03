@@ -434,9 +434,9 @@ function init_data_table() {
                     targets: 17,
                     className: "text-center",
                     render: function(data, type, full, meta) {
-                        let status = {"pending":"badge-warning","published":"badge-primary","unpublished":"badge-info text-light","rejected":"badge-secondary"}
+                        let status = {"pending":"badge-warning","published":"badge-primary","unpublished":"badge-info text-light","rejected":"badge-secondary","waiting_confirm":"badge-warning"}
 
-                        return '<span class="badge '+status[data]+'">'+data+'</span>'
+                        return '<span class="p-2 badge '+status[data]+'">'+data+'</span>'
                     }
                 },
                 {
