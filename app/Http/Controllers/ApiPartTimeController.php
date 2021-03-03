@@ -927,7 +927,7 @@ class ApiPartTimeController extends ApiController
             'email' => 'required',
             'religion' => 'required',
             'last_education' => 'required',
-            'skill' => 'required',
+            'skills' => 'required',
             'hobby' => 'required',
         ];
         foreach($profile_validator as $key=>$value){
