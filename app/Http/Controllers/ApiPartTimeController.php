@@ -95,9 +95,12 @@ class ApiPartTimeController extends ApiController
 
     public function get_job_bookmark($limit = 3){
         $result = JobBookmark::where('job_bookmark.uid','=',$this->user->uid)
+            ->where('job_vacancy.vacancy_status','=','published')
+            ->where('job_vacancy.active_until','>=',date('Y-m-d 00:00:01'))
+            ->join('job_vacancy','job_vacancy.id','job_bookmark.vacancy_id')
             ->select('job_bookmark.vacancy_id')
             ->where('job_bookmark.row_status','!=','deleted')
-            ->orderBy('created_at','desc')
+            ->orderBy('job_bookmark.created_at','desc')
             ->limit($limit)
             ->get();
         $data = [];
@@ -260,6 +263,8 @@ class ApiPartTimeController extends ApiController
 
     public function get_job_search_and_recomendations($request){
         $query = Vacancy::where("job_vacancy.row_status","=","active")
+            ->where('job_vacancy.vacancy_status','=','published')
+            ->where('job_vacancy.active_until','>=',date('Y-m-d 00:00:01'))
             ->join('job_company','job_company.id','=','job_vacancy.company_id')
             ->select('job_vacancy.id');
 
