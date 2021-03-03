@@ -289,7 +289,7 @@ class ApiPartTimeController extends ApiController
             }
         }
         $data = [];
-        $query = $query->get();
+        $query = $query->get()->orderBy('created_at','desc');
         if($query){
             foreach ($query as $item){
                 $data[] = CtreeCache::get_job_vacancy_by_id($item->id);
