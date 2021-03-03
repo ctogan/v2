@@ -428,6 +428,7 @@ class ApiPartTimeController extends ApiController
     }
 
     public function submit_candidate_profile(Request $request){
+
         $validation = Validator::make($request->all(), [
             'pob' => 'required',
             'dob' => 'required',

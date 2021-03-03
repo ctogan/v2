@@ -40,7 +40,7 @@ class CompanyCategoryController extends Controller
     public function submit(Request $request)
     {
         $validation = Validator::make($request->all(), [
-            'category_name' => 'required|unique:common.company_category',
+            'category_name' => 'required|unique:common.job_company_category',
         ]);
 
         if($validation->fails()) {
@@ -77,7 +77,7 @@ class CompanyCategoryController extends Controller
 
         if($category->category_name != $request->category_name){
             $validation = Validator::make($request->all(), [
-                'category_name' => 'unique:company_category',
+                'category_name' => 'unique:common.job_company_category',
             ]);
 
             if($validation->fails()) {
