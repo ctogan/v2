@@ -35,6 +35,7 @@ class UserName extends Model
         'religion',
         'skills',
         'hobby',
-        'last_education'
+        'last_education',
+        'job_part_time_complete'
     ];
 }
