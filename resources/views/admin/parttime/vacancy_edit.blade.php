@@ -97,16 +97,9 @@
                                 <div class="col-sm-3">
                                     <select class="custom-select" name="education" id="education">
                                         <option>Choose Education</option>
-                                        <option value="sd" {{$vacancy->education == "sd" ? "selected" : "" }}> SD</option>
-                                        <option value="smp" {{$vacancy->education == "smp" ? "selected" : "" }}> SMP</option>
-                                        <option value="sma" {{$vacancy->education == "sma" ? "selected" : "" }}> SMA</option>
-                                        <option value="d1" {{$vacancy->education == "d1" ? "selected" : "" }}> Diploma 1</option>
-                                        <option value="d2" {{$vacancy->education == "d2" ? "selected" : "" }}> Diploma 2</option>
-                                        <option value="d3" {{$vacancy->education == "d3" ? "selected" : "" }}> Diploma 3</option>
-                                        <option value="d4" {{$vacancy->education == "d4" ? "selected" : "" }}> Diploma 4</option>
-                                        <option value="sarjana" {{$vacancy->education == "sarjana" ? "selected" : "" }}> Sarjana</option>
-                                        <option value="magister" {{$vacancy->education == "magister" ? "selected" : "" }}> Magister</option>
-                                        <option value="doktor" {{$vacancy->education == "doktor" ? "selected" : "" }}> Doktor</option>
+                                        @foreach($education as $item)
+                                            <option value="{{$item->id}}" {{$vacancy->education == $item->id ? "selected" : "" }}>{{$item->education}}</option>
+                                        @endforeach
                                     </select>
                                 </div>
                             </div>
@@ -115,16 +108,16 @@
                                 <div class="col-sm-3">
                                     <select class="custom-select" name="experienced" id="experienced">
                                         <option value="0">Fresh Graduated</option>
-                                        <option value="1" {{$vacancy->city_id == "1" ? "selected" : "" }}> 1 Year</option>
-                                        <option value="2" {{$vacancy->city_id == "2" ? "selected" : "" }}> 2 Years</option>
-                                        <option value="3" {{$vacancy->city_id == "3" ? "selected" : "" }}> 3 Years</option>
-                                        <option value="4" {{$vacancy->city_id == "4" ? "selected" : "" }}> 4 Years</option>
-                                        <option value="5" {{$vacancy->city_id == "5" ? "selected" : "" }}> 5 Years</option>
-                                        <option value="6" {{$vacancy->city_id == "6" ? "selected" : "" }}> 6 Years</option>
-                                        <option value="7" {{$vacancy->city_id == "7" ? "selected" : "" }}> 7 Years</option>
-                                        <option value="8" {{$vacancy->city_id == "8" ? "selected" : "" }}> 8 Years</option>
-                                        <option value="9" {{$vacancy->city_id == "9" ? "selected" : "" }}> 9 Years</option>
-                                        <option value="10" {{$vacancy->city_id == "10" ? "selected" : "" }}> 10 Years</option>
+                                        <option value="1" {{$vacancy->experienced == "1" ? "selected" : "" }}> 1 Year</option>
+                                        <option value="2" {{$vacancy->experienced == "2" ? "selected" : "" }}> 2 Years</option>
+                                        <option value="3" {{$vacancy->experienced == "3" ? "selected" : "" }}> 3 Years</option>
+                                        <option value="4" {{$vacancy->experienced == "4" ? "selected" : "" }}> 4 Years</option>
+                                        <option value="5" {{$vacancy->experienced == "5" ? "selected" : "" }}> 5 Years</option>
+                                        <option value="6" {{$vacancy->experienced == "6" ? "selected" : "" }}> 6 Years</option>
+                                        <option value="7" {{$vacancy->experienced == "7" ? "selected" : "" }}> 7 Years</option>
+                                        <option value="8" {{$vacancy->experienced == "8" ? "selected" : "" }}> 8 Years</option>
+                                        <option value="9" {{$vacancy->experienced == "9" ? "selected" : "" }}> 9 Years</option>
+                                        <option value="10" {{$vacancy->experienced == "10" ? "selected" : "" }}> 10 Years</option>
                                     </select>
                                 </div>
                             </div>

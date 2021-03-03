@@ -4,6 +4,7 @@ namespace App\Helpers;
 use App\City;
 use App\CompanyCategory;
 use App\JobCompany;
+use App\JobEducation;
 use App\Province;
 
 class Cache {
@@ -36,6 +37,10 @@ class Cache {
 
     public static function get_company_by_id($id){
         return JobCompany::where('id','=',$id)->first();
+    }
+
+    public static function get_education(){
+        return JobEducation::get();
     }
 
     public static function is_regis_part_time($uid){

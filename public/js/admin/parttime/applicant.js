@@ -12,6 +12,7 @@ function init_data_table() {
                 data: function ( d ) {
                     d.myKey = "myValue";
                     d._token = $('meta[name="csrf-token"]').attr('content');
+                    d.vacancy_id = $("#vacancy_id").val();
                 }
             },
             columns: [

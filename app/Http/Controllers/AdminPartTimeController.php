@@ -50,7 +50,7 @@ class AdminPartTimeController extends Controller
             "company" => $company,
             "category" => $category,
             "province" => $province,
-            "city" => $city,
+            "city" => $city
         ];
 
         return View::make('admin.parttime.vacancy')->with($pageVars);
@@ -60,10 +60,12 @@ class AdminPartTimeController extends Controller
     {
         $company = Cache::get_company();
         $province = Cache::get_province();
+        $education = Cache::get_education();
 
         $pageVars = [
             "province" => $province,
-            "company" =>$company
+            "company" =>$company,
+            "education" => $education
         ];
 
         return View::make('admin.parttime.vacancy_add')->with($pageVars);
@@ -79,12 +81,14 @@ class AdminPartTimeController extends Controller
         $company = Cache::get_company();
         $province = Cache::get_province();
         $city = Cache::get_city($vacancy->province_id);
+        $education = Cache::get_education();
 
         $pageVars = [
             "province" => $province,
             "city"=>$city,
             "vacancy"=>$vacancy,
-            "company" =>$company
+            "company" =>$company,
+            "education" => $education
         ];
 
         return View::make('admin.parttime.vacancy_edit')->with($pageVars);
@@ -437,17 +441,32 @@ class AdminPartTimeController extends Controller
     }
 
     public function applicant(Request $request){
-        return view('admin.parttime.applicant');
+        $vacancy = [];
+        if($request->vacancy){
+            $vacancy = Vacancy::join('job_company','job_company.id','job_vacancy.company_id')
+                    ->where('job_vacancy.id','=', $request->vacancy)->first();
+        }
+
+        $data = [
+            'vacancy_id' => $request->vacancy,
+            'vacancy' => $vacancy
+        ];
+        return view('admin.parttime.applicant', $data);
     }
 
     public function applicant_paging(Request $request){
-        return DataTables::of(JobApplicant::join('job_vacancy','job_vacancy.id','job_applicant.vacancy_id')
+        $query = JobApplicant::join('job_vacancy','job_vacancy.id','job_applicant.vacancy_id')
             ->join('job_company','job_company.id','job_vacancy.company_id')
             ->join('province','province.id','job_vacancy.province_id')
             ->join('city','city.id','job_vacancy.city_id')
             ->join('job_company_category','job_company_category.id','job_company.category')
-            ->select('job_applicant.applicant_name','job_applicant.uid','job_applicant.apply_date','job_vacancy.id as vacancy_id','job_vacancy.position_name','job_company.company_name','job_company.id as company_id','province.province_name', 'city.city_name','job_company_category.category_name')
-            ->get())->addIndexColumn()->make(true);
+            ->select('job_applicant.applicant_name','job_applicant.uid','job_applicant.apply_date','job_vacancy.id as vacancy_id','job_vacancy.position_name','job_company.company_name','job_company.id as company_id','province.province_name', 'city.city_name','job_company_category.category_name');
+
+        if($request->vacancy_id){
+            $query->where('job_vacancy.id','=',$request->vacancy_id);
+        }
+
+        return DataTables::of($query->get())->addIndexColumn()->make(true);
     }
 
 }

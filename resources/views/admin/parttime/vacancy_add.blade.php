@@ -76,17 +76,20 @@
                                 <label for="education" class="col-sm-2 col-form-label">Education*</label>
                                 <div class="col-sm-3">
                                     <select class="custom-select" name="education" id="education">
-                                        <option>Choose Education</option>
-                                        <option value="sd"> SD</option>
-                                        <option value="smp"> SMP</option>
-                                        <option value="sma"> SMA</option>
-                                        <option value="d1"> Diploma 1</option>
-                                        <option value="d2"> Diploma 2</option>
-                                        <option value="d3"> Diploma 3</option>
-                                        <option value="d4"> Diploma 4</option>
-                                        <option value="sarjana"> Sarjana</option>
-                                        <option value="magister"> Magister</option>
-                                        <option value="doktor"> Doktor</option>
+                                        @foreach($education as $item)
+                                            <option value="{{$item->id}}">{{$item->education}}</option>
+                                        @endforeach
+                                        {{--<option>Choose Education</option>--}}
+                                        {{--<option value="sd"> SD</option>--}}
+                                        {{--<option value="smp"> SMP</option>--}}
+                                        {{--<option value="sma"> SMA</option>--}}
+                                        {{--<option value="d1"> Diploma 1</option>--}}
+                                        {{--<option value="d2"> Diploma 2</option>--}}
+                                        {{--<option value="d3"> Diploma 3</option>--}}
+                                        {{--<option value="d4"> Diploma 4</option>--}}
+                                        {{--<option value="sarjana"> Sarjana</option>--}}
+                                        {{--<option value="magister"> Magister</option>--}}
+                                        {{--<option value="doktor"> Doktor</option>--}}
                                     </select>
                                 </div>
                             </div>

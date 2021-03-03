@@ -444,7 +444,8 @@ function init_data_table() {
                     className: "text-center",
                     render: function(data, type, full, meta) {
                         return '<a href="/admin/part-time/vacancy/edit/'+data+'" class="btn btn-datatable btn-icon btn-transparent-dark btn-sm p-0 mr-2"><i data-feather="edit"></i></a>' +
-                            '<a onclick="delete_vacancy('+data+')" href="javascript:void(0)" class="btn btn-datatable btn-icon btn-transparent-dark btn-sm p-0"><i data-feather="trash"></i></a>';
+                            '<a onclick="delete_vacancy('+data+')" href="javascript:void(0)" class="btn btn-datatable btn-icon btn-transparent-dark btn-sm p-0 mr-2"><i data-feather="trash"></i></a>' +
+                            '<a href="/admin/part-time/applicant?vacancy='+data+'" class="btn btn-datatable btn-icon btn-transparent-dark btn-sm p-0"><i data-feather="search"></i></a>';
                     },
                 }
             ],

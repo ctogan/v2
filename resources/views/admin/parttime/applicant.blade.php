@@ -5,12 +5,18 @@
         <nav aria-label="breadcrumb">
             <ol class="breadcrumb">
                 <li class="breadcrumb-item"><a href="#">Home</a></li>
-                <li class="breadcrumb-item"><a href="#">Job Part Time</a></li>
+                @if($vacancy)
+                    <li class="breadcrumb-item"><a href="{{url('/admin/part-time/vacancy/'.$vacancy->id)}}">{{$vacancy->position_name}}</a></li>
+                    <li class="breadcrumb-item"><a href="{{url('/admin/part-time/company/edit/'.$vacancy->company_id)}}">{{$vacancy->company_name}}</a></li>
+                @else
+                    <li class="breadcrumb-item"><a href="#">Job Part Time</a></li>
+                @endif
                 <li class="breadcrumb-item active" aria-current="page">Applicant</li>
             </ol>
         </nav>
 
         <div class="row justify-content-center">
+            <input type="hidden" id="vacancy_id" value="{{$vacancy_id}}">
             <div class="col-md-12">
                 <div class="card">
                     <div class="card-header">
