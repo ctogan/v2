@@ -446,10 +446,11 @@ class ApiPartTimeController extends ApiController
                 $user->name = $request->name;
                 $user->dob = date('Y-m-d' , strtotime($request->dob));
                 $user->sex =$request->sex;
+                $user->pob = $request->pob;
                 $user->email =$request->email;
                 $user->weight =$request->weight;
                 $user->height =$request->height;
-                //$user->religion = $request->religion;
+                $user->religion = $request->religion;
                 $user->last_education = $request->education;
                 $user->skills = $request->skill;
                 $user->hobby = $request->hobby;
@@ -467,6 +468,7 @@ class ApiPartTimeController extends ApiController
                     "name"=>$request->name,
                     "dob"=>date('Y-m-d' , strtotime($request->dob)),
                     "sex"=>$request->sex,
+                    "pob"=>$request->pob,
                     "address"=>$request->address,
                     "email"=>$request->email,
                     "weight" => $request->height,
