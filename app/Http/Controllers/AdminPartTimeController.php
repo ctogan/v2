@@ -446,7 +446,7 @@ class AdminPartTimeController extends Controller
             ->join('province','province.id','job_vacancy.province_id')
             ->join('city','city.id','job_vacancy.city_id')
             ->join('job_company_category','job_company_category.id','job_company.category')
-            ->select('job_applicant.name','job_applicant.uid','job_applicant.apply_date','job_vacancy.id as vacancy_id','job_vacancy.position_name','job_company.company_name','job_company.id as company_id','province.province_name', 'city.city_name','job_company_category.category_name')
+            ->select('job_applicant.applicant_name','job_applicant.uid','job_applicant.apply_date','job_vacancy.id as vacancy_id','job_vacancy.position_name','job_company.company_name','job_company.id as company_id','province.province_name', 'city.city_name','job_company_category.category_name')
             ->get())->addIndexColumn()->make(true);
     }
 

@@ -377,9 +377,9 @@ class ApiPartTimeController extends ApiController
         }
 
         JobApplicant::insert(array(
-           "uid"=>$this->user->uid,
-           "name" => $this->user->name,
-           "vacancy_id" => $request->vacancy_id,
+            "uid"=>$this->user->uid,
+            "applicant_name" => $this->user->name,
+            "vacancy_id" => $request->vacancy_id,
             "apply_date"=>  date('yy-m-d h:m:s')
         ));
 

@@ -18,7 +18,7 @@ function init_data_table() {
                 { defaultContent: '<td></td>' },
                 { data: 'DT_RowIndex', name: 'DT_RowIndex'},
                 { data: 'uid', name: 'uid' },
-                { data: 'name', name: 'name' },
+                { data: 'applicant_name', name: 'applicant_name' },
                 { data: 'company_name', name: 'company_name' },
                 { data: 'position_name', name: 'position_name'},
                 { data: 'category_name', name: 'category_name'},
