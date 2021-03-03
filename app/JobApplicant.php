@@ -10,6 +10,23 @@ class JobApplicant extends Model
     protected $table = 'job_applicant';
 
     protected $fillable = [
-        'id','uid','applicant_name','vacancy_id','apply_date'
+        'id',
+        'uid',
+        'img',
+        'applicant_name',
+        'vacancy_id',
+        'apply_date',
+        'dob',
+        'sex',
+        'pob',
+        'phone',
+        'email',
+        'weight',
+        'height',
+        'religion',
+        'last_education',
+        'skills',
+        'hobby',
+        'address',
     ];
 }
