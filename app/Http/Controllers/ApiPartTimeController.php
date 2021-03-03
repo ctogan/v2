@@ -923,7 +923,7 @@ class ApiPartTimeController extends ApiController
             'pob' => 'required',
             'dob' => 'required',
             'sex' => 'required',
-            'phone_number' => 'required',
+            'phone' => 'required',
             'email' => 'required',
             'religion' => 'required',
             'education' => 'required',
