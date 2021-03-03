@@ -24,7 +24,8 @@ class Utils {
             "pending" => "badge-warning",
             "published" => "badge-primary",
             "unpublished" => "badge-info text-light",
-            "rejected"=>"badge-dark"
+            "rejected"=>"badge-dark",
+            "waiting_confirm"=>"badge-warning p-2",
         );
 
         return $badge[$status];

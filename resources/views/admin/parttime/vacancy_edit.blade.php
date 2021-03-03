@@ -234,7 +234,7 @@
             <div class="card bg-light border-radius-none">
                 <div class="card-header">
                     <div class="container">
-                        @if ($vacancy->vacancy_status == "pending")
+                        @if ($vacancy->vacancy_status == "pending" || $vacancy->vacancy_status == "waiting_confirm")
                             <button id="btn_update_vacancy" class="btn btn-primary mr-1"><i data-feather="save"></i> Update</button>
                             <button id="btn_approve_vacancy" class="btn btn-primary mr-1"><i data-feather="check"></i> Approve</button>
                             <button id="btn_open_reject_form" class="btn btn-outline-danger"><i data-feather="x"></i> Reject</button>
