@@ -81,6 +81,20 @@
                                 </div>
                             </div>
                             <div class="form-group row">
+                                <label for="position_name" class="col-sm-2 col-form-label">Employee Size*</label>
+                                <div class="col-sm-6">
+                                    <select class="form-control custom-select" name="employee_size" id="">
+                                        <option value="0">Choose</option>
+                                        <option value="1 - 20">1 - 20</option>
+                                        <option value="21 - 50">21 - 50</option>
+                                        <option value="51 - 100">51 - 100</option>
+                                        <option value="101 - 500">101 - 500</option>
+                                        <option value="501 - 1000">501 - 1000</option>
+                                        <option value="> 1000">> 1000 </option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-group row">
                                 <label for="company" class="col-sm-2 col-form-label">Description*</label>
                                 <div class="col-sm-10">
                                     <textarea placeholder="Describe about the company" name="description" class="form-control" style="white-space: pre-line;" cols="100" rows="8"></textarea>

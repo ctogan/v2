@@ -50,39 +50,17 @@ class ApiPartTimeController extends ApiController
 
     public function candidate(Request $request){
         $job_filter = JobFilter::where('uid','=',$this->user->uid)->first();
-        /*print_r($job_filter);
 
-        if($job_filter){
-            $json = json_decode($job_filter->filter);
-            print_r(explode(',' ,$json->province_id));
-            print_r(Province::
-             select(DB::raw("STRING_AGG(city_name ,',')"))
-             ->whereIn('id', explode(',' ,$json->province_id))
-             ->first();
-            exit;
-            if(count($json > 0)){
-                $job_filter['province_id'] = Province::select('province_name')->whereIn('id' , explode(',' ,$json->province_id));
-                $job_filter['city_id']= City::select('city_name')->whereIn('id' , explode(',' ,$json->city_id));
-                $job_filter['company_type'] = CompanyCategory::select('category_name')->whereIn('id' , explode(',' ,$json->company_type));
-                $job_filter['education_level'] = JobEducation::select('education_level')->whereIn('id' , explode(',' ,$json->education_level));
-            }
-        }
-
-        print_r($job_filter);*/
         $config = [
             "text"=>trans('part_time'),
             "filter"=>$job_filter ? json_decode($job_filter->filter) : null,
-            "is_profile_complete" => false
+            "is_profile_complete" => $this->user->job_part_time_complete
         ];
         $response = [
             'config' => $config,
             'user'=> $this->user,
             'bookmark' => $this->get_job_bookmark(3),
             'recommendation' => $this->get_job_search_and_recomendations($request),
-            // 'recommendation' => Vacancy::
-            // where('row_status' ,'active')
-            // ->where('vacancy_status' ,'published')
-            // ->get(),
         ];
         return $this->successResponse($response);
     }
@@ -109,7 +87,6 @@ class ApiPartTimeController extends ApiController
 
         return $this->successResponse($response);
     }
-
 
     public function get_bookmark(Request $request){
         $response = $this->get_job_bookmark(20);
@@ -225,50 +202,56 @@ class ApiPartTimeController extends ApiController
 
         return $this->successResponse($response);
     }
+
     public function my_company_detail(Request $request){
+        $company = JobCompany::select('job_company.*','job_employee_size.employee_size','province.province_name','city.city_name','job_company_category.category_name')
+            ->where('uid','=',$this->user->uid)
+            ->join('job_employee_size','job_employee_size.id','job_company.employee_size_id')
+            ->leftJoin('job_company_category' ,'job_company.category' ,'job_company_category.id')
+            ->leftJoin('province' ,'job_company.province_id' ,'province.id')
+            ->leftJoin('city' ,'job_company.city_id' ,'city.id')
+            ->first();
 
-        $company = $company = JobCompany::select('job_company.*','province.province_name','city.city_name')
-                                ->where('uid','=',$this->user->uid)
-                                ->leftJoin('job_company_category' ,'job_company.category' ,'job_company_category.id')
-                                ->leftJoin('province' ,'job_company.province_id' ,'province.id')
-                                ->leftJoin('city' ,'job_company.city_id' ,'city.id')
-                                ->first();
+        $active_vacancy = Vacancy::select('job_vacancy.*','job_company.company_name','province.province_name','city.city_name','job_company_category.category_name')
+            ->where('company_id' , $company->id)
+            ->leftJoin('job_company', 'job_company.id' ,'job_vacancy.company_id')
+            ->leftJoin('province', 'province.id' ,'job_vacancy.province_id')
+            ->leftJoin('city', 'city.id' ,'job_vacancy.city_id')
+            ->leftJoin('job_company_category','job_company_category.id','job_company.category')
+            ->where('vacancy_status','published')
+            ->get();
 
-       // $waiting_confirm = Vacancy::join('job_company' ,'job_company.id' , '=' , 'job_vacancy.company_id')
-                           // ->where('job_company.uid' , $this->user->uid)->where('vacancy_status','waiting_confirm')->get();
+        $pending_vacancy = Vacancy::select('job_vacancy.*','job_company.company_name','province.province_name','city.city_name','job_company_category.category_name')
+            ->where('company_id' , $company->id)
+            ->leftJoin('job_company', 'job_company.id' ,'job_vacancy.company_id')
+            ->leftJoin('province', 'province.id' ,'job_vacancy.province_id')
+            ->leftJoin('city', 'city.id' ,'job_vacancy.city_id')
+            ->leftJoin('job_company_category','job_company_category.id','job_company.category')
+            ->where('vacancy_status','waiting_confirm')
+            ->get();
+
+        $reported_vacancy = Vacancy::select('job_vacancy.*','job_company.company_name','province.province_name','city.city_name','job_company_category.category_name')
+            ->where('company_id' , $company->id)
+            ->leftJoin('job_company', 'job_company.id' ,'job_vacancy.company_id')
+            ->leftJoin('province', 'province.id' ,'job_vacancy.province_id')
+            ->leftJoin('city', 'city.id' ,'job_vacancy.city_id')
+            ->leftJoin('job_company_category','job_company_category.id','job_company.category')
+            ->where('vacancy_status','failed')->get();
+
         $config = [
             "text"=>trans('part_time')
         ];
 
         $response = [
             'config' => $config,
-            'waiting_confirm_vacancy' => Vacancy::select('job_vacancy.*','job_company.company_name','province.province_name','city.city_name','job_company_category.category_name')
-            ->where('company_id' , $company->id)
-            ->leftJoin('job_company', 'job_company.id' ,'job_vacancy.company_id')
-            ->leftJoin('province', 'province.id' ,'job_vacancy.province_id')
-            ->leftJoin('city', 'city.id' ,'job_vacancy.city_id')
-            ->leftJoin('job_company_category','job_company_category.id','job_company.category')
-            ->where('vacancy_status','waiting_confirm')->get(),
-            'reported_vacancy' => Vacancy::select('job_vacancy.*','job_company.company_name','province.province_name','city.city_name','job_company_category.category_name')
-            ->where('company_id' , $company->id)
-            ->leftJoin('job_company', 'job_company.id' ,'job_vacancy.company_id')
-            ->leftJoin('province', 'province.id' ,'job_vacancy.province_id')
-            ->leftJoin('city', 'city.id' ,'job_vacancy.city_id')
-            ->leftJoin('job_company_category','job_company_category.id','job_company.category')
-            ->where('vacancy_status','failed')->get(),
-            'active_vacancy' => Vacancy::select('job_vacancy.*','job_company.company_name','province.province_name','city.city_name','job_company_category.category_name')
-            ->where('company_id' , $company->id)
-            ->leftJoin('job_company', 'job_company.id' ,'job_vacancy.company_id')
-            ->leftJoin('province', 'province.id' ,'job_vacancy.province_id')
-            ->leftJoin('city', 'city.id' ,'job_vacancy.city_id')
-            ->leftJoin('job_company_category','job_company_category.id','job_company.category')
-            ->where('vacancy_status','published')->get(),
+            'waiting_confirm_vacancy' => $pending_vacancy,
+            'reported_vacancy' => $reported_vacancy,
+            'active_vacancy' => $active_vacancy,
             "company"=>$company,
         ];
 
         return $this->successResponse($response);
     }
-
 
     public function search(Request $request){
         $response = $this->get_job_search_and_recomendations($request);
@@ -472,6 +455,7 @@ class ApiPartTimeController extends ApiController
                 $user->hobby = $request->hobby;
                 // $user->img = $request->img;
                 $user->address = $request->address;
+                $user->job_part_time_complete = true;
                 // $user->phone = $request->phone_number;
                //print_r($user); exit;
                 $user->save();
@@ -490,7 +474,8 @@ class ApiPartTimeController extends ApiController
                     "religion"=>$request->religion,
                     "last_education"=>$request->education,
                     "skills"=>$request->skill,
-                    "hobby"=>$request->hobby
+                    "hobby"=>$request->hobby,
+                    "job_part_time_complete" => true
                     // "img"=>$request->img,
                     // "phone"=>$request->phone_number
                 )
@@ -666,7 +651,6 @@ class ApiPartTimeController extends ApiController
         return $this->successResponse(null, static::TRANSACTION_SUCCESS, static::CODE_SUCCESS);
     }
 
-
     public function submit_report_candidate(Request $request){
         $validation = Validator::make($request->all(), [
             'uid' => 'required',
@@ -695,7 +679,6 @@ class ApiPartTimeController extends ApiController
 
         return $this->successResponse(null, static::TRANSACTION_SUCCESS, static::CODE_SUCCESS);
     }
-
 
     public function submit_report_user(Request $request){
         $validation = Validator::make($request->all(), [
@@ -954,7 +937,6 @@ class ApiPartTimeController extends ApiController
         return View::make('webapp.filter_province')->with($pageVars);
     }
 
-
     public function form_employer(Request $request){
         $response =[
             'province' => CtreeCache::get_province(),
@@ -1016,7 +998,6 @@ class ApiPartTimeController extends ApiController
         }
         return $this->successResponse(null, static::TRANSACTION_SUCCESS, static::CODE_SUCCESS);
     }
-
 
     public function upload_image_profile(Request $request){
         $validation = Validator::make($request->all(), [

@@ -10,6 +10,6 @@ class JobCompany extends Model
     protected $table = 'job_company';
 
     protected $fillable = [
-        'row_status','uid','company_name','company_logo','category', 'address','province_id','city_id','description','email','phone_number','website','created_at','created_by','updated_at','updated_by'
+        'row_status','uid','company_name','company_logo','category', 'address','province_id','city_id','employee_size','description','email','phone_number','website','created_at','created_by','updated_at','updated_by'
     ];
 }
