@@ -29,15 +29,7 @@
                                 <th>Category</th>
                                 <th>Province</th>
                                 <th>City</th>
-                                <th>Email</th>
-                                <th>Phone</th>
-                                <th>Website</th>
-                                <th>Created At</th>
-                                <th>Created By</th>
-                                <th>Updated At</th>
-                                <th>Update By</th>
-                                <th data-priority="2">Count</th>
-                                <th data-priority="1">Action</th>
+                                <th>Applied At</th>
                             </tr>
                             </thead>
                             <tbody>
@@ -49,4 +41,11 @@
             </div>
         </div>
     </div>
+@endsection
+
+@section('js')
+    <script src="{{url('/js/admin/parttime/applicant.js')}}" type="application/javascript" ></script>
+    <script>
+        init_data_table();
+    </script>
 @endsection

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Helpers\Upload;
 use App\Helpers\Utils;
+use App\JobApplicant;
 use App\JobCompany;
 use App\Vacancy;
 use Illuminate\Http\Request;
@@ -437,6 +438,16 @@ class AdminPartTimeController extends Controller
 
     public function applicant(Request $request){
         return view('admin.parttime.applicant');
+    }
+
+    public function applicant_paging(Request $request){
+        return DataTables::of(JobApplicant::join('job_vacancy','job_vacancy.id','job_applicant.vacancy_id')
+            ->join('job_company','job_company.id','job_vacancy.company_id')
+            ->join('province','province.id','job_vacancy.province_id')
+            ->join('city','city.id','job_vacancy.city_id')
+            ->join('job_company_category','job_company_category.id','job_company.category')
+            ->select('job_applicant.name','job_applicant.uid','job_applicant.apply_date','job_vacancy.id as vacancy_id','job_vacancy.position_name','job_company.company_name','job_company.id as company_id','province.province_name', 'city.city_name','job_company_category.category_name')
+            ->get())->addIndexColumn()->make(true);
     }
 
 }

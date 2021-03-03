@@ -41,6 +41,7 @@ Route::post('/admin/part-time/company/update', 'AdminPartTimeController@company_
 Route::post('/admin/part-time/company/delete', 'AdminPartTimeController@company_delete')->name('admin.pt.company_delete');
 
 Route::get('/admin/part-time/applicant', 'AdminPartTimeController@applicant')->name('admin.pt.applicant');
+Route::post('/admin/part-time/applicant/paging', 'AdminPartTimeController@applicant_paging')->name('admin.pt.applicant_paging');
 
 Route::get('/admin/data/city/', 'AdminPartTimeController@company')->name('admin.pt.company');
 Route::get('/admin/data/city/{id}', function ($id) {

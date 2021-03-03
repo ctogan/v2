@@ -10,6 +10,6 @@ class JobApplicant extends Model
     protected $table = 'job_applicant';
 
     protected $fillable = [
-        'id','uid','vacancy_id','apply_date'
+        'id','uid','name','vacancy_id','apply_date'
     ];
 }
