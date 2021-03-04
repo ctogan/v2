@@ -930,9 +930,9 @@ class ApiPartTimeController extends ApiController
             return $this->errorResponse($validation->errors(),static::CODE_ERROR_VALIDATION);
         }
         $response =[
-            'vacancy' => array(CtreeCache::get_job_vacancy_by_id($request->vacancy_id)),
+            'vacancy' => CtreeCache::get_job_vacancy_by_id($request->vacancy_id),
             'candidates' => array(CtreeCache::get_candidate_vacancy($request->vacancy_id)),
-            'company' => array(JobCompany::where('uid' , $this->user->uid)->first())
+            'company' => JobCompany::where('uid' , $this->user->uid)->first()
         ];
         return $this->successResponse($response, static::TRANSACTION_SUCCESS, static::CODE_SUCCESS);
     }
