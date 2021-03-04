@@ -55,9 +55,10 @@ class ApiPartTimeController extends ApiController
 
         $config = [
             "text"=>trans('part_time'),
-            "filter"=>$job_filter ? json_decode($job_filter->filter) : null,
+            "filter"=>$job_filter ? json_decode($job_filter->filter_text) : null,
             "is_profile_complete" => $this->user->job_part_time_complete == 1 ? true : false
         ];
+
         $response = [
             'config' => $config,
             'user'=> $this->user,
@@ -433,16 +434,27 @@ class ApiPartTimeController extends ApiController
             "salary_to" => $request->salary_to ? $request->salary_to : '0',
         );
 
+        $filter_text = array(
+            "province_id" => $request->province_text ? $request->province_text : 'all',
+            "city_id" => $request->city_text ? $request->city_text : 'all',
+            "company_type" => $request->company_type_text ? $request->company_type_text : 'all',
+            "education_level" => $request->education_level_text ? $request->education_level_text : 'all',
+            "salary_from" => $request->salary_from ? $request->salary_from : '0',
+            "salary_to" => $request->salary_to ? $request->salary_to : '0',
+        );
+
         $job_filter = JobFilter::where('uid','=',$this->user->uid)->first();
 
         if($job_filter){
             $job_filter->filter = json_encode($filter);
+            $job_filter->filter_text = json_encode($filter_text);
             $job_filter->save();
         }else{
             JobFilter::insert(
                 array(
                     "uid"=>$request->uid,
-                    "filter"=>json_encode($filter)
+                    "filter"=>json_encode($filter),
+                    "filter_text"=>json_encode($filter_text)
                 )
             );
         }
@@ -1060,7 +1072,10 @@ class ApiPartTimeController extends ApiController
         $candidate_list = [];
         if($candidate_bookmark){
             foreach($candidate_bookmark as $k){
-                $candidate_list[] = CtreeCache::user_cache($k->uid , true);
+                $obj_user = CtreeCache::user_cache($k->uid , true);
+                $obj_user->religion_text = Utils::RELIGION_MASTER[$obj_user->religion]['name'];
+                $obj_user->last_education_text = $obj_user->last_education;
+                $candidate_list[] =$obj_user;
             }
         }
         $response = [

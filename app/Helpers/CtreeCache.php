@@ -177,7 +177,7 @@ class CtreeCache {
         if($result){
             foreach($result as $applicant_detail){
                 $obj_user = static::user_cache($applicant_detail->uid, $forget);
-                $obj_user->religion_text = Utils::RELIGION_MASTER[$obj_user->religion]['name'];
+                $obj_user->religion_text = Utils::RELIGION_MASTER[$applicant_detail->religion]['name'];
                 $obj_user->last_education_text = $applicant_detail->education;
                 $user[] = $obj_user;
             }

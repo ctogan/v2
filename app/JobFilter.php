@@ -10,6 +10,6 @@ class JobFilter extends Model
     protected $table = 'job_filter';
 
     protected $fillable = [
-        'id','uid','filter'
+        'id','uid','filter','filter_text'
     ];
 }
