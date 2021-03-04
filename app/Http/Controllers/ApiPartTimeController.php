@@ -241,7 +241,7 @@ class ApiPartTimeController extends ApiController
             ->leftJoin('province', 'province.id' ,'job_vacancy.province_id')
             ->leftJoin('city', 'city.id' ,'job_vacancy.city_id')
             ->leftJoin('job_company_category','job_company_category.id','job_company.category')
-            ->where('vacancy_status','failed')->get();
+            ->where('vacancy_status','rejected')->get();
 
         $config = [
             "text"=>trans('part_time')
