@@ -148,6 +148,7 @@ class CtreeCache {
         }*/
         $result = Vacancy::where('job_vacancy.id','=',$vacancy_id)
             ->join('city','job_vacancy.city_id','city.id')
+            ->join('province', 'job_vacancy.province_id', 'province.id')
             ->join('job_company','job_company.id','job_vacancy.company_id')
             ->select('job_vacancy.*','job_company.company_name','city.city_name')
             ->first();
