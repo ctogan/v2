@@ -55,7 +55,7 @@ class ApiPartTimeController extends ApiController
 
         $config = [
             "text"=>trans('part_time'),
-            "filter"=>$job_filter ? json_decode($job_filter->filter_text) : null,
+            "filter"=>$job_filter ? json_decode($job_filter->filter) : null,
             "filter_text"=>$job_filter ? json_decode($job_filter->filter_text) : null,
             "is_profile_complete" => $this->user->job_part_time_complete == 1 ? true : false
         ];
