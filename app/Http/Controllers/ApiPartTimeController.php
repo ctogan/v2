@@ -379,6 +379,10 @@ class ApiPartTimeController extends ApiController
             return $this->errorResponse(static::PROFILE_UNCOMPLETE, static::PROFILE_UNCOMPLETE_CODE);
         }
 
+        if(!$this->user->phone){
+            return $this->errorResponse(static::PROFILE_UNCOMPLETE, static::PROFILE_UNCOMPLETE_CODE);
+        }
+
         JobApplicant::insert(array(
             "uid"=>$this->user->uid,
             "applicant_name" => $this->user->name,
@@ -944,7 +948,7 @@ class ApiPartTimeController extends ApiController
             'pob' => 'required',
             'dob' => 'required',
             'sex' => 'required',
-            'phone' => 'required',
+//            'phone' => 'required',
             'email' => 'required',
             'religion' => 'required',
             'last_education' => 'required',
@@ -953,9 +957,10 @@ class ApiPartTimeController extends ApiController
         ];
         foreach($profile_validator as $key=>$value){
             if($user->$key == '' ||  $user->$key == null) {
-                return true; //Check again
+                return false; //Check again
             }
         }
+
         return true;
     }
 
