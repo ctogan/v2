@@ -757,6 +757,7 @@ class ApiPartTimeController extends ApiController
             $company->company_name = $request->company_name;
            // $company->company_logo = Utils::upload($request,'company_logo','minijob/company/logo/');
             $company->category = $request->category;
+            $company->employee_size_id = $request->employee_size_id;
             $company->address = $request->address;
             $company->province_id = $request->province_id;
             $company->city_id = $request->city_id;
@@ -775,6 +776,7 @@ class ApiPartTimeController extends ApiController
                 'company_name' => $request->company_name,
                // 'company_logo' => Utils::upload($request,'company_logo','minijob/company/logo/'),
                 'category'=> $request->category,
+                'employee_size_id' => $request->employee_size_id,
                 'address'=> $request->address,
                 'province_id'=> $request->province_id,
                 'city_id'=> $request->city_id,
