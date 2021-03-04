@@ -166,14 +166,20 @@ class CtreeCache {
         $result = Cache::get(static::SES_GET_CANDIDATE_BY_VANCANCY_ID.'_'.$vacancy_id);
 
         if(!$result){
-            $result = JobApplicant::where('job_applicant.vacancy_id','=',$vacancy_id)->get();
+            $result = JobApplicant::where('job_applicant.vacancy_id','=',$vacancy_id)
+                ->join('job_education','job_education.id','job_applicant.last_education')
+                ->select('job_applicant.*','job_education.education')
+                ->get();
             Cache::put(static::SES_GET_CANDIDATE_BY_VANCANCY_ID.'_'.$vacancy_id , $result , static::CACHE_PER_MONTH);
         }
 
         $user = [];
         if($result){
             foreach($result as $applicant_detail){
-                $user[] = static::user_cache($applicant_detail->uid, $forget);
+                $obj_user = static::user_cache($applicant_detail->uid, $forget);
+                $obj_user->religion_text = Utils::RELIGION_MASTER[$obj_user->religion]['name'];
+                $obj_user->last_education_text = $applicant_detail->education;
+                $user[] = $obj_user;
             }
         }
         return $user;
