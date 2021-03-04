@@ -928,7 +928,8 @@ class ApiPartTimeController extends ApiController
         }
         $response =[
             'vacancy' => CtreeCache::get_job_vacancy_by_id($request->vacancy_id),
-            'candidates' => CtreeCache::get_candidate_vacancy($request->vacancy_id)
+            'candidates' => CtreeCache::get_candidate_vacancy($request->vacancy_id),
+            'company' => JobCompany::where('uid' , $this->user->uid)->first()
         ];
         return $this->successResponse($response, static::TRANSACTION_SUCCESS, static::CODE_SUCCESS);
     }
