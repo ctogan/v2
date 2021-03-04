@@ -170,19 +170,13 @@ class CtreeCache {
             Cache::put(static::SES_GET_CANDIDATE_BY_VANCANCY_ID.'_'.$vacancy_id , $result , static::CACHE_PER_MONTH);
         }
 
-        //$result = JobApplicant::where('job_applicant.vacancy_id','=',$vacancy_id)->get();
-
-//        $user = [];
-//        if($result){
-//            $no = 1;
-//            foreach($result as $applicant_detail){
-//                $user = static::user_cache($applicant_detail->uid);
-//                echo $applicant_detail->uid . '--'; $no++;
-//            }
-//
-//            print_r($user);die();
-//        }
-        return $result;
+        $user = [];
+        if($result){
+            foreach($result as $applicant_detail){
+                $user[] = static::user_cache($applicant_detail->uid, $forget);
+            }
+        }
+        return $user;
     }
 
     public static function clear_candidate_vacancy($vacancy_id){
