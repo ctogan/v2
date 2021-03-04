@@ -399,6 +399,8 @@ class ApiPartTimeController extends ApiController
             "apply_date"=>  date('yy-m-d h:m:s')
         ));
 
+        CtreeCache::clear_candidate_vacancy($request->vacancy_id);
+
         return $this->successResponse(null, static::TRANSACTION_SUCCESS, static::CODE_SUCCESS);
     }
 

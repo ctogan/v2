@@ -177,6 +177,10 @@ class CtreeCache {
         return $user;
     }
 
+    public static function clear_candidate_vacancy($vacancy_id){
+        static::forget_cache(static::SES_GET_CANDIDATE_BY_VANCANCY_ID.'_'.$vacancy_id);
+    }
+
     public static function user_cache($uid, $forget = false){
     
         if($forget) static::forget_cache(static::SES_GET_USER_BY_ID.'_'.$uid);
