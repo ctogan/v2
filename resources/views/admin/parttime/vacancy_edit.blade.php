@@ -132,10 +132,10 @@
                                 <div class="col-sm-3">
                                     <select class="form-control custom-select" name="salary_type">
                                         <option value=""></option>
-                                        <option value="hour" {{$vacancy->salary_type == "hour" ? "selected" : "" }}>Hourly</option>
-                                        <option value="day" {{$vacancy->salary_type == "day" ? "selected" : "" }}>Daily</option>
-                                        <option value="week" {{$vacancy->salary_type == "week" ? "selected" : "" }}>Weekly</option>
-                                        <option value="month" {{$vacancy->salary_type == "month" ? "selected" : "" }}>Monthly</option>
+                                        <option value="hourly" {{$vacancy->salary_type == "hourly" ? "selected" : "" }}>Hourly</option>
+                                        <option value="daily" {{$vacancy->salary_type == "daily" ? "selected" : "" }}>Daily</option>
+                                        <option value="weekly" {{$vacancy->salary_type == "weekly" ? "selected" : "" }}>Weekly</option>
+                                        <option value="monthly" {{$vacancy->salary_type == "monthly" ? "selected" : "" }}>Monthly</option>
                                         <option value="project" {{$vacancy->salary_type == "project" ? "selected" : "" }}>Project</option>
                                     </select>
                                 </div>

@@ -79,17 +79,6 @@
                                         @foreach($education as $item)
                                             <option value="{{$item->id}}">{{$item->education}}</option>
                                         @endforeach
-                                        {{--<option>Choose Education</option>--}}
-                                        {{--<option value="sd"> SD</option>--}}
-                                        {{--<option value="smp"> SMP</option>--}}
-                                        {{--<option value="sma"> SMA</option>--}}
-                                        {{--<option value="d1"> Diploma 1</option>--}}
-                                        {{--<option value="d2"> Diploma 2</option>--}}
-                                        {{--<option value="d3"> Diploma 3</option>--}}
-                                        {{--<option value="d4"> Diploma 4</option>--}}
-                                        {{--<option value="sarjana"> Sarjana</option>--}}
-                                        {{--<option value="magister"> Magister</option>--}}
-                                        {{--<option value="doktor"> Doktor</option>--}}
                                     </select>
                                 </div>
                             </div>
@@ -123,10 +112,10 @@
                                 <div class="col-sm-3">
                                     <select class="form-control custom-select" name="salary_type">
                                         <option value=""></option>
-                                        <option value="hour">Hourly</option>
-                                        <option value="day">Daily</option>
-                                        <option value="week">Weekly</option>
-                                        <option value="month">Monthly</option>
+                                        <option value="hourly">Hourly</option>
+                                        <option value="daily">Daily</option>
+                                        <option value="weekly">Weekly</option>
+                                        <option value="monthly">Monthly</option>
                                         <option value="project">Project</option>
                                     </select>
                                 </div>

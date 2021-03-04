@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Helpers\Cache;
 use App\Helpers\CtreeCache;
 use App\Helpers\User;
 use App\Helpers\Utils;
@@ -9,6 +10,7 @@ use App\JobApplicant;
 use App\JobApplicantReported;
 use App\JobBookmark;
 use App\JobCompany;
+use App\JobEmployeeSize;
 use App\JobFilter;
 use App\JobUserPreferenceCategories;
 use App\JobUserPreferenceEducation;
@@ -961,12 +963,12 @@ class ApiPartTimeController extends ApiController
 
     public function form_employer(Request $request){
         $response =[
-            'province' => CtreeCache::get_province(),
-            'company_catogory' => CtreeCache::get_category(),
-            'working_time' =>array(['name' => 'hourly'] , ['name' => 'monthly']),
-            'education' => Utils::EDUCATION_MASTER,
-            'company' => JobCompany::where('uid' , $this->user->uid)->first()
-
+            'province' => Cache::get_province(),
+            'company_category' => Cache::get_category(),
+            'working_time' =>array(['name' => 'hourly'] , ['name' => 'daily'], ['name' => 'weekly'], ['name' => 'monthly'], ['name' => 'project']),
+            'education' => Cache::get_education(),
+            'company' => JobCompany::where('uid' , $this->user->uid)->first(),
+            'employee_size' => Cache::get_employee_size()
         ];
         return $this->successResponse($response, static::TRANSACTION_SUCCESS, static::CODE_SUCCESS);
     }

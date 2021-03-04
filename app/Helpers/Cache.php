@@ -5,6 +5,7 @@ use App\City;
 use App\CompanyCategory;
 use App\JobCompany;
 use App\JobEducation;
+use App\JobEmployeeSize;
 use App\Province;
 
 class Cache {
@@ -14,6 +15,7 @@ class Cache {
     protected const SES_GET_COMPANY_REGISTERED="__sess__get__company_registered";
     protected const SES_GET_EMPLOYEE_REGISTERED="__sess__get__employee_registered";
     protected const SES_EDUCATION="__sess__get__education";
+    protected const SES_EMPLOYEE_SIZE="__sess__get__employee__size";
 
     public static function get_province() {
         $province = \Illuminate\Support\Facades\Cache::get(static::SES_GET_PROVINCE);
@@ -83,6 +85,16 @@ class Cache {
         }
 
         return $education;
+    }
+
+    public static function get_employee_size(){
+        $employee_size = \Illuminate\Support\Facades\Cache::get(static::SES_EMPLOYEE_SIZE);
+        if(!$employee_size){
+            $employee_size =JobEmployeeSize::get();
+            \Illuminate\Support\Facades\Cache::put(static::SES_EMPLOYEE_SIZE, $employee_size, 36000);
+        }
+
+        return $employee_size;
     }
 
     public static function is_regis_part_time($uid){
