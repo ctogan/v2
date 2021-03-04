@@ -18,8 +18,8 @@ class CtreeCache {
     protected const SES_GET_CITY_BY_ID="__sess__get__city__by_id";
     protected const SES_GET_ALL_LOCATE="__sess__get__all__locate";
     protected const SES_GET_CATEGORY="__sess__get__all_category";
-    protected const SES_GET_VACANCY_BY_ID="__sess__get__category__by_id";
-    protected const SES_GET_CANDIDATE_BY_VANCANCY_ID="__sess__get__category__by_id";
+    protected const SES_GET_VACANCY_BY_ID="__sess__get__vacancy__by_id";
+    protected const SES_GET_CANDIDATE_BY_VANCANCY_ID="__sess__get__vacancy__by_id";
     protected const SES_GET_COMPANY_REGISTERED="__sess__get__company_registered";
     protected const SES_GET_EMPLOYEE_REGISTERED="__sess__get__employee_registered";
     protected const SES_GET_ALL_PROVINCE_AND_CITY = "__sess__get_province__and_city";
@@ -159,22 +159,30 @@ class CtreeCache {
     }
 
     public static function get_candidate_vacancy($vacancy_id , $forget = false){
-        if($forget) static::forget_cache(static::SES_GET_CANDIDATE_BY_VANCANCY_ID.'_'.$vacancy_id);
+        if($forget){
+            static::forget_cache(static::SES_GET_CANDIDATE_BY_VANCANCY_ID.'_'.$vacancy_id);
+        }
+
         $result = Cache::get(static::SES_GET_CANDIDATE_BY_VANCANCY_ID.'_'.$vacancy_id);
+
         if(!$result){
-            $result = JobApplicant::where('job_applicant.vacancy_id','=',$vacancy_id)
-                ->get();
+            $result = JobApplicant::where('job_applicant.vacancy_id','=',$vacancy_id)->get();
             Cache::put(static::SES_GET_CANDIDATE_BY_VANCANCY_ID.'_'.$vacancy_id , $result , static::CACHE_PER_MONTH);
         }
-         $result = JobApplicant::where('job_applicant.vacancy_id','=',$vacancy_id)
-                ->get();
-        $user = [];
-        if($result){
-            foreach($result as $applicant_detail){
-                $user = static::user_cache($applicant_detail->uid);
-            }
-        }
-        return $user;
+
+        //$result = JobApplicant::where('job_applicant.vacancy_id','=',$vacancy_id)->get();
+
+//        $user = [];
+//        if($result){
+//            $no = 1;
+//            foreach($result as $applicant_detail){
+//                $user = static::user_cache($applicant_detail->uid);
+//                echo $applicant_detail->uid . '--'; $no++;
+//            }
+//
+//            print_r($user);die();
+//        }
+        return $result;
     }
 
     public static function clear_candidate_vacancy($vacancy_id){
@@ -182,12 +190,13 @@ class CtreeCache {
     }
 
     public static function user_cache($uid, $forget = false){
-    
-        if($forget) static::forget_cache(static::SES_GET_USER_BY_ID.'_'.$uid);
+        if($forget){
+            static::forget_cache(static::SES_GET_USER_BY_ID.'_'.$uid);
+        }
         $result = Cache::get(static::SES_GET_USER_BY_ID.'_'.$uid);
         if(!$result){
             $result = DB::connection("users")->table("view_user_2")->where("uid",'=',$uid)->first();
-            Cache::put(static::SES_GET_USER_BY_ID.'_'.$uid , $result , static::CACHE_PER_MONTH);
+            Cache::put(static::SES_GET_USER_BY_ID.'_'.$uid , $result , static::CACHE_PER_HOURS);
         }
         return $result;
     }
