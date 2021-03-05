@@ -1,0 +1,253 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400&display=swap" rel="stylesheet">
+    <title>Document</title>
+    <style>
+        *{
+            margin:0;
+            padding:0;
+            box-sizing: border-box;
+            font-family: 'Open Sans', sans-serif;
+            font-weight: 300;
+        }
+        h1{
+            color:#fff;
+        }
+        p{
+            font-weight: 300;
+            line-height: 1.8rem;
+        }
+        .header{
+            height: 250px;
+            width: 100%;
+            background-image: linear-gradient(to right,#b87bf9,#a091fd);
+        }
+        .cv-container{
+            width: 737px;
+            margin: auto;
+        }
+        .row{
+            display: flex;
+        }
+        .col-1{
+            width: 10%;
+        }
+        .col-2{
+            width: 20%;
+        }
+        .col-3{
+            width: 30%;
+        }
+        .col-4{
+            width: 40%;
+        }
+        .col-5{
+            width: 50%;
+        }
+        .col-6{
+            width: 60%;
+        }
+        .col-7{
+            width: 70%;
+        }
+        .p-15{
+            padding:15px;
+        }
+        .bl{
+            position: relative;
+        }
+        .bl:before{
+            content: '';
+            border-left: 1px solid #ffffff5c;
+            height: 220px;
+            position: absolute;
+            left: -5px;
+        }
+        .h-100{
+            height: 100%;
+        }
+        img{
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            margin-bottom: 5px;
+        }
+        .info-top-left p{
+            color:#fff;
+        }
+        .top-info{
+            line-height: 1.6rem!important;
+        }
+        .top-info p{
+            color:#fff;
+            font-weight: 300;
+            font-size: 0.9rem;
+        }
+        .period{
+            position: relative;
+            width: 300px;
+        }
+        .period:after{
+            content: '';
+            border-right: 1px solid #b77df9;
+            height: 100%;
+            position: absolute;
+            right: 0px;
+            top: 0;
+        }
+        .experienced{
+            position: relative;
+            padding-left:35px;
+            padding-bottom: 30px;
+        }
+        .experienced:after{
+            content: '';
+            height: 15px;
+            width: 15px;
+            background-color: #b77df9;
+            position: absolute;
+            left: -8px;
+            top: 0;
+            border-radius: 50%;
+        }
+        .experienced h3{
+            font-weight:400;
+            margin-bottom: 5px;
+        }
+        .experienced h4{
+            margin-bottom: 5px;
+        }
+        .experienced-item{
+            display: flex;
+        }
+        .experienced-item:last-child{
+            border-bottom: 1px solid #b77df9;
+        }
+        .section{
+            padding:15px 35px;margin-top: 10px;
+        }
+        .section h2{
+            margin-bottom: 30px;
+        }
+        .skill{
+            display: flex;
+            list-style: none;
+            flex-wrap: wrap;
+            margin-left: 18px;
+        }
+        .skill li{
+            padding:7px 10px;
+            text-align: center;
+            background-color: #aa89fb;
+            margin:5px;
+            border-radius: 20px;
+            color:#fff;
+        }
+        .skill li:nth-child(even){
+            background-color: #b87bf9;
+        }
+        .education{
+            padding: 5px 25px;
+        }
+        .education h3{
+            font-weight: 400;
+        }
+        .bb{
+            border-bottom: 1px solid #b77df9;
+            padding-bottom: 30px;
+        }
+    </style>
+</head>
+<body>
+    <div class="cv-container">
+        <div class="header">
+            <div class="row h-100">
+                <div class="col-7 p-15 h-100">
+                    <div class="info-top-left" style="margin: auto;height: 100%;padding:15px 35px;">
+                        <h1>Agust Tampubolon</h1>
+                        <p>Pria, 32 Tahun</p>
+                        <p>Lorem ipsum dolor sit amet.Lorem ipsum dolor sit amet.</p>
+                        <p>Kristen</p>
+                        <br/>
+                        <p>
+                            Lorem ipsum dolor sit amet.
+                        </p>
+                    </div>
+                </div>
+                <div class="col-3 p-15 bl">
+                    <div style="margin: auto;display: flex;align-items: center;height: 100%;justify-content: center">
+                        <div class="top-info">
+                            <div style="text-align: center">
+                                <img src="{{asset('/assets/images/cv.png')}}" alt="">
+                            </div>
+                            <p>TTL : Jakarta, 20 March 2020</p>
+                            <p>Email : agust@cashtree.id</p>
+                            <p>HP : 0812-2344-1234</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="body">
+            <div class="section">
+                <h2>Pengalaman Kerja</h2>
+                <div class="experienced-item">
+                    <div class="period">2019 - 2020 </div>
+                    <div class="experienced">
+                        <h3>PT Name</h3>
+                        <h4>Manager IT</h4>
+                        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Accusantium, at doloremque id maiores obcaecati reprehenderit ut? Aperiam aspernatur delectus veritatis!</p>
+                    </div>
+                </div>
+                <div class="experienced-item">
+                    <div class="period">2019 - 2020 </div>
+                    <div class="experienced">
+                        <h3>PT Name</h3>
+                        <h4>Manager IT</h4>
+                        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Accusantium, at doloremque id maiores obcaecati reprehenderit ut? Aperiam aspernatur delectus veritatis!</p>
+                    </div>
+                </div>
+            </div>
+            <div class="section">
+                <div class="row bb">
+                    <div class="col-3"><h2>Keahlian</h2></div>
+                    <div>
+                        <ul class="skill">
+                            <li>IT</li>
+                            <li>Design</li>
+                            <li>Computer</li>
+                            <li>Cooking</li>
+                            <li>Managing</li>
+                            <li>Finance</li>
+                            <li>Cooking</li>
+                            <li>Managing</li>
+                            <li>Finance</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="section">
+                <div class="row bb">
+                    <div class="col-2"><h2>Pendidikan</h2></div>
+                    <div class="education">
+                        <h3>STM Penerbangan</h3>
+                        <h4>Jurusan Penerbangan</h4>
+                        <p>2020 - 2019</p>
+                    </div>
+                </div>
+            </div>
+            <br/>
+            <br/>
+            <p style="text-align: center;padding: 15px;">Dibuat oleh Cashtree Application {{date('Y')}}</p>
+            <br/>
+            <br/>
+        </div>
+    </div>
+</body>
+</html>

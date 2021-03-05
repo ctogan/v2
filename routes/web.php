@@ -94,3 +94,5 @@ Route::get('/admin/operational/clbk/event/upload', 'OperationalController@clbk_u
 Route::post('/admin/operational/clbk/event/submit', 'OperationalController@clbk_submit')->name('admin.operational.clbk.event.submit');
 
 Route::get('/sms-job', 'OperationalController@do_sms_queue')->name('sms.job');
+
+Route::get('/cv', 'AdminPartTimeController@cv')->name('cv');

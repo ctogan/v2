@@ -179,6 +179,7 @@ return [
         App\Providers\CacheServiceProvider::class,
         App\Providers\UtilsServiceProvider::class,
         App\Providers\UserServiceProvider::class,
+        Barryvdh\DomPDF\ServiceProvider::class,
     ],
 
     /*
@@ -235,6 +236,7 @@ return [
         'UtilsHelp' => App\Helpers\Utils::class,
         'User' => App\Helpers\User::class,
         'Excel' => Maatwebsite\Excel\Facades\Excel::class,
+        'PDF' => Barryvdh\DomPDF\Facade::class,
     ],
 
 ];

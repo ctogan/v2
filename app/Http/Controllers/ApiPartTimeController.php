@@ -20,6 +20,7 @@ use App\Province;
 use App\UserJobExperiences;
 use App\UserName;
 use App\Vacancy;
+use Barryvdh\DomPDF\PDF;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Validator;
@@ -1080,12 +1081,15 @@ class ApiPartTimeController extends ApiController
 
     public function generate_cv()
     {
-        $file= public_path(). "/assets/sample.pdf";
+//        $file= public_path(). "/assets/sample.pdf";
+//
+//        $headers = array(
+//            'Content-Type: application/pdf',
+//        );
+        $data = [];
+        $pdf = PDF::loadView('cv.index', $data);
+        return $pdf->download('cv.pdf');
 
-        $headers = array(
-            'Content-Type: application/pdf',
-        );
-
-        return \Illuminate\Support\Facades\Response::download($file, 'sample.pdf', $headers);
+        //return \Illuminate\Support\Facades\Response::download($file, 'sample.pdf', $headers);
     }
 }

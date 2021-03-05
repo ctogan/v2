@@ -493,4 +493,8 @@ class AdminPartTimeController extends Controller
         return DataTables::of($query->get())->addIndexColumn()->make(true);
     }
 
+    public function cv(Request $request){
+        return view('cv.index');
+    }
+
 }
