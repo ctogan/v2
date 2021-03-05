@@ -20,7 +20,6 @@ use App\Province;
 use App\UserJobExperiences;
 use App\UserName;
 use App\Vacancy;
-use Barryvdh\DomPDF\PDF;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Validator;
@@ -33,6 +32,7 @@ use App\JobCandidateBookmark;
 use App\JobCandidateReported;
 use App\City;
 use App\JobEducation;
+use PDF;
 
 class ApiPartTimeController extends ApiController
 {
@@ -1094,6 +1094,7 @@ class ApiPartTimeController extends ApiController
             'experience'=>$experienced
         ];
         $pdf = PDF::loadView('cv.index', $data);
+
         return $pdf->download('cv.pdf');
     }
 }
