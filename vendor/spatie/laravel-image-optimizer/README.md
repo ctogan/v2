@@ -1,11 +1,10 @@
 # Optimize images in your Laravel app
 
 [![Latest Version on Packagist](https://img.shields.io/packagist/v/spatie/laravel-image-optimizer.svg?style=flat-square)](https://packagist.org/packages/spatie/laravel-image-optimizer)
-[![Build Status](https://img.shields.io/travis/spatie/laravel-image-optimizer/master.svg?style=flat-square)](https://travis-ci.org/spatie/laravel-image-optimizer)
-[![StyleCI](https://styleci.io/repos/96563589/shield?branch=master)](https://styleci.io/repos/96563589)
+![Tests](https://github.com/spatie/laravel-image-optimizer/workflows/tests/badge.svg)
 [![Total Downloads](https://img.shields.io/packagist/dt/spatie/laravel-image-optimizer.svg?style=flat-square)](https://packagist.org/packages/spatie/laravel-image-optimizer)
 
-This package is the Laravel 5.7 and up specific integration of [spatie/image-optimizer](https://github.com/spatie/image-optimizer). It can optimize PNGs, JPGs, SVGs and GIFs by running them through a chain of various [image optimization tools](https://github.com/spatie/image-optimizer#optimization-tools). The package will automatically detect which optimization binaries are installed on your system and use them.
+This package is the Laravel 6.0 and up specific integration of [spatie/image-optimizer](https://github.com/spatie/image-optimizer). It can optimize PNGs, JPGs, SVGs and GIFs by running them through a chain of various [image optimization tools](https://github.com/spatie/image-optimizer#optimization-tools). The package will automatically detect which optimization binaries are installed on your system and use them.
 
 Here's how you can use it:
 
@@ -31,9 +30,7 @@ Don't use Laravel you say? No problem! Just use the underlying [spatie/image-opt
 
 ## Support us
 
-Learn how to create a package like this one, by watching our premium video course:
-
-[![Laravel Package training](https://spatie.be/github/package-training.jpg)](https://laravelpackage.training)
+[<img src="https://github-ads.s3.eu-central-1.amazonaws.com/laravel-image-optimizer.jpg?t=1" width="419px" />](https://spatie.be/github-ad-click/laravel-image-optimizer)
 
 We invest a lot of resources into creating [best in class open source packages](https://spatie.be/open-source). You can support us by [buying one of our paid products](https://spatie.be/open-source/support-us).
 
@@ -65,6 +62,7 @@ use Spatie\ImageOptimizer\Optimizers\Optipng;
 use Spatie\ImageOptimizer\Optimizers\Gifsicle;
 use Spatie\ImageOptimizer\Optimizers\Pngquant;
 use Spatie\ImageOptimizer\Optimizers\Jpegoptim;
+use Spatie\ImageOptimizer\Optimizers\Cwebp;
 
 return [
     /**

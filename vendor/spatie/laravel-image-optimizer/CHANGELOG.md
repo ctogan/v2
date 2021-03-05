@@ -2,6 +2,14 @@
 
 All notable changes to `laravel-image-optimizer` will be documented in this file
 
+## 1.6.4 - 2020-11-27
+
+- add support for PHP 8
+
+## 1.6.3 - 2020-09-08
+
+- add support for Laravel 8
+
 ## 1.6.2 - 2020-07-14
 
 - bugfix for custom logger (#87)
