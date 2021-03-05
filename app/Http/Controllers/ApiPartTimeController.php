@@ -21,6 +21,7 @@ use App\UserJobExperiences;
 use App\UserName;
 use App\Vacancy;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\DB;
 use App\UserAddress;
@@ -71,12 +72,6 @@ class ApiPartTimeController extends ApiController
 
     public function candidate_profile(Request $request){
         $user = $this->user;
-
-//       $field_address= UserAddress::select('alamat_1')->where('uid' , $user->uid)->first();
-//        $address = '';
-//        if($field_address){
-//            $address = $field_address->alamat_1;
-//        }
 
         $field_address= UserName::select('address')->where('uid' , $user->uid)->first();
 
@@ -196,8 +191,6 @@ class ApiPartTimeController extends ApiController
     }
 
     public function my_company(Request $request){
-    
-        $company = JobCompany::where('uid','=',$this->user->uid)->first();
         $config = [
             "text"=>trans('part_time')
         ];
@@ -414,7 +407,6 @@ class ApiPartTimeController extends ApiController
 
         $city = CtreeCache::get_all_province_and_city(true);
         $data = [];
-        //print_r($city); exit();
         foreach ($city as $value){
            $data[$value['province_name']][] = $value;
         }
@@ -1084,5 +1076,16 @@ class ApiPartTimeController extends ApiController
         ];
 
         return $this->successResponse($response);
+    }
+
+    public function generate_cv()
+    {
+        $file= public_path(). "/assets/sample.pdf";
+
+        $headers = array(
+            'Content-Type: application/pdf',
+        );
+
+        return \Illuminate\Support\Facades\Response::download($file, 'sample.pdf', $headers);
     }
 }
