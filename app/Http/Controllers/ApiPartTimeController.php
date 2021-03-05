@@ -1088,15 +1088,12 @@ class ApiPartTimeController extends ApiController
 
     public function generate_cv()
     {
-//        $file= public_path(). "/assets/sample.pdf";
-//
-//        $headers = array(
-//            'Content-Type: application/pdf',
-//        );
-        $data = [];
+        $experienced = UserJobExperiences::where('uid','=',$this->user->uid)->get();
+        $data = [
+            'user'=>$this->user,
+            'experience'=>$experienced
+        ];
         $pdf = PDF::loadView('cv.index', $data);
         return $pdf->download('cv.pdf');
-
-        //return \Illuminate\Support\Facades\Response::download($file, 'sample.pdf', $headers);
     }
 }

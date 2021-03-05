@@ -10,11 +10,13 @@ use App\Province;
 
 class Cache {
     protected const SES_GET_PROVINCE="__sess__get__province";
+    protected const SES_GET_PROVINCE_ID="__sess__get__province_by__id";
     protected const SES_GET_ALL_CITY="__sess__get__all_city";
     protected const SES_GET_CATEGORY="__sess__get__all_category";
     protected const SES_GET_COMPANY_REGISTERED="__sess__get__company_registered";
     protected const SES_GET_EMPLOYEE_REGISTERED="__sess__get__employee_registered";
     protected const SES_EDUCATION="__sess__get__education";
+    protected const SES_EDUCATION_ID="__sess__get__education_id";
     protected const SES_EMPLOYEE_SIZE="__sess__get__employee__size";
 
     public static function get_province() {
@@ -22,6 +24,16 @@ class Cache {
         if(!$province){
             $province = Province::where('row_status','=','active')->get();
             \Illuminate\Support\Facades\Cache::put(static::SES_GET_PROVINCE, $province, 36000);
+        }
+
+        return $province;
+    }
+
+    public static function get_province_by_id($id) {
+        $province = \Illuminate\Support\Facades\Cache::get(static::SES_GET_PROVINCE_ID.$id);
+        if(!$province){
+            $province = Province::where('id','=',$id)->first();
+            \Illuminate\Support\Facades\Cache::put(static::SES_GET_PROVINCE_ID.$id, $province, 36000);
         }
 
         return $province;
@@ -82,6 +94,16 @@ class Cache {
         if(!$education){
             $education =JobEducation::get();
             \Illuminate\Support\Facades\Cache::put(static::SES_EDUCATION, $education, 36000);
+        }
+
+        return $education;
+    }
+
+    public static function get_education_by_id($id){
+        $education = \Illuminate\Support\Facades\Cache::get(static::SES_EDUCATION_ID.$id);
+        if(!$education){
+            $education =JobEducation::where('id','=',$id)->first();
+            \Illuminate\Support\Facades\Cache::put(static::SES_EDUCATION.$id, $education, 36000);
         }
 
         return $education;

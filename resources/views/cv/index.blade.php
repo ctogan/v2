@@ -77,6 +77,7 @@
             height: 100px;
             border-radius: 50%;
             margin-bottom: 5px;
+            object-fit: cover;
         }
         .info-top-left p{
             color:#fff;
@@ -91,7 +92,7 @@
         }
         .period{
             position: relative;
-            width: 300px;
+            width: 200px;
         }
         .period:after{
             content: '';
@@ -168,27 +169,27 @@
     <div class="cv-container">
         <div class="header">
             <div class="row h-100">
-                <div class="col-7 p-15 h-100">
+                <div class="col-6 p-15 h-100">
                     <div class="info-top-left" style="margin: auto;height: 100%;padding:15px 35px;">
-                        <h1>Agust Tampubolon</h1>
-                        <p>Pria, 32 Tahun</p>
-                        <p>Lorem ipsum dolor sit amet.Lorem ipsum dolor sit amet.</p>
-                        <p>Kristen</p>
+                        <h1>{{$user->name}}</h1>
+                        <p>{{UtilsHelp::SEX[$user->sex]}}, {{ date_diff(date_create($user->dob), date_create(date("Y-m-d")))->format('%y') }} Tahun</p>
+                        <p>{{$user->address}}</p>
+                        <p>{{ UtilsHelp::RELIGION_MASTER[$user->religion]['name']}}</p>
                         <br/>
                         <p>
-                            Lorem ipsum dolor sit amet.
+                            {{$user->profile}}
                         </p>
                     </div>
                 </div>
-                <div class="col-3 p-15 bl">
+                <div class="col-4 p-15 bl">
                     <div style="margin: auto;display: flex;align-items: center;height: 100%;justify-content: center">
                         <div class="top-info">
                             <div style="text-align: center">
-                                <img src="{{asset('/assets/images/cv.png')}}" alt="">
+                                <img src="{{$user->img}}" alt="">
                             </div>
-                            <p>TTL : Jakarta, 20 March 2020</p>
-                            <p>Email : agust@cashtree.id</p>
-                            <p>HP : 0812-2344-1234</p>
+                            <p>TTL : {{ \App\Helpers\Cache::get_province_by_id($user->pob)->province_name}}, {{$user->dob}}</p>
+                            <p>Email : {{$user->email}}</p>
+                            <p>HP : {{$user->phone}}</p>
                         </div>
                     </div>
                 </div>
@@ -197,37 +198,29 @@
         <div class="body">
             <div class="section">
                 <h2>Pengalaman Kerja</h2>
-                <div class="experienced-item">
-                    <div class="period">2019 - 2020 </div>
-                    <div class="experienced">
-                        <h3>PT Name</h3>
-                        <h4>Manager IT</h4>
-                        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Accusantium, at doloremque id maiores obcaecati reprehenderit ut? Aperiam aspernatur delectus veritatis!</p>
+                @foreach($experience as $e)
+                    <div class="experienced-item">
+                        <div class="period">{{$e->work_periode}} </div>
+                        <div class="experienced">
+                            <h3>{{$e->company_name}}</h3>
+                            <h4>{{$e->position}}</h4>
+                            <p>{{$e->work_description}}</p>
+                        </div>
                     </div>
-                </div>
-                <div class="experienced-item">
-                    <div class="period">2019 - 2020 </div>
-                    <div class="experienced">
-                        <h3>PT Name</h3>
-                        <h4>Manager IT</h4>
-                        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Accusantium, at doloremque id maiores obcaecati reprehenderit ut? Aperiam aspernatur delectus veritatis!</p>
-                    </div>
-                </div>
+                @endforeach
             </div>
             <div class="section">
                 <div class="row bb">
-                    <div class="col-3"><h2>Keahlian</h2></div>
+                    <div class="col-2"><h2>Keahlian</h2></div>
                     <div>
                         <ul class="skill">
-                            <li>IT</li>
-                            <li>Design</li>
-                            <li>Computer</li>
-                            <li>Cooking</li>
-                            <li>Managing</li>
-                            <li>Finance</li>
-                            <li>Cooking</li>
-                            <li>Managing</li>
-                            <li>Finance</li>
+                            <?php
+                                $arr_skill = explode(',',$user->skills)
+                            ?>
+
+                            @foreach($arr_skill as $skill)
+                                <li>{{$skill}}</li>
+                            @endforeach
                         </ul>
                     </div>
                 </div>
@@ -236,9 +229,9 @@
                 <div class="row bb">
                     <div class="col-2"><h2>Pendidikan</h2></div>
                     <div class="education">
-                        <h3>STM Penerbangan</h3>
-                        <h4>Jurusan Penerbangan</h4>
-                        <p>2020 - 2019</p>
+                        <h3>{{$user->school_name}} <small>({{ \App\Helpers\Cache::get_education_by_id($user->last_education)->education}})</small></h3>
+                        <h4>{{$user->major}}</h4>
+                        <p>{{$user->year_of_entry}} - {{$user->graduated_year}}</p>
                     </div>
                 </div>
             </div>

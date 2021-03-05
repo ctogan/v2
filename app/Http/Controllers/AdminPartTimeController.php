@@ -6,6 +6,8 @@ use App\Helpers\Upload;
 use App\Helpers\Utils;
 use App\JobApplicant;
 use App\JobCompany;
+use App\UserJobExperiences;
+use App\UserName;
 use App\Vacancy;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -494,7 +496,13 @@ class AdminPartTimeController extends Controller
     }
 
     public function cv(Request $request){
-        return view('cv.index');
+        $user = UserName::where('uid','=',16197803)->first();
+        $experienced = UserJobExperiences::where('uid','=',16197803)->get();
+        $data = [
+            'user'=>$user,
+            'experience'=>$experienced
+        ];
+        return view('cv.index',$data);
     }
 
 }
