@@ -468,6 +468,9 @@ class ApiPartTimeController extends ApiController
             'education' => 'required',
             'skill' => 'required',
             'hobby' => 'required',
+            'profile' => 'required',
+            'school_name'=> 'required',
+            'major' => 'required'
         ]);
 
         if ($validation->fails()) {
@@ -475,26 +478,27 @@ class ApiPartTimeController extends ApiController
         }
 
         $user = UserName::where('uid','=',$this->user->uid)->first();
-        
-            if($user){
-                $user->uid =$this->user->uid;
-                $user->name = $request->name;
-                $user->dob = date('Y-m-d' , strtotime($request->dob));
-                $user->sex =$request->sex;
-                $user->pob = (int) $request->pob;
-                $user->email =$request->email;
-                $user->weight =$request->weight;
-                $user->height =$request->height;
-                $user->religion = $request->religion;
-                $user->last_education = $request->education;
-                $user->skills = $request->skill;
-                $user->hobby = $request->hobby;
-                // $user->img = $request->img;
-                $user->address = $request->address;
-                $user->job_part_time_complete = true;
-                // $user->phone = $request->phone_number;
-               //print_r($user); exit;
-                $user->save();
+        if($user){
+            $user->uid =$this->user->uid;
+            $user->name = $request->name;
+            $user->dob = date('Y-m-d' , strtotime($request->dob));
+            $user->sex =$request->sex;
+            $user->pob = (int) $request->pob;
+            $user->email =$request->email;
+            $user->weight =$request->weight;
+            $user->height =$request->height;
+            $user->religion = $request->religion;
+            $user->last_education = $request->education;
+            $user->skills = $request->skill;
+            $user->hobby = $request->hobby;
+            $user->address = $request->address;
+            $user->job_part_time_complete = true;
+            $user->profile = $request->profile;
+            $user->school_name = $request->school_name;
+            $user->major = $request->major;
+            $user->year_of_entry = $request->year_of_entry;
+            $user->graduated_year = $request->graduated_year;
+            $user->save();
 
         }else{
             UserName::insert(
@@ -512,9 +516,12 @@ class ApiPartTimeController extends ApiController
                     "last_education"=>$request->education,
                     "skills"=>$request->skill,
                     "hobby"=>$request->hobby,
-                    "job_part_time_complete" => true
-                    // "img"=>$request->img,
-                    // "phone"=>$request->phone_number
+                    "job_part_time_complete" => true,
+                    "profile" => $request->profile,
+                    "school_name" => $request->school_name,
+                    "major" => $request->major,
+                    "year_of_entry" => $request->year_of_entry,
+                    "graduated_year" => $request->graduated_year
                 )
             );
         }

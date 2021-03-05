@@ -36,6 +36,11 @@ class UserName extends Model
         'skills',
         'hobby',
         'last_education',
-        'job_part_time_complete'
+        'job_part_time_complete',
+        'profile',
+        'school_name',
+        'major',
+        'year_of_entry',
+        'graduated_year'
     ];
 }
