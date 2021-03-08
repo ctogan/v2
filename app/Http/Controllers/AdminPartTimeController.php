@@ -214,9 +214,7 @@ class AdminPartTimeController extends Controller
     }
 
     public function vacancy_approve(Request $request){
-        $vacancy = Vacancy::where('job_vacancy.id','=',$request->id)
-            ->join('job_company','job_company.id','job_vacancy.company_id')
-            ->first();
+        $vacancy = Vacancy::where('job_vacancy.id','=',$request->id)->first();
 
         if(!$vacancy){
             return json_encode(['status'=> false, 'message'=> [array("Data Not Found!")]]);
@@ -232,7 +230,7 @@ class AdminPartTimeController extends Controller
             return json_encode(['status'=> false, 'message'=> [array("Update Error!")]]);
         }
 
-        static::insert_notification($vacancy);
+        static::insert_notification($vacancy->id);
 
         return json_encode(['status'=> true, 'message'=> "Success"]);
     }
@@ -246,9 +244,7 @@ class AdminPartTimeController extends Controller
             return json_encode(['status'=> false, 'message'=> $validation->messages()]);
         }
 
-        $vacancy = Vacancy::where('job_vacancy.id','=',$request->id)
-            ->join('job_company','job_company.id','job_vacancy.company_id')
-            ->first();
+        $vacancy = Vacancy::where('job_vacancy.id','=',$request->id)->first();
 
         if(!$vacancy){
             return json_encode(['status'=> false, 'message'=> [array("Data Not Found!")]]);
@@ -265,20 +261,26 @@ class AdminPartTimeController extends Controller
             return json_encode(['status'=> false, 'message'=> [array("Update Error!")]]);
         }
 
-        static::insert_notification($vacancy);
+        static::insert_notification($vacancy->id);
 
         return json_encode(['status'=> true, 'message'=> "Success"]);
     }
 
-    public static function insert_notification($vacancy){
+    public static function insert_notification($vacancy_id){
+        $vacancy = Vacancy::where('job_vacancy.id','=',$vacancy_id)
+            ->join('job_company','job_company.id','job_vacancy.company_id')
+            ->first();
+
+        $status = $vacancy->vacancy_status == "rejected" ? "Ditolak" : "Disetujui";
         JobNotification::insert(array([
             'uid' => $vacancy->uid,
-            'title'=> "Lowongan ".$vacancy->vacancy_status == "rejected" ? "Ditolak" : "Disetujui",
+            'title'=> "Lowongan ". $status ,
             'message'=> $vacancy->position_name .' : '. $vacancy->rejection_reason,
             "type"=>"employer",
             "is_read" => false,
             'deeplink' => 'jumlah_pelamar?vacancy='.$vacancy->id,
         ]));
+
     }
 
     public function company()
