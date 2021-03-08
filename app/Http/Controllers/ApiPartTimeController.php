@@ -746,10 +746,12 @@ class ApiPartTimeController extends ApiController
             array(
                 'uid' => $request->uid,
                 'reported_by' => $this->user->uid,
+                'reason_id' => $request->reason_id
             ),
             array(
                 'row_status'=>'active',
                 'uid' => $request->uid,
+                'reason_id' => $request->reason_id,
                 'reported_by' => $this->user->uid,
                 'created_at' => date("Y-m-d h:i:s")
             )
