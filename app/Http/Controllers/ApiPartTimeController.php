@@ -108,7 +108,10 @@ class ApiPartTimeController extends ApiController
         $data = [];
         if($result){
             foreach ($result as $item){
-                $data[] = CtreeCache::get_job_vacancy_by_id($item->vacancy_id);
+                $is_submited= JobApplicant::where('uid','=',$this->user->uid)
+                    ->where('vacancy_id','=',$item->id)->first() ? true : false;
+
+                $data[] = CtreeCache::get_job_vacancy_by_id($item->vacancy_id, $is_submited);
             }
         }
         return count($data) > 0 ? $data : [];
@@ -123,7 +126,9 @@ class ApiPartTimeController extends ApiController
             foreach ($vacancy as $item){
                 if($item->vacancy_id != '')
                 {
-                    $data[] = CtreeCache::get_job_vacancy_by_id($item->vacancy_id);
+                    $is_submited= JobApplicant::where('uid','=',$this->user->uid)
+                        ->where('vacancy_id','=',$item->vacancy_id)->first() ? true : false;
+                    $data[] = CtreeCache::get_job_vacancy_by_id($item->vacancy_id,$is_submited);
                 }
 
             }
@@ -298,9 +303,9 @@ class ApiPartTimeController extends ApiController
         $query = $query->orderBy('job_vacancy.created_at','desc')->paginate();
         if($query){
             foreach ($query as $item){
-                $data['is_submitted']= JobApplicant::where('uid','=',$this->user->uid)
+                $is_submited= JobApplicant::where('uid','=',$this->user->uid)
                     ->where('vacancy_id','=',$item->id)->first() ? true : false;
-                $data[] = CtreeCache::get_job_vacancy_by_id($item->id);
+                $data[] = CtreeCache::get_job_vacancy_by_id($item->id,$is_submited);
             }
         }
         return count($data) > 0 ? $data : [];

@@ -132,7 +132,7 @@ class CtreeCache {
         return true;
     }
 
-    public static function get_job_vacancy_by_id($vacancy_id , $forget=false){
+    public static function get_job_vacancy_by_id($vacancy_id, $is_submitted, $forget=false){
      /* if($forget) static::forget_cache(static::SES_GET_VACANCY_BY_ID.'_'.$vacancy_id);
         $result = Cache::get(static::SES_GET_VACANCY_BY_ID.'_'.$vacancy_id);
         if(!$result){
@@ -153,6 +153,7 @@ class CtreeCache {
             ->select('job_vacancy.*','job_company.company_name','city.city_name', 'province.province_name')
             ->first();
         if($result){
+            $result->is_submitted = $is_submitted;
             $result->toArray();
         }
         return $result;
