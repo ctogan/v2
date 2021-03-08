@@ -1075,7 +1075,7 @@ class ApiPartTimeController extends ApiController
             foreach($candidate_bookmark as $k){
                 $obj_user = CtreeCache::user_cache($k->uid , true);
                 $obj_user->religion_text = Utils::RELIGION_MASTER[$obj_user->religion]['name'];
-                $obj_user->last_education_text = $obj_user->last_education;
+                $obj_user->last_education_text = Cache::get_education_by_id($obj_user->last_education)->education;
                 $candidate_list[] =$obj_user;
             }
         }

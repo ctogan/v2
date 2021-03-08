@@ -2,6 +2,7 @@
 
 namespace App;
 
+use App\Helpers\Utils;
 use Illuminate\Database\Eloquent\Model;
 
 class JobApplicant extends Model
@@ -29,4 +30,9 @@ class JobApplicant extends Model
         'hobby',
         'address',
     ];
+
+    public function getSexAttribute($value)
+    {
+        return Utils::SEX[$value];
+    }
 }

@@ -2,12 +2,11 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
     {{--<link rel="preconnect" href="https://fonts.gstatic.com">--}}
     {{--<link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400&display=swap" rel="stylesheet">--}}
-    <title>Document</title>
-    <style type="text/css">
+
+    <style type="text/css" media="all">
         *{
             margin:0;
             padding:0;
@@ -23,9 +22,7 @@
             line-height: 1.8rem;
         }
         .header{
-            height: 250px;
-            width: 100%;
-            background-image: linear-gradient(to right,#b87bf9,#a091fd);
+            height: 250px;width: 100%;background-image: linear-gradient(to right,#b87bf9,#a091fd);
         }
         .cv-container{
             width: 737px;
@@ -163,11 +160,13 @@
             padding-bottom: 30px;
         }
     </style>
-    <link rel="stylesheet" type="text/css" media="all" href="/var/www/v2/public/css/cv.css" />
+    <title>Document</title>
+
+    <link rel="stylesheet" type="text/css" media="all" href="{{public_path('/css/cv.css')}}" />
 </head>
 <body>
     <div class="cv-container">
-        <div class="header">
+        <div class="header" style="height: 250px;width: 100%;background-image: linear-gradient(to right,#b87bf9,#a091fd);">
             <div class="row h-100">
                 <div class="col-6 p-15 h-100">
                     <div class="info-top-left" style="margin: auto;height: 100%;padding:15px 35px;">
