@@ -96,3 +96,8 @@ Route::post('/admin/operational/clbk/event/submit', 'OperationalController@clbk_
 Route::get('/sms-job', 'OperationalController@do_sms_queue')->name('sms.job');
 
 Route::get('/cv', 'AdminPartTimeController@cv')->name('cv');
+
+Route::get('/admin/part-time/faq', 'AdminPartTimeController@faq');
+Route::get('/admin/part-time/faq/add', 'AdminPartTimeController@faq');
+Route::post('/admin/part-time/faq/paging', 'AdminPartTimeController@faq_paging');
+Route::get('/admin/part-time/faq/{id}', 'AdminPartTimeController@faq_add');

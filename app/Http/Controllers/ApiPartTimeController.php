@@ -11,6 +11,7 @@ use App\JobApplicantReported;
 use App\JobBookmark;
 use App\JobCompany;
 use App\JobEmployeeSize;
+use App\JobFAQ;
 use App\JobFilter;
 use App\JobNotification;
 use App\JobUserPreferenceCategories;
@@ -1116,7 +1117,7 @@ class ApiPartTimeController extends ApiController
         return $this->successResponse($response);
     }
 
-    public function generate_cv()
+    public function generate_cv(Request $request)
     {
         $experienced = UserJobExperiences::where('uid','=',$this->user->uid)->get();
         $data = [
@@ -1126,5 +1127,17 @@ class ApiPartTimeController extends ApiController
         $pdf = PDF::loadView('cv.index', $data);
 
         return $pdf->download('cv.pdf');
+    }
+
+    public function faq(Request $request){
+        $faq = JobFAQ::where('type','=',$request->type)
+            ->where('row_status','=','active')
+            ->get();
+
+        $response = [
+            'faq' => $faq
+        ];
+
+        return $this->successResponse($response);
     }
 }

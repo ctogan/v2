@@ -69,6 +69,7 @@
                                     <li><a href="{{url('/admin/part-time/vacancy')}}">Vacancy</a></li>
                                     <li><a href="{{url('/admin/part-time/company')}}">Company</a></li>
                                     <li><a href="{{url('/admin/part-time/applicant')}}">Applicants</a></li>
+                                    <li><a href="{{url('/admin/part-time/faq')}}">FAQ</a></li>
                                 </ul>
                             </li>
                             {{--<li><a href="#">Drop Down 2</a></li>--}}

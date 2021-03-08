@@ -85,3 +85,4 @@ Route::post('/part-time/preference/category/submit', 'ApiPartTimeController@inse
 Route::post('/part-time/candidate/profile/image/save', 'ApiPartTimeController@upload_image_profile')->name('api.pt.upload_image_profile')->middleware('localization');
 
 Route::get('/part-time/generate/cv', 'ApiPartTimeController@generate_cv')->name('api.pt.generate_cv')->middleware('localization');
+Route::get('/part-time/faq', 'ApiPartTimeController@faq')->name('api.pt.faq')->middleware('localization');

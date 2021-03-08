@@ -6,6 +6,7 @@ use App\Helpers\Upload;
 use App\Helpers\Utils;
 use App\JobApplicant;
 use App\JobCompany;
+use App\JobFAQ;
 use App\JobNotification;
 use App\UserJobExperiences;
 use App\UserName;
@@ -529,4 +530,19 @@ class AdminPartTimeController extends Controller
         return view('cv.index',$data);
     }
 
+    public function faq(Request $request){
+        return view('admin.parttime.faq');
+    }
+
+    public function faq_add(Request $request){
+        return view('admin.parttime.add');
+    }
+
+    public function faq_edit(Request $request){
+        return view('admin.parttime.edit');
+    }
+
+    public function faq_paging(Request $request){
+        return DataTables::of(JobFAQ::where('row_status','=','active')->get())->addIndexColumn()->make(true);
+    }
 }
