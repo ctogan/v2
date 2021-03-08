@@ -401,14 +401,15 @@ class ApiPartTimeController extends ApiController
         ));
 
         $vacancy = Vacancy::where('id','=',$request->vacancy_id)
-            ->join('job_company','=','job_vacancy.company_id')
+            ->join('job_company','job_company.id','job_vacancy.company_id')
             ->first();
 
         JobNotification::insert(array([
             'uid' => $vacancy->uid,
-            'Title'=> "Tambahan Pelamar",
-            'Message'=> $vacancy->position_name,
+            'title'=> "Tambahan Pelamar",
+            'message'=> $vacancy->position_name,
             "type"=>"company",
+            "is_read" => false,
             'deeplink' => 'jumlah_pelamar?vacancy='.$request->vacancy_id,
         ]));
 
