@@ -521,6 +521,10 @@ class AdminPartTimeController extends Controller
         return DataTables::of($query->get())->addIndexColumn()->make(true);
     }
 
+    public function applicant_reported(Request $request){
+        return view('admin.parttime.applicant_reported');
+    }
+
     public function cv(Request $request){
         $user = UserName::where('uid','=',16197803)->first();
         $experienced = UserJobExperiences::where('uid','=',16197803)->get();

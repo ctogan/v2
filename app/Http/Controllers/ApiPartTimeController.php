@@ -352,24 +352,26 @@ class ApiPartTimeController extends ApiController
 
     public function vacancy_detail(Request $request){
         $vacancy = Vacancy::where("job_vacancy.id",'=',$request->id)
-            ->join('job_company','job_company.id','job_vacancy.company_id')
             ->first();
 
         if(!$vacancy){
             return $this->errorResponse(static::ERROR_NOT_FOUND,static::CODE_ERROR_VALIDATION);
         }
 
-        $applicant = JobApplicant::where('uid','=',$this->user->uid)
-            ->where('vacancy_id','=',$vacancy->id)
-            ->first();
         $config = [
             "text"=>trans('part_time')
         ];
 
+        $data = [];
+        if($vacancy){
+            $is_submited= JobApplicant::where('uid','=',$this->user->uid)
+                ->where('vacancy_id','=',$vacancy->id)->first() ? true : false;
+            $data[] = CtreeCache::get_job_vacancy_by_id($vacancy->id,$is_submited);
+        }
+
         $response = [
             "option" =>$config,
-            "vacancy" => $vacancy,
-            "is_submitted" =>$applicant ? true:false
+            "vacancy" => $data,
         ];
 
         return $this->successResponse($response);

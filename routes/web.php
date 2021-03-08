@@ -45,6 +45,8 @@ Route::post('/admin/part-time/company/delete', 'AdminPartTimeController@company_
 Route::get('/admin/part-time/applicant', 'AdminPartTimeController@applicant')->name('admin.pt.applicant');
 Route::post('/admin/part-time/applicant/paging', 'AdminPartTimeController@applicant_paging')->name('admin.pt.applicant_paging');
 
+Route::get('/admin/part-time/applicant/reported', 'AdminPartTimeController@applicant_reported')->name('admin.pt.applicant_reported');
+
 Route::get('/admin/data/city/', 'AdminPartTimeController@company')->name('admin.pt.company');
 Route::get('/admin/data/city/{id}', function ($id) {
     return Cache::get_city($id);

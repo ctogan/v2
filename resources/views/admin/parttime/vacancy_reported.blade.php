@@ -12,33 +12,31 @@
         </nav>
         <div class="row justify-content-center">
             <div class="col-md-12 mt-3">
-                <div class="card-header">
-                    <strong>List Of Reported Vacancy</strong>
-                </div>
-                <div class="card-body">
-                    <div class="row">
-                        <div class="col-md-12">
-                            <table id="dt_vacancy_reported" class="datatable table table-striped table-bordered nowrap table-hover" style="width:100%">
-                                <thead>
-                                <tr>
-                                    <th></th>
-                                    <th>No</th>
-                                    <th>Position Name</th>
-                                    <th>Company Name</th>
-                                    <th>Category</th>
-                                    <th>Province</th>
-                                    <th>City</th>
-                                    <th data-priority="2">Reported Count</th>
-                                    <th data-priority="1">Action</th>
-                                </tr>
-                                </thead>
-                                <tbody>
-                                <tr>
+                <div class="card">
+                    <div class="card-header">
+                        <strong>List Of Reported Vacancy</strong>
+                    </div>
+                    <div class="card-body">
+                        <table id="dt_vacancy_reported" class="datatable table table-striped table-bordered nowrap table-hover" style="width:100%">
+                            <thead>
+                            <tr>
+                                <th></th>
+                                <th>No</th>
+                                <th>Position Name</th>
+                                <th>Company Name</th>
+                                <th>Category</th>
+                                <th>Province</th>
+                                <th>City</th>
+                                <th data-priority="2">Reported Count</th>
+                                <th data-priority="1">Action</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr>
 
-                                </tr>
-                                </tbody>
-                            </table>
-                        </div>
+                            </tr>
+                            </tbody>
+                        </table>
                     </div>
                 </div>
             </div>

@@ -583,7 +583,7 @@ function init_data_table_reported() {
                     targets: 8,
                     className: "text-center",
                     render: function(data, type, full, meta) {
-                        return '<a onclick="unpublish_vacancy('+data+')" href="javascript:void(0)" class="btn btn-datatable btn-icon btn-transparent-dark btn-sm p-0 mr-2"><i data-feather="trash"></i></a>';
+                        return '<a onclick="delete_vacancy('+data+')" href="javascript:void(0)" class="btn btn-datatable btn-icon btn-transparent-dark btn-sm p-0 mr-2"><i data-feather="trash"></i></a>';
                     },
                 }
             ],

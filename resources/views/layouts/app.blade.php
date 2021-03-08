@@ -70,6 +70,7 @@
                                     <li><a href="{{url('/admin/part-time/vacancy/reported')}}">Vacancy Reported</a></li>
                                     <li><a href="{{url('/admin/part-time/company')}}">Company</a></li>
                                     <li><a href="{{url('/admin/part-time/applicant')}}">Applicants</a></li>
+                                    <li><a href="{{url('/admin/part-time/applicant/reported')}}">Applicants Reported</a></li>
                                     <li><a href="{{url('/admin/part-time/faq')}}">FAQ</a></li>
                                 </ul>
                             </li>
