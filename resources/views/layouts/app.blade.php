@@ -67,6 +67,7 @@
                             <li class="drop-down"><a href="javascript:void(0)">Job Part Time</a>
                                 <ul>
                                     <li><a href="{{url('/admin/part-time/vacancy')}}">Vacancy</a></li>
+                                    <li><a href="{{url('/admin/part-time/vacancy/reported')}}">Vacancy Reported</a></li>
                                     <li><a href="{{url('/admin/part-time/company')}}">Company</a></li>
                                     <li><a href="{{url('/admin/part-time/applicant')}}">Applicants</a></li>
                                     <li><a href="{{url('/admin/part-time/faq')}}">FAQ</a></li>

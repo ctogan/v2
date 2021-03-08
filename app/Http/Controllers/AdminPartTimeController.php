@@ -8,6 +8,7 @@ use App\JobApplicant;
 use App\JobCompany;
 use App\JobFAQ;
 use App\JobNotification;
+use App\JobVacancyReported;
 use App\UserJobExperiences;
 use App\UserName;
 use App\Vacancy;
@@ -279,7 +280,7 @@ class AdminPartTimeController extends Controller
             'message'=> $vacancy->position_name .' : '. $vacancy->rejection_reason,
             "type"=>"employer",
             "is_read" => false,
-            'deeplink' => 'jumlah_pelamar?vacancy='.$vacancy->id,
+            'deeplink' => 'perusahaan_home',
             'created_by' => Auth::user()->name,
             'created_at' => date('yy-m-d h:m:s')
         ]));
@@ -616,5 +617,20 @@ class AdminPartTimeController extends Controller
         }
 
         return json_encode(['status'=> true, 'message'=> "Success"]);
+    }
+
+    public function vacancy_reported(Request $request){
+        return view('admin.parttime.vacancy_reported');
+    }
+
+    public function vacancy_reported_paging(Request $request){
+        return DataTables::of(JobVacancyReported::join('job_vacancy','job_vacancy.id','job_vacancy_reported.vacancy_id')
+            ->join('job_company','job_company.id','job_vacancy.company_id')
+            ->join('job_company_category','job_company_category.id','job_company.category')
+            ->join('province','province.id','job_vacancy.province_id')
+            ->join('city','city.id','job_vacancy.city_id')
+            ->select('job_vacancy.id','position_name','reason_id','company_name','category_name','province_name','city_name', DB::raw('count(reason_id) as reported_count'))
+            ->groupBy('job_vacancy.id','position_name','reason_id','company_name','category_name','province_name','city_name')
+            ->get())->addIndexColumn()->make(true);
     }
 }

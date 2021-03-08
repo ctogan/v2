@@ -522,3 +522,74 @@ function delete_vacancy(id) {
         }
     });
 }
+
+function init_data_table_reported() {
+    let table = $('#dt_vacancy_reported');
+    if (table != null) {
+        table.DataTable({
+            responsive: {
+                details: {
+                    renderer: function ( api, rowIdx, columns ) {
+                        var data = $.map( columns, function ( col, i ) {
+                            return col.hidden ?
+                                '<tr data-dt-row="'+col.rowIndex+'" data-dt-column="'+col.columnIndex+'">'+
+                                '<td>'+col.title+''+'</td> '+
+                                '<td>'+' : '+col.data+'</td>'+
+                                '</tr>' :
+                                '';
+                        } ).join('');
+
+                        return data ?
+                            $('<table/>').append( data ) :
+                            false;
+                    }
+                }
+            },
+            processing: true,
+            serverSide: true,
+            ajax: {
+                url: '/admin/part-time/vacancy/reported/paging',
+                type:"POST",
+                data: function ( d ) {
+                    d.myKey = "myValue";
+                    d._token = $('meta[name="csrf-token"]').attr('content');
+                }
+            },
+            columns: [
+                { defaultContent: '<td></td>' },
+                { data: 'DT_RowIndex', name: 'DT_RowIndex'},
+                { data: 'position_name', name: 'position_name' },
+                { data: 'company_name', name: 'company_name' },
+                { data: 'category_name', name: 'category_name'},
+                { data: 'province_name', name: 'province_name'},
+                { data: 'city_name', name: 'city_name'},
+                { data: 'reported_count', name: 'reported_count'},
+                { data: 'id', name: 'id'},
+            ],
+            columnDefs: [
+                {
+                    targets: 0,
+                    className: "text-center"
+                },
+                {
+                    targets: 1,
+                    className: "text-center"
+                },
+                {
+                    targets: 7,
+                    className: "text-center"
+                },
+                {
+                    targets: 8,
+                    className: "text-center",
+                    render: function(data, type, full, meta) {
+                        return '<a onclick="unpublish_vacancy('+data+')" href="javascript:void(0)" class="btn btn-datatable btn-icon btn-transparent-dark btn-sm p-0 mr-2"><i data-feather="trash"></i></a>';
+                    },
+                }
+            ],
+            drawCallback: function() {
+                feather.replace();
+            },
+        });
+    }
+}

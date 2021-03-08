@@ -25,6 +25,8 @@ Route::get('/home', 'HomeController@index')->name('home');
 Route::get('/admin/part-time/vacancy', 'AdminPartTimeController@vacancy')->name('admin.pt.vacancy');
 Route::get('/admin/part-time/vacancy/add', 'AdminPartTimeController@vacancy_add')->name('admin.pt.vacancy_add');
 Route::get('/admin/part-time/vacancy/edit/{id}', 'AdminPartTimeController@vacancy_edit')->name('admin.pt.vacancy_edit');
+Route::get('/admin/part-time/vacancy/reported', 'AdminPartTimeController@vacancy_reported')->name('admin.pt.vacancy_reported');
+Route::post('/admin/part-time/vacancy/reported/paging', 'AdminPartTimeController@vacancy_reported_paging')->name('admin.pt.vacancy_reported_paging');
 Route::post('/admin/part-time/vacancy/paging', 'AdminPartTimeController@vacancy_paging')->name('admin.pt.vacancy_paging');
 Route::post('/admin/part-time/vacancy/submit', 'AdminPartTimeController@vacancy_submit')->name('admin.pt.vacancy_submit');
 Route::post('/admin/part-time/vacancy/update', 'AdminPartTimeController@vacancy_update')->name('admin.pt.vacancy_update');
