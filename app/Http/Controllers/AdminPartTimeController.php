@@ -136,6 +136,7 @@ class AdminPartTimeController extends Controller
             'send_to_wa' => $request->send_to_wa,
             'active_until' => $request->active_until,
             'vacancy_status' => $request->vacancy_status,
+            'allow_direct' => false,
             'created_by' => Auth::user()->name,
             'created_at' => date('yy-m-d h:m:s'),
         );
