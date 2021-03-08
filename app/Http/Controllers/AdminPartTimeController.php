@@ -279,6 +279,8 @@ class AdminPartTimeController extends Controller
             "type"=>"employer",
             "is_read" => false,
             'deeplink' => 'jumlah_pelamar?vacancy='.$vacancy->id,
+            'created_by' => Auth::user()->name,
+            'created_at' => date('yy-m-d h:m:s')
         ]));
 
     }
