@@ -12,6 +12,7 @@ use App\JobBookmark;
 use App\JobCompany;
 use App\JobEmployeeSize;
 use App\JobFilter;
+use App\JobNotification;
 use App\JobUserPreferenceCategories;
 use App\JobUserPreferenceEducation;
 use App\JobUserPreferenceProvince;
@@ -398,6 +399,18 @@ class ApiPartTimeController extends ApiController
             "vacancy_id" => $request->vacancy_id,
             "apply_date"=>  date('yy-m-d h:m:s')
         ));
+
+        $vacancy = Vacancy::where('id','=',$request->vacancy_id)
+            ->join('job_company','=','job_vacancy.company_id')
+            ->first();
+
+        JobNotification::insert(array([
+            'uid' => $vacancy->uid,
+            'Title'=> "Tambahan Pelamar",
+            'Message'=> $vacancy->position_name,
+            "type"=>"company",
+            'deeplink' => 'jumlah_pelamar?vacancy='.$request->vacancy_id,
+        ]));
 
         CtreeCache::clear_candidate_vacancy($request->vacancy_id);
 
