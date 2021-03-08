@@ -98,6 +98,9 @@ Route::get('/sms-job', 'OperationalController@do_sms_queue')->name('sms.job');
 Route::get('/cv', 'AdminPartTimeController@cv')->name('cv');
 
 Route::get('/admin/part-time/faq', 'AdminPartTimeController@faq');
-Route::get('/admin/part-time/faq/add', 'AdminPartTimeController@faq');
+Route::get('/admin/part-time/faq/add', 'AdminPartTimeController@faq_add');
+Route::get('/admin/part-time/faq/edit/{id}', 'AdminPartTimeController@faq_edit');
 Route::post('/admin/part-time/faq/paging', 'AdminPartTimeController@faq_paging');
-Route::get('/admin/part-time/faq/{id}', 'AdminPartTimeController@faq_add');
+Route::post('/admin/part-time/faq/submit', 'AdminPartTimeController@faq_submit');
+Route::post('/admin/part-time/faq/update', 'AdminPartTimeController@faq_update');
+Route::post('/admin/part-time/faq/delete', 'AdminPartTimeController@faq_delete');

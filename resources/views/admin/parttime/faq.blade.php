@@ -24,11 +24,11 @@
                         <table id="dt_faq" class="datatable table table-striped table-bordered nowrap table-hover" style="width:100%">
                             <thead>
                             <tr>
-                                <th>No</th>
-                                <th>Type</th>
+                                <th style="width: 100px">No</th>
+                                <th style="width: 150px">Type</th>
                                 <th>Question</th>
                                 <th>Answer</th>
-                                {{--<th data-priority="1">Action</th>--}}
+                                <th style="width: 100px" data-priority="1">Action</th>
                             </tr>
                             </thead>
                             <tbody>

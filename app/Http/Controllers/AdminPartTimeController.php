@@ -535,14 +535,86 @@ class AdminPartTimeController extends Controller
     }
 
     public function faq_add(Request $request){
-        return view('admin.parttime.add');
+        return view('admin.parttime.faq_add');
     }
 
     public function faq_edit(Request $request){
-        return view('admin.parttime.edit');
+        $faq = JobFAQ::where('id','=',$request->id)->first();
+        $data = [
+            'faq' =>$faq
+        ];
+        return view('admin.parttime.faq_edit',$data);
     }
 
     public function faq_paging(Request $request){
         return DataTables::of(JobFAQ::where('row_status','=','active')->get())->addIndexColumn()->make(true);
+    }
+
+    public function faq_submit(Request $request){
+        $validation = Validator::make($request->all(), [
+            'type' => 'required',
+            'question' => 'required',
+            'answer' => 'required',
+        ]);
+
+        if($validation->fails()) {
+            return json_encode(['status'=> false, 'message'=> $validation->messages()]);
+        }
+
+        $data_insert = array(
+            'row_status' => "active",
+            'type' => $request->type,
+            'question' => $request->question,
+            'answer' => $request->answer
+        );
+
+        JobFAQ::insert($data_insert);
+
+        return json_encode(['status'=> true, 'message'=> "Success"]);
+    }
+
+    public function faq_update(Request $request){
+        $validation = Validator::make($request->all(), [
+            'id' => 'required',
+            'type' => 'required',
+            'question' => 'required',
+            'answer' => 'required',
+        ]);
+
+        if($validation->fails()) {
+            return json_encode(['status'=> false, 'message'=> $validation->messages()]);
+        }
+
+        $faq = JobFAQ::where('id','=',$request->id)->first();
+
+        if(!$faq){
+            return json_encode(['status'=> false, 'message'=> [array("Data Not Found!")]]);
+        }
+
+        $faq->type = $request->type;
+        $faq->question = $request->question;
+        $faq->answer = $request->answer;
+
+        if(!$faq->save()){
+            return json_encode(['status'=> false, 'message'=> [array("Error!")]]);
+        }
+
+        return json_encode(['status'=> true, 'message'=> "Success"]);
+    }
+
+    public function faq_delete(Request $request){
+        $faq = JobFAQ::where('id','=',$request->id)->first();
+
+        if(!$faq){
+            return json_encode(['status'=> false, 'message'=> [array("Data Not Found!")]]);
+        }
+
+        $faq->row_status = "deleted";
+
+        if(!$faq->save()){
+            return json_encode(['status'=> false, 'message'=> [array("Update Error!")]]);
+        }
+
+        return json_encode(['status'=> true, 'message'=> "Success"]);
     }
 }
