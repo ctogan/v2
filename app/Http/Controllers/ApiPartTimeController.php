@@ -295,9 +295,11 @@ class ApiPartTimeController extends ApiController
             }
         }
         $data = [];
-        $query = $query->orderBy('job_vacancy.created_at','desc')->get();
+        $query = $query->orderBy('job_vacancy.created_at','desc')->paginate();
         if($query){
             foreach ($query as $item){
+                $data['is_submitted']= JobApplicant::where('uid','=',$this->user->uid)
+                    ->where('vacancy_id','=',$item->id)->first() ? true : false;
                 $data[] = CtreeCache::get_job_vacancy_by_id($item->id);
             }
         }
