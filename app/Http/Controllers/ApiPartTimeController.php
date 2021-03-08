@@ -404,14 +404,26 @@ class ApiPartTimeController extends ApiController
             ->join('job_company','job_company.id','job_vacancy.company_id')
             ->first();
 
-        JobNotification::insert(array([
-            'uid' => $vacancy->uid,
-            'title'=> "Tambahan Pelamar",
-            'message'=> $vacancy->position_name,
-            "type"=>"employer",
-            "is_read" => false,
-            'deeplink' => 'jumlah_pelamar?vacancy='.$request->vacancy_id,
-        ]));
+        JobNotification::insert(
+            array(
+                [
+                    'uid' => $vacancy->uid,
+                    'title'=> "Tambahan Pelamar",
+                    'message'=> $vacancy->position_name,
+                    "type"=>"employer",
+                    "is_read" => false,
+                    'deeplink' => 'jumlah_pelamar?vacancy='.$request->vacancy_id,
+                ],
+                [
+                    'uid' => $this->user->uid,
+                    'title'=> "Lamaran Terkirim",
+                    'message'=> $vacancy->position_name,
+                    "type"=>"candidate",
+                    "is_read" => false,
+                    'deeplink' => 'history_lamaran?uid='.$this->user->uid,
+                ]
+            )
+        );
 
         CtreeCache::clear_candidate_vacancy($request->vacancy_id);
 
