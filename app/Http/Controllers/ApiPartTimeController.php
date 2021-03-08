@@ -351,13 +351,17 @@ class ApiPartTimeController extends ApiController
             return $this->errorResponse(static::ERROR_NOT_FOUND,static::CODE_ERROR_VALIDATION);
         }
 
+        $applicant = JobApplicant::where('uid','=',$this->user->uid)
+            ->where('vacancy_id','=',$vacancy->id)
+            ->first();
         $config = [
             "text"=>trans('part_time')
         ];
 
         $response = [
             "option" =>$config,
-            "vacancy" => $vacancy
+            "vacancy" => $vacancy,
+            "is_submitted" =>$applicant ? true:false
         ];
 
         return $this->successResponse($response);

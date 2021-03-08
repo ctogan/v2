@@ -3,15 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
-    {{--<link rel="preconnect" href="https://fonts.gstatic.com">--}}
-    {{--<link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400&display=swap" rel="stylesheet">--}}
-
     <style type="text/css" media="all">
         *{
             margin:0;
             padding:0;
-            box-sizing: border-box;
-            font-family: 'Open Sans', sans-serif;
             font-weight: 300;
         }
         h1{
@@ -31,26 +26,14 @@
         .row{
             display: flex;
         }
-        .col-1{
-            width: 10%;
-        }
         .col-2{
             width: 20%;
-        }
-        .col-3{
-            width: 30%;
         }
         .col-4{
             width: 40%;
         }
-        .col-5{
-            width: 50%;
-        }
         .col-6{
             width: 60%;
-        }
-        .col-7{
-            width: 70%;
         }
         .p-15{
             padding:15px;
@@ -73,7 +56,6 @@
             height: 100px;
             border-radius: 50%;
             margin-bottom: 5px;
-            object-fit: cover;
         }
         .info-top-left p{
             color:#fff;
@@ -135,7 +117,6 @@
         .skill{
             display: flex;
             list-style: none;
-            flex-wrap: wrap;
             margin-left: 18px;
         }
         .skill li{
@@ -160,9 +141,6 @@
             padding-bottom: 30px;
         }
     </style>
-    <title>Document</title>
-
-    <link rel="stylesheet" type="text/css" media="all" href="{{public_path('/css/cv.css')}}" />
 </head>
 <body>
     <div class="cv-container">
@@ -181,7 +159,7 @@
                     </div>
                 </div>
                 <div class="col-4 p-15 bl">
-                    <div style="margin: auto;display: flex;align-items: center;height: 100%;justify-content: center">
+                    <div style="margin: auto;display: flex;height: 100%;">
                         <div class="top-info">
                             <div style="text-align: center">
                                 <img src="{{$user->img}}" alt="">
