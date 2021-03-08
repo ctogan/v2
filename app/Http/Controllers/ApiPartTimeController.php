@@ -400,7 +400,7 @@ class ApiPartTimeController extends ApiController
             "apply_date"=>  date('yy-m-d h:m:s')
         ));
 
-        $vacancy = Vacancy::where('id','=',$request->vacancy_id)
+        $vacancy = Vacancy::where('job_vacancy.id','=',$request->vacancy_id)
             ->join('job_company','job_company.id','job_vacancy.company_id')
             ->first();
 
