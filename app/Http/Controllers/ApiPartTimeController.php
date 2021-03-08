@@ -408,7 +408,7 @@ class ApiPartTimeController extends ApiController
             'uid' => $vacancy->uid,
             'title'=> "Tambahan Pelamar",
             'message'=> $vacancy->position_name,
-            "type"=>"company",
+            "type"=>"employer",
             "is_read" => false,
             'deeplink' => 'jumlah_pelamar?vacancy='.$request->vacancy_id,
         ]));

@@ -6,6 +6,7 @@ use App\Helpers\Upload;
 use App\Helpers\Utils;
 use App\JobApplicant;
 use App\JobCompany;
+use App\JobNotification;
 use App\UserJobExperiences;
 use App\UserName;
 use App\Vacancy;
@@ -213,7 +214,9 @@ class AdminPartTimeController extends Controller
     }
 
     public function vacancy_approve(Request $request){
-        $vacancy = Vacancy::where('id','=',$request->id)->first();
+        $vacancy = Vacancy::where('job_vacancy.id','=',$request->id)
+            ->join('job_company','job_company.id','job_vacancy.company_id')
+            ->first();
 
         if(!$vacancy){
             return json_encode(['status'=> false, 'message'=> [array("Data Not Found!")]]);
@@ -229,6 +232,8 @@ class AdminPartTimeController extends Controller
             return json_encode(['status'=> false, 'message'=> [array("Update Error!")]]);
         }
 
+        static::insert_notification($vacancy);
+
         return json_encode(['status'=> true, 'message'=> "Success"]);
     }
 
@@ -241,7 +246,9 @@ class AdminPartTimeController extends Controller
             return json_encode(['status'=> false, 'message'=> $validation->messages()]);
         }
 
-        $vacancy = Vacancy::where('id','=',$request->id)->first();
+        $vacancy = Vacancy::where('job_vacancy.id','=',$request->id)
+            ->join('job_company','job_company.id','job_vacancy.company_id')
+            ->first();
 
         if(!$vacancy){
             return json_encode(['status'=> false, 'message'=> [array("Data Not Found!")]]);
@@ -258,7 +265,20 @@ class AdminPartTimeController extends Controller
             return json_encode(['status'=> false, 'message'=> [array("Update Error!")]]);
         }
 
+        static::insert_notification($vacancy);
+
         return json_encode(['status'=> true, 'message'=> "Success"]);
+    }
+
+    public static function insert_notification($vacancy){
+        JobNotification::insert(array([
+            'uid' => $vacancy->uid,
+            'title'=> "Lowongan ".$vacancy->vacancy_status == "rejected" ? "Ditolak" : "Disetujui",
+            'message'=> $vacancy->position_name .' : '. $vacancy->rejection_reason,
+            "type"=>"employer",
+            "is_read" => false,
+            'deeplink' => 'jumlah_pelamar?vacancy='.$vacancy->id,
+        ]));
     }
 
     public function company()
