@@ -109,9 +109,9 @@ class ApiPartTimeController extends ApiController
         if($result){
             foreach ($result as $item){
                 $is_submited= JobApplicant::where('uid','=',$this->user->uid)
-                    ->where('vacancy_id','=',$item->id)->first() ? true : false;
+                    ->where('vacancy_id','=',$item->id)->first();
 
-                $data[] = CtreeCache::get_job_vacancy_by_id($item->vacancy_id, $is_submited);
+                $data[] = CtreeCache::get_job_vacancy_by_id($item->vacancy_id, $is_submited ? true : false);
             }
         }
         return count($data) > 0 ? $data : [];
@@ -127,8 +127,8 @@ class ApiPartTimeController extends ApiController
                 if($item->vacancy_id != '')
                 {
                     $is_submited= JobApplicant::where('uid','=',$this->user->uid)
-                        ->where('vacancy_id','=',$item->vacancy_id)->first() ? true : false;
-                    $data[] = CtreeCache::get_job_vacancy_by_id($item->vacancy_id,$is_submited);
+                        ->where('vacancy_id','=',$item->vacancy_id)->first();
+                    $data[] = CtreeCache::get_job_vacancy_by_id($item->vacancy_id,$is_submited? true : false);
                 }
 
             }
@@ -304,8 +304,8 @@ class ApiPartTimeController extends ApiController
         if($query){
             foreach ($query as $item){
                 $is_submited= JobApplicant::where('uid','=',$this->user->uid)
-                    ->where('vacancy_id','=',$item->id)->first() ? true : false;
-                $data[] = CtreeCache::get_job_vacancy_by_id($item->id,$is_submited);
+                    ->where('vacancy_id','=',$item->id)->first();
+                $data[] = CtreeCache::get_job_vacancy_by_id($item->id,$is_submited ? true : false);
             }
         }
         return count($data) > 0 ? $data : [];
@@ -365,8 +365,8 @@ class ApiPartTimeController extends ApiController
         $data = [];
         if($vacancy){
             $is_submited= JobApplicant::where('uid','=',$this->user->uid)
-                ->where('vacancy_id','=',$vacancy->id)->first() ? true : false;
-            $data[] = CtreeCache::get_job_vacancy_by_id($vacancy->id,$is_submited);
+                ->where('vacancy_id','=',$vacancy->id)->first();
+            $data[] = CtreeCache::get_job_vacancy_by_id($vacancy->id,$is_submited? true : false);
         }
 
         $response = [
