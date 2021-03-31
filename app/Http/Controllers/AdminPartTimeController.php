@@ -357,6 +357,8 @@ class AdminPartTimeController extends Controller
 
         JobCompany::insert($data_insert);
 
+        Cache::clear_company();
+
         return json_encode(['status'=> true, 'message'=> "Success"]);
     }
 
@@ -411,6 +413,8 @@ class AdminPartTimeController extends Controller
             return json_encode(['status'=> false, 'message'=> [array("Update Error!")]]);
         }
 
+        Cache::clear_company();
+
         return json_encode(['status'=> true, 'message'=> "Success"]);
     }
 
@@ -429,6 +433,8 @@ class AdminPartTimeController extends Controller
         if(!$company->save()){
             return json_encode(['status'=> false, 'message'=> [array("Update Error!")]]);
         }
+
+        Cache::clear_company();
 
         return json_encode(['status'=> true, 'message'=> "Success"]);
     }

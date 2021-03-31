@@ -69,6 +69,10 @@ class Cache {
         return $category;
     }
 
+    public static function clear_category(){
+        \Illuminate\Support\Facades\Cache::forget(static::SES_GET_CATEGORY);
+    }
+
     public static function get_company(){
         $company = \Illuminate\Support\Facades\Cache::get(static::SES_GET_COMPANY_REGISTERED);
         if(!$company){
@@ -77,6 +81,10 @@ class Cache {
         }
 
         return $company;
+    }
+
+    public static function clear_company(){
+        \Illuminate\Support\Facades\Cache::forget(static::SES_GET_COMPANY_REGISTERED);
     }
 
     public static function get_company_by_id($id){
@@ -97,6 +105,10 @@ class Cache {
         }
 
         return $education;
+    }
+
+    public static function clear_education(){
+        \Illuminate\Support\Facades\Cache::forget(static::SES_EDUCATION);
     }
 
     public static function get_education_by_id($id){

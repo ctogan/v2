@@ -75,7 +75,7 @@ $(document).ready(function() {
             url:'/admin/part-time/company/submit',
             method:"POST",
             headers: {
-                'X-CSRF-TOKEN': token
+                'X-CSRF-TOKEN': token,
             },
             async:true,
             data:new FormData(this),
