@@ -74,18 +74,34 @@
                                     <li><a href="{{url('/admin/part-time/faq')}}">FAQ</a></li>
                                 </ul>
                             </li>
-                            {{--<li><a href="#">Drop Down 2</a></li>--}}
-                            {{--<li><a href="#">Drop Down 3</a></li>--}}
-                            {{--<li><a href="#">Drop Down 4</a></li>--}}
+                            <li><a href="/admin/news">News</a></li>
+                            <li class="drop-down"><a href="">Cerdas Cermat</a>
+                                <ul>
+                                    <li><a href="{{url('/admin/cerdas-cermat')}}">Session</a></li>
+                                    <li><a href="{{url('/admin/cerdas-cermat/question')}}">Question</a></li>
+                                </ul>
+                            </li>
+                            <li><a href="{{url('/admin/flash-event')}}">Flash Event</a></li>
+                            <li><a href="{{url('/admin/dynamic-section')}}">Dynamic Section</a></li>
                         </ul>
                     </li>
-                    <li class="drop-down"><a href="">Operational</a>
+                    <li class="drop-down"><a href="javascript:void(0)">Operational</a>
                         <ul>
-                            {{--<li><a href="#">Drop Down 1</a></li>--}}
-                            <li><a href="{{url('/admin/operational/clbk/event')}}">CLBK Event</a></li>
-                            {{--<li><a href="#">Drop Down 2</a></li>--}}
-                            {{--<li><a href="#">Drop Down 3</a></li>--}}
-                            {{--<li><a href="#">Drop Down 4</a></li>--}}
+                            <li class="drop-down">
+                                <a href="javascript:void(0)">Events</a>
+                                <ul>
+                                    <li><a href="{{url('/admin/operational/clbk/event')}}">CLBK Event</a></li>
+                                </ul>
+                            </li>
+                            <li class="drop-down">
+                                <a href="javascript:void(0)">Settings</a>
+                                <ul>
+                                    <li><a href="{{url('/admin/operation/banner')}}">Banner</a></li>
+                                    <li><a href="{{url('/admin/operation/category')}}">Category</a></li>
+                                    <li><a href="{{url('/admin/operation/category')}}">Theme</a></li>
+                                </ul>
+                            </li>
+                            <li><a href="javascript:void(0)">Push Notification</a></li>
                         </ul>
                     </li>
                     <li class="drop-down"><a href="javascript:void(0)">Settings</a>
@@ -131,9 +147,10 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootbox.js/5.4.0/bootbox.min.js"></script>
     <script src="{{url('/vendor/aos/aos.js')}}"></script>
     <script src="{{url('/js/utils.js')}}"></script>
+    <script src="{{url('/js/admin/common.js')}}"></script>
     <script>
         $(document).ready( function () {
-            $('.datatable').DataTable();
+            // $('.datatable').DataTable();
             $('.select2').select2({
                 theme: "bootstrap4"
             });

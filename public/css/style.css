@@ -26,6 +26,10 @@ h1, h2, h3, h4, h5, h6 {
   font-family: "Roboto", sans-serif;
 }
 
+p{
+  font-size: 1rem;
+}
+
 /*--------------------------------------------------------------
 # Preloader
 --------------------------------------------------------------*/
@@ -1889,7 +1893,40 @@ textarea{
   height: 250px;
   object-fit: cover;
 }
-
+.preview-img-rectangle{
+  width: 100%;
+  height: 200px;
+  border:1px dotted #ced4d9;
+  overflow: hidden;
+}
+.preview-img-flash{
+    width: 100%;
+    border:1px dotted #ced4d9;
+    overflow: hidden;
+    background: #f3f4f6;
+    cursor: pointer;
+}
+.preview-img-flash img {
+    width: 100%;
+    height: 250px;
+    object-fit: cover;
+}
+.preview-img-rectangle img {
+  width: 100%;
+  height: 200px;
+  object-fit: cover;
+}
+preview-img-square{
+  width: 150px;
+  height: 150px;
+  border:1px dotted #ced4d9;
+  overflow: hidden;
+}
+.preview-img-square img {
+  width: 150px;
+  height: 150px;
+  object-fit: cover;
+}
 .applicant-profile{
   width: 75px;
   height: 75px;
@@ -1901,4 +1938,47 @@ textarea{
 }
 #topbar input{
   height: 40px!important;
+}
+.btn-submit .show-loading{
+  display: none;
+}
+.btn-submit .text{
+  display: block;
+}
+.btn-submit.post .text{
+  display: none;
+}
+.btn-submit.post .show-loading{
+  display: flex;
+  align-items: center;
+}
+.page-title{
+  font-weight: 100;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+}
+.ql-editor{
+  overflow-wrap: anywhere;
+}
+fieldset {
+    min-width: 0;
+    padding: 5px 15px;
+    margin: 0;
+    border: 1px solid #dadada;
+    border-radius: 5px;
+}
+legend{
+    display: block;
+    width: auto!important;
+    max-width: 100%;
+    padding: 5px;
+    margin-bottom: 0.5rem;
+    font-size: 0.9rem;
+    line-height: inherit;
+    color: inherit;
+    white-space: normal;
+    font-weight: 600;
+}
+.preview{
+  cursor: pointer;
 }
