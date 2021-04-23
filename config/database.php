@@ -93,6 +93,21 @@ return [
             'sslmode' => 'prefer',
         ],
 
+        'news' => [
+            'driver' => 'pgsql',
+            'url' => env('DATABASE_URL_COMMON'),
+            'host' => env('DB_HOST_COMMON', '127.0.0.1'),
+            'port' => env('DB_PORT', '5432'),
+            'database' => env('DB_DATABASE_NEWS', 'forge'),
+            'username' => env('DB_USERNAME', 'forge'),
+            'password' => env('DB_PASSWORD', ''),
+            'charset' => 'utf8',
+            'prefix' => '',
+            'prefix_indexes' => true,
+            'schema' => 'public',
+            'sslmode' => 'prefer',
+        ],
+
         'users' => [
             'driver' => 'pgsql',
             'url' => env('DATABASE_URL_USER'),

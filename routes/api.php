@@ -86,3 +86,5 @@ Route::post('/part-time/candidate/profile/image/save', 'ApiPartTimeController@up
 
 Route::get('/part-time/generate/cv', 'ApiPartTimeController@generate_cv')->name('api.pt.generate_cv')->middleware('localization');
 Route::get('/part-time/faq', 'ApiPartTimeController@faq')->name('api.pt.faq')->middleware('localization');
+
+Route::get('/home', 'Api\HomeController@index');

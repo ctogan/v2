@@ -15,3 +15,27 @@ function refresh_datatable(id) {
         theme: "bootstrap4"
     }).trigger('change');
 }
+
+function read_url(){
+    document.getElementById(event.target.id).nextElementSibling.innerHTML = event.target.files[0].name;
+
+    var reader = new FileReader(event);
+    let preview_id = 'preview_' + event.target.id;
+    reader.onload = function() {
+        var output = document.getElementById(preview_id);
+        output.src = reader.result;
+    };
+
+    reader.readAsDataURL(event.target.files[0]);
+}
+
+function read_url2(){
+    var reader = new FileReader(event);
+    let preview_id = 'preview_' + event.target.id;
+    reader.onload = function() {
+        var output = document.getElementById(preview_id);
+        output.src = reader.result;
+    };
+
+    reader.readAsDataURL(event.target.files[0]);
+}

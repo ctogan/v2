@@ -106,5 +106,52 @@ Route::get('/admin/part-time/faq/add', 'AdminPartTimeController@faq_add');
 Route::get('/admin/part-time/faq/edit/{id}', 'AdminPartTimeController@faq_edit');
 Route::post('/admin/part-time/faq/paging', 'AdminPartTimeController@faq_paging');
 Route::post('/admin/part-time/faq/submit', 'AdminPartTimeController@faq_submit');
+Route::post('/admin/part-time/faq/submit', 'AdminPartTimeController@faq_submit');
 Route::post('/admin/part-time/faq/update', 'AdminPartTimeController@faq_update');
 Route::post('/admin/part-time/faq/delete', 'AdminPartTimeController@faq_delete');
+
+
+Route::get('/admin/operation/banner', 'BannerController@index');
+Route::get('/admin/operation/banner/edit/{id}', 'BannerController@get');
+Route::post('/admin/operation/banner/paging', 'BannerController@paging');
+Route::post('/admin/operation/banner/submit', 'BannerController@submit');
+Route::post('/admin/operation/banner/update', 'BannerController@update');
+Route::post('/admin/operation/banner/delete', 'BannerController@delete');
+Route::post('/admin/operation/banner/position/update', 'BannerController@update_position');
+
+Route::get('/admin/operation/category', 'CategoryController@index');
+Route::get('/admin/operation/category/edit/{id}', 'CategoryController@get');
+Route::post('/admin/operation/category/paging', 'CategoryController@paging');
+Route::post('/admin/operation/category/submit', 'CategoryController@submit');
+Route::post('/admin/operation/category/update', 'CategoryController@update');
+Route::post('/admin/operation/category/delete', 'CategoryController@delete');
+Route::post('/admin/operation/category/position/update', 'CategoryController@update_position');
+
+Route::get('/admin/news', 'NewsController@index');
+Route::post('/admin/news/paging', 'NewsController@paging');
+Route::get('/admin/news/add', 'NewsController@add');
+Route::post('/admin/news/submit', 'NewsController@submit');
+
+Route::get('/admin/flash-event','FlashEventController@index');
+Route::get('/admin/flash-event/add','FlashEventController@add');
+Route::get('/admin/flash-event/{id}','FlashEventController@edit');
+Route::post('/admin/flash-event/submit','FlashEventController@submit');
+Route::post('/admin/flash-event/update','FlashEventController@update');
+Route::post('/admin/flash-event/paging','FlashEventController@paging');
+Route::post('/admin/flash-event/delete','FlashEventController@delete');
+Route::post('/admin/flash-event-detail/delete', 'FlashEventController@delete_detail');
+
+Route::get('/admin/dynamic-section','DynamicSectionController@index');
+Route::get('/admin/dynamic-section/edit/{id}','DynamicSectionController@edit');
+Route::post('/admin/dynamic-section/submit','DynamicSectionController@submit');
+Route::post('/admin/dynamic-section/paging','DynamicSectionController@paging');
+Route::post('/admin/dynamic-section/update','DynamicSectionController@update');
+Route::post('/admin/dynamic-section/delete','DynamicSectionController@delete');
+
+Route::get('/admin/cerdas-cermat','CerdasCermatController@index');
+Route::get('/admin/cerdas-cermat/add','CerdasCermatController@add');
+Route::get('/admin/cerdas-cermat/edit/{id}','CerdasCermatController@edit');
+Route::post('/admin/cerdas-cermat/submit','CerdasCermatController@submit');
+Route::post('/admin/cerdas-cermat/update','CerdasCermatController@update');
+Route::post('/admin/cerdas-cermat/paging','CerdasCermatController@paging');
+Route::post('/admin/cerdas-cermat/delete','CerdasCermatController@delete');
