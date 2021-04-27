@@ -28,6 +28,8 @@ class ApiController extends Controller
                     return $this->errorResponse($user['message'],static::ERROR_USER_AUTH);
                 }
                 $this->user = $user['data'];
+            }else{
+                return $this->errorResponse(static::TRANSACTION_ERROR_USER_NEED_LOGIN,static::ERROR_USER_AUTH);
             }
 
             return $next($request);

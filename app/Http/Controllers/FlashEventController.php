@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\FlashEvent;
 use App\FlashEventDetail;
 use App\Helpers\Utils;
+use App\Product;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -24,13 +25,21 @@ class FlashEventController extends Controller
     }
 
     public function add(Request $request){
-        return view('admin.flash-event.add');
+        $products = Product::where('row_status','=','active')->get();
+        $data = [
+            'products'=> $products
+        ];
+
+        return view('admin.flash-event.add',$data);
     }
 
     public function edit(Request $request){
         $flash_event = FlashEvent::with('detail')->where('id','=', $request->id)->first();
+
+        $products = Product::where('row_status','=','active')->get();
         $data=[
-            'flash_event' =>$flash_event
+            'flash_event' =>$flash_event,
+            'products'=> $products
         ];
 
         return view('admin.flash-event.edit', $data);
@@ -54,7 +63,7 @@ class FlashEventController extends Controller
 
         if($request->event_period == 'weekly'){
             $validation = Validator::make($request->all(), [
-                'day'=> 'required'
+                'day_name'=> 'required'
             ]);
 
             if($validation->fails()) {

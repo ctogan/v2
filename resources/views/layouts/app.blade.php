@@ -60,6 +60,7 @@
                             <li><a href="{{url('/admin/master/province')}}">Province</a></li>
                             <li><a href="{{url('/admin/master/city')}}">City</a></li>
                             <li><a href="{{url('/admin/master/company-category')}}">Company Category</a></li>
+                            <li><a href="{{url('/admin/product')}}">Product</a></li>
                         </ul>
                     </li>
                     <li class="drop-down"><a href="javascript:void(0)">Features</a>

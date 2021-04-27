@@ -2,12 +2,37 @@
 
 namespace App;
 
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 
 class FlashEvent extends Model
 {
     protected $connection = 'common';
     protected $table = 'flash_events';
+
+    protected $appends = array('event_start','event_end');
+
+    public function getEventStartAttribute()
+    {
+        if($this->attributes['event_period'] == 'daily'){
+            return Carbon::parse(date_format(date_create(date('Y-m-d') .' '. $this->attributes['time_from']),"Y-m-d H:i"));
+        }elseif ($this->attributes['event_period'] == 'special_date'){
+            return Carbon::parse(date_format(date_create($this->attributes['date_from'] .' '. $this->attributes['time_from']),"Y-m-d H:i"));
+        }else{
+            return Carbon::parse(date_format(date_create(date('Y-m-d') .' '. $this->attributes['time_from']),"Y-m-d H:i"));
+        }
+    }
+
+    public function getEventEndAttribute()
+    {
+        if($this->attributes['event_period'] == 'daily'){
+            return Carbon::parse(date_format(date_create(date('Y-m-d') .' '. $this->attributes['time_to']),"Y-m-d H:i"));
+        }elseif ($this->attributes['event_period'] == 'special_date'){
+            return Carbon::parse(date_format(date_create($this->attributes['date_to'] .' '. $this->attributes['time_to']),"Y-m-d H:i"));
+        }else{
+            return Carbon::parse(date_format(date_create(date('Y-m-d') .' '. $this->attributes['time_to']),"Y-m-d H:i"));
+        }
+    }
 
     protected $fillable = [
         'row_status',
@@ -36,6 +61,8 @@ class FlashEvent extends Model
     ];
 
     public function detail(){
-        return $this->hasMany(FlashEventDetail::class, 'flash_event_id')->where('row_status','!=', 'deleted');
+        return $this->hasMany(FlashEventDetail::class, 'flash_event_id')
+            ->with('product')
+            ->where('row_status','!=', 'deleted');
     }
 }

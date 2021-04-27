@@ -155,3 +155,8 @@ Route::post('/admin/cerdas-cermat/submit','CerdasCermatController@submit');
 Route::post('/admin/cerdas-cermat/update','CerdasCermatController@update');
 Route::post('/admin/cerdas-cermat/paging','CerdasCermatController@paging');
 Route::post('/admin/cerdas-cermat/delete','CerdasCermatController@delete');
+
+Route::get('/admin/product','ProductController@index');
+Route::get('/admin/product/edit/{id}','ProductController@get');
+Route::post('/admin/product/paging','ProductController@paging');
+Route::post('/admin/product/update','ProductController@update');

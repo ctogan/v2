@@ -158,38 +158,9 @@
                                 </div>
                                 <div class="col-md-12 mt-2">
                                     <select id="selection-field" class="hide">
-                                        <option class="text-muted" value="p5k">Pulsa 5.000</option>
-                                        <option class="text-muted" value="p10k">Pulsa 10.000</option>
-                                        <option class="text-muted" value="p25k">Pulsa 25.000</option>
-                                        <option class="text-muted" value="p50k">Pulsa 50.000</option>
-                                        <option class="text-muted" value="p100k">Pulsa 100.000</option>
-                                        <option class="text-muted" value="o20k">OVO 20.000</option>
-                                        <option class="text-muted" value="o25k">OVO 25.000</option>
-                                        <option class="text-muted" value="o30k">OVO 30.000</option>
-                                        <option class="text-muted" value="o40k">OVO 40.000</option>
-                                        <option class="text-muted" value="o50k">OVO 50.000</option>
-                                        <option class="text-muted" value="o75k">OVO 75.000</option>
-                                        <option class="text-muted" value="o100k">OVO 100.000</option>
-                                        <option class="text-muted" value="o150k">OVO 150.000</option>
-                                        <option class="text-muted" value="o250k">OVO 250.000</option>
-                                        <option class="text-muted" value="o300k">OVO 300.000</option>
-                                        <option class="text-muted" value="o400k">OVO 400.000</option>
-                                        <option class="text-muted" value="o500k">OVO 500.000</option>
-                                        <option class="text-muted" value="g10k">Gopay 10.000</option>
-                                        <option class="text-muted" value="g20k">Gopay 20.000</option>
-                                        <option class="text-muted" value="g25k">Gopay 25.000</option>
-                                        <option class="text-muted" value="g50k">Gopay 50.000</option>
-                                        <option class="text-muted" value="g100k">Gopay 100.000</option>
-                                        <option class="text-muted" value="g150k">Gopay 150.000</option>
-                                        <option class="text-muted" value="dana10">Dana 10.000</option>
-                                        <option class="text-muted" value="dana20">Dana 20.000</option>
-                                        <option class="text-muted" value="dana25">Dana 25.000</option>
-                                        <option class="text-muted" value="dana50">Dana 50.000</option>
-                                        <option class="text-muted" value="dana75">Dana 75.000</option>
-                                        <option class="text-muted" value="dana100">Dana 100.000</option>
-                                        <option class="text-muted" value="dana150">Dana 150.000</option>
-                                        <option class="text-muted" value="dana200">Dana 200.000</option>
-                                        <option class="text-muted" value="dana250">Dana 250.000</option>
+                                        @foreach($products as $product)
+                                            <option class="text-muted" value="{{$product->id}}">{{$product->product_name}}</option>
+                                        @endforeach
                                     </select>
                                     <table id="table_flash_product" class="table table-hover w-100">
                                         <thead>
@@ -206,38 +177,9 @@
                                                 <td>
                                                     <input type="hidden" value="{{$item->flash_detail_code}}" name="detail[{{$key}}][flash_detail_code]">
                                                     <select class="form-control custom-select select2" name="detail[{{$key}}][product_id]">
-                                                        <option class="text-muted" value="p5k" {{$item->product_id == 'p5k' ? 'selected' : ''}}>Pulsa 5.000</option>
-                                                        <option class="text-muted" value="p10k" {{$item->product_id == 'p10k' ? 'selected' : ''}}>Pulsa 10.000</option>
-                                                        <option class="text-muted" value="p25k" {{$item->product_id == 'p25k' ? 'selected' : ''}}>Pulsa 25.000</option>
-                                                        <option class="text-muted" value="p50k" {{$item->product_id == 'p50k' ? 'selected' : ''}}>Pulsa 50.000</option>
-                                                        <option class="text-muted" value="p100k" {{$item->product_id == 'p100k' ? 'selected' : ''}}>Pulsa 100.000</option>
-                                                        <option class="text-muted" value="o20k" {{$item->product_id == 'o20k' ? 'selected' : ''}}>OVO 20.000</option>
-                                                        <option class="text-muted" value="o25k" {{$item->product_id == 'o25k' ? 'selected' : ''}}>OVO 25.000</option>
-                                                        <option class="text-muted" value="o30k" {{$item->product_id == 'o30k' ? 'selected' : ''}}>OVO 30.000</option>
-                                                        <option class="text-muted" value="o40k" {{$item->product_id == 'o40k' ? 'selected' : ''}}>OVO 40.000</option>
-                                                        <option class="text-muted" value="o50k" {{$item->product_id == 'o50k' ? 'selected' : ''}}>OVO 50.000</option>
-                                                        <option class="text-muted" value="o75k" {{$item->product_id == 'o75k' ? 'selected' : ''}}>OVO 75.000</option>
-                                                        <option class="text-muted" value="o100k" {{$item->product_id == 'o100k' ? 'selected' : ''}}>OVO 100.000</option>
-                                                        <option class="text-muted" value="o150k" {{$item->product_id == 'o150k' ? 'selected' : ''}}>OVO 150.000</option>
-                                                        <option class="text-muted" value="o250k" {{$item->product_id == 'o250k' ? 'selected' : ''}}>OVO 250.000</option>
-                                                        <option class="text-muted" value="o300k" {{$item->product_id == 'o300k' ? 'selected' : ''}}>OVO 300.000</option>
-                                                        <option class="text-muted" value="o400k" {{$item->product_id == 'o400k' ? 'selected' : ''}}>OVO 400.000</option>
-                                                        <option class="text-muted" value="o500k" {{$item->product_id == 'o500k' ? 'selected' : ''}}>OVO 500.000</option>
-                                                        <option class="text-muted" value="g10k" {{$item->product_id == 'g10k' ? 'selected' : ''}}>Gopay 10.000</option>
-                                                        <option class="text-muted" value="g20k" {{$item->product_id == 'g20k' ? 'selected' : ''}}>Gopay 20.000</option>
-                                                        <option class="text-muted" value="g25k" {{$item->product_id == 'g25k' ? 'selected' : ''}}>Gopay 25.000</option>
-                                                        <option class="text-muted" value="g50k" {{$item->product_id == 'g50k' ? 'selected' : ''}}>Gopay 50.000</option>
-                                                        <option class="text-muted" value="g100k" {{$item->product_id == 'g100k' ? 'selected' : ''}}>Gopay 100.000</option>
-                                                        <option class="text-muted" value="g150k" {{$item->product_id == 'g150k' ? 'selected' : ''}}>Gopay 150.000</option>
-                                                        <option class="text-muted" value="dana10" {{$item->product_id == 'dana10' ? 'selected' : ''}}>Dana 10.000</option>
-                                                        <option class="text-muted" value="dana20" {{$item->product_id == 'dana20' ? 'selected' : ''}}>Dana 20.000</option>
-                                                        <option class="text-muted" value="dana25" {{$item->product_id == 'dana25' ? 'selected' : ''}}>Dana 25.000</option>
-                                                        <option class="text-muted" value="dana50" {{$item->product_id == 'dana50' ? 'selected' : ''}}>Dana 50.000</option>
-                                                        <option class="text-muted" value="dana75" {{$item->product_id == 'dana75' ? 'selected' : ''}}>Dana 75.000</option>
-                                                        <option class="text-muted" value="dana100" {{$item->product_id == 'dana100' ? 'selected' : ''}}>Dana 100.000</option>
-                                                        <option class="text-muted" value="dana150" {{$item->product_id == 'dana150' ? 'selected' : ''}}>Dana 150.000</option>
-                                                        <option class="text-muted" value="dana200" {{$item->product_id == 'dana200' ? 'selected' : ''}}>Dana 200.000</option>
-                                                        <option class="text-muted" value="dana250" {{$item->product_id == 'dana250' ? 'selected' : ''}}>Dana 250.000</option>
+                                                        @foreach($products as $product)
+                                                            <option class="text-muted" value="{{$product->id}}" {{$item->product_id == $product->id ? 'selected' : ''}}>{{$product->product_name}}</option>
+                                                        @endforeach
                                                     </select>
                                                 </td>
                                                 <td>

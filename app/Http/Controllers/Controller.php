@@ -30,21 +30,21 @@ class Controller extends BaseController
 
 
     // TRANSACTION
-    protected const CODE_ERROR_ORDER_NUMBER_NOT_FOUND = 'E401';
+    protected const CODE_ERROR_ORDER_NUMBER_NOT_FOUND = '401';
     protected const CODE_SUCCESS = '200';
     protected const CODE_ERROR_VALIDATION = 'E201';
-    protected const ERROR_USER_AUTH = 'E202';
-    protected const ERROR_USER_BLOCK = 'E203';
-    protected const ERROR_USER_NEED_LOGIN = 'E204';
-    protected const ERROR_USER_POINT = 'E205';
-    protected const ERROR_OUT_OF_STOCK = 'E207';
-    protected const ERROR_GIFTN_WAPI = 'E208';
-    protected const ERROR_TRANSACTION_CONFIRM_VALIDATION = 'E209';
-    protected const ERROR_TRANSACTION_ERROR_GENERAL_CODE = 'E210';
-    protected const ERROR_USER_EMAIL_EXIST = 'E211';
-    protected const ERROR_PIN_CODE = 'E212';
-    protected const ERROR_MAINTENANCE = 'E213';
-    protected const CODE_REFUND_ERROR_FAILED = 'E214';
+    protected const ERROR_USER_AUTH = '202';
+    protected const ERROR_USER_BLOCK = '203';
+    protected const ERROR_USER_NEED_LOGIN = '204';
+    protected const ERROR_USER_POINT = '205';
+    protected const ERROR_OUT_OF_STOCK = '207';
+    protected const ERROR_GIFTN_WAPI = '208';
+    protected const ERROR_TRANSACTION_CONFIRM_VALIDATION = '209';
+    protected const ERROR_TRANSACTION_ERROR_GENERAL_CODE = '210';
+    protected const ERROR_USER_EMAIL_EXIST = '211';
+    protected const ERROR_PIN_CODE = '212';
+    protected const ERROR_MAINTENANCE = '213';
+    protected const CODE_REFUND_ERROR_FAILED = '214';
 
 
     // MESAAGE

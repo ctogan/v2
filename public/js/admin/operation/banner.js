@@ -4,21 +4,22 @@ $(document).ready(function() {
 
     $('#edit_banner_modal').on('show.bs.modal', function(e) {
         let id = $(e.relatedTarget).data('id');
-        let url = '/admin/operation/banner/edit/'+ id;
+        let url = '/admin/operation/banner/edit/' + id;
         $.get(url, function (response) {
             let data = JSON.parse(response);
             $("#edit_banner_modal #id").val(id);
             $('#edit_banner_modal #banner_name').val(data.data.banner_name);
             $('#edit_banner_modal #deeplink').val(data.data.deeplink);
 
-            if(data.data.row_status === 'active'){
+            if (data.data.row_status === 'active') {
                 $('#edit_banner_modal #active').attr('checked', true);
-            }else{
+            } else {
                 $('#edit_banner_modal #inactive').attr('checked', true);
             }
             $('#edit_banner_modal #preview_edit_banner').attr('src', data.data.img);
 
             $("#loading-content").hide(function () {
+                $("#edit_banner_modal").addClass('loaded');
                 $(".btn-submit").show();
                 $("#form-content").show();
             });
@@ -26,9 +27,12 @@ $(document).ready(function() {
     });
 
     $('#edit_banner_modal').on('hidden.bs.modal', function(e) {
-        $("#loading-content").show();
-        $("#form-content").hide();
+        if(!$('#edit_banner_modal').hasClass('loaded')) {
+            $("#loading-content").show();
+            $("#form-content").hide();
+        }
     });
+
     $("#dt_banner_app tbody").sortable({
         update:function (event, ui) {
             $(this).children().each(function (index) {
@@ -72,6 +76,7 @@ function init_data_table(){
                 { data: 'id', name: 'id'},
             ],
             createdRow: function( row, data, dataIndex ) {
+                $(row).addClass('cursor-pointer');
                 $(row).attr('data-index', data.id);
                 $(row).attr('data-position', data.sequence);
             },

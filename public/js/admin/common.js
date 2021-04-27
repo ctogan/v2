@@ -21,7 +21,6 @@ $(document).ready(function() {
             processData: false,
             success:function(response)
             {
-                $('.modal').modal('hide');
                 var text = '';
                 var res = JSON.parse(response);
                 if(res.status) {
@@ -54,7 +53,6 @@ $(document).ready(function() {
                         callback: function() {
                             btn.removeClass("post");
                             btn.removeAttr("disabled");
-                            $('.modal').modal('show');
                         }
                     });
                 }

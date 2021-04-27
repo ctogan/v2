@@ -1982,3 +1982,10 @@ legend{
 .preview{
   cursor: pointer;
 }
+.cursor-pointer{
+  cursor: pointer;
+}
+.bootbox.modal {
+  z-index: 9999 !important;
+  background: #000000c4;
+}

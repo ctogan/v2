@@ -16,4 +16,8 @@ class FlashEventDetail extends Model
     public function flash_event(){
         return $this->belongsTo(FlashEvent::class, 'flash_event_id')->where('row_status','!=', 'deleted');
     }
+
+    public function product(){
+        return $this->belongsTo(Product::class,'product_id')->where('row_status','!=', 'deleted');
+    }
 }
