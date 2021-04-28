@@ -11,6 +11,7 @@ use App\Http\Resources\BannerResource;
 use App\Http\Resources\CategoryResource;
 use App\Http\Resources\DynamicSectionResource;
 use App\Http\Resources\FlashEventResource;
+use App\LayoutSetting;
 use App\News;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
@@ -99,15 +100,27 @@ class HomeController extends ApiController
 
         $dynamic_section = DynamicSection::where('row_status','=','active')->get();
         $news = News::select('id_news','title','url_to_image','reward')->where('row_status','=','active')->take(5)->get();
-        $response = [
-            'banner' => BannerResource::collection($banner),
-            'category' => CategoryResource::collection($category),
-            'unfinished' => $unfinished,
-            'flash_event' => FlashEventResource::collection($arr_flash),
-            'dynamic_section'=> DynamicSectionResource::collection($dynamic_section),
-            'news' => $news,
-            'user'=>$user
-        ];
+        $layout_settings = LayoutSetting::orderBy('sequence','ASC')->get();
+
+        $response = ['banner' => BannerResource::collection($banner)];
+        foreach ($layout_settings as $setting){
+            if($setting->page_name == 'categories'){
+                $response ['category'] = CategoryResource::collection($category);
+            }
+            elseif ($setting->page_name == 'flash_event'){
+                $response ['flash_event'] = FlashEventResource::collection($arr_flash);
+            }
+            elseif ($setting->page_name == 'unfinished'){
+                $response ['unfinished,'] = $unfinished;
+            }
+            elseif ($setting->page_name == 'dynamic'){
+                $response ['dynamic_section'] = DynamicSectionResource::collection($dynamic_section);
+            }
+            elseif ($setting->page_name == 'news'){
+                $response ['news'] = $news;
+            }
+        }
+        $response ['user'] = $user;
 
         return $this->successResponse($response);
     }

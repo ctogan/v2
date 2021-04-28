@@ -127,6 +127,9 @@ Route::post('/admin/operation/category/update', 'CategoryController@update');
 Route::post('/admin/operation/category/delete', 'CategoryController@delete');
 Route::post('/admin/operation/category/position/update', 'CategoryController@update_position');
 
+Route::get('/admin/operation/theme', 'OperationalController@theme');
+Route::post('/admin/operation/theme/update', 'OperationalController@theme_update');
+
 Route::get('/admin/news', 'NewsController@index');
 Route::post('/admin/news/paging', 'NewsController@paging');
 Route::get('/admin/news/add', 'NewsController@add');

@@ -99,7 +99,7 @@
                                 <ul>
                                     <li><a href="{{url('/admin/operation/banner')}}">Banner</a></li>
                                     <li><a href="{{url('/admin/operation/category')}}">Category</a></li>
-                                    <li><a href="{{url('/admin/operation/category')}}">Theme</a></li>
+                                    <li><a href="{{url('/admin/operation/theme')}}">Theme</a></li>
                                 </ul>
                             </li>
                             <li><a href="javascript:void(0)">Push Notification</a></li>
