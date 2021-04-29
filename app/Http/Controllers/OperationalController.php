@@ -127,6 +127,10 @@ class OperationalController extends Controller
         $news->sequence = $request->news;
         $news->save();
 
+        $this->forget_cache('__layout_setting');
+        $this->forget_cache('__background_color');
+        $this->forget_cache('__background_image');
+
         return json_encode(['status'=> true, 'message'=> "Success"]);
     }
 }

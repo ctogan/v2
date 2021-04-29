@@ -12,4 +12,8 @@ class NewsCategory extends Model
     protected $fillable = [
         'status','category_name','slug'
     ];
+
+    public function news_category_detail(){
+        return $this->hasMany(NewsCategoryDetail::class, 'id_category');
+    }
 }

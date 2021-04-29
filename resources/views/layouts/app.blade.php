@@ -23,8 +23,9 @@
     <link href="{{ asset('css/style.css') }}" rel="stylesheet">
     <link href="https://cdn.datatables.net/1.10.21/css/dataTables.bootstrap4.min.css" rel="stylesheet">
     <link href="https://cdn.datatables.net/responsive/2.2.5/css/responsive.bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="{{ asset('/vendor/select2/select2.min.css')}}">
-    <link rel="stylesheet" href="{{ asset('/vendor/select2/select2-bootstrap4.css')}}">
+    {{--<link rel="stylesheet" href="{{ asset('/vendor/select2/select2.min.css')}}">--}}
+    {{--<link rel="stylesheet" href="{{ asset('/vendor/select2/select2-bootstrap4.css')}}">--}}
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
     @yield('css')
 </head>
 <body>
@@ -144,17 +145,19 @@
     <script src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js" type="text/javascript"></script>
     <script src="https://cdn.datatables.net/1.10.21/js/dataTables.bootstrap4.min.js" type="text/javascript"></script>
     <script src="https://cdn.datatables.net/responsive/2.2.5/js/dataTables.responsive.min.js" type="text/javascript"></script>
-    <script src="{{url('/vendor/select2/select2.min.js')}}"></script>
+{{--    <script src="{{url('/vendor/select2/select2.min.js')}}"></script>--}}
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootbox.js/5.4.0/bootbox.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
     <script src="{{url('/vendor/aos/aos.js')}}"></script>
     <script src="{{url('/js/utils.js')}}"></script>
     <script src="{{url('/js/admin/common.js')}}"></script>
     <script>
         $(document).ready( function () {
+            $('.select2').select2();
             // $('.datatable').DataTable();
-            $('.select2').select2({
-                theme: "bootstrap4"
-            });
+            // $('.select2').select2({
+            //     theme: "bootstrap4"
+            // });
             $('[data-toggle="tooltip"]').tooltip();
         });
     </script>

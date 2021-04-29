@@ -10,9 +10,15 @@
             <form method="POST" action="{{url('/admin/operation/category/submit')}}" enctype="multipart/form-data">
             <div class="modal-body">
                     <div class="form-group row">
-                        <label for="company" class="col-sm-3 col-form-label">Name*</label>
+                        <label for="category_name_eng" class="col-sm-3 col-form-label">Name (English)*</label>
                         <div class="col-sm-9">
-                            <input type="text" class="form-control" placeholder="Input Category Name" name="category_name" id="category_name">
+                            <input type="text" class="form-control" placeholder="Input Category Name English Lang" name="category_name_eng" id="category_name">
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label for="category_name_id" class="col-sm-3 col-form-label">Name (Indonesia)*</label>
+                        <div class="col-sm-9">
+                            <input type="text" class="form-control" placeholder="Input Category Name Indonesian Lang" name="category_name_id" id="category_name_id">
                         </div>
                     </div>
                     <div class="form-group row">
@@ -39,11 +45,11 @@
                         <div class="col-sm-9">
                             <div class="d-block">
                                 <div class="preview-img-square mb-2">
-                                    <img id="preview_img_category" src="{{url('/assets/images/default.png')}}" width="100%">
+                                    <img class="preview" onclick="document.getElementById('img_category').click();" id="preview_img_category" src="{{url('/assets/images/default.png')}}" width="100%">
                                 </div>
                             </div>
                             <div class="d-block">
-                                <div class="custom-file">
+                                <div class="custom-file hide">
                                     <input type="file" name="img" onchange="read_url(event)" class="custom-file-input" id="img_category">
                                     <label class="custom-file-label" for="img">Upload Image</label>
                                 </div>

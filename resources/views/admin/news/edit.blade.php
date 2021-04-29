@@ -10,26 +10,27 @@
             <ol class="breadcrumb">
                 <li class="breadcrumb-item"><a href="#">Home</a></li>
                 <li class="breadcrumb-item"><a href="{{url('/admin/news')}}">News</a></li>
-                <li class="breadcrumb-item active" aria-current="page">Add</li>
+                <li class="breadcrumb-item active" aria-current="page">Edit</li>
             </ol>
         </nav>
         <div class="row justify-content-center">
             <div class="col-md-12 mt-3">
                 <div class="card pt-2 pb-2 pl-5 pr-5">
                     <div class="row">
-                        <form method="POST" id="form_news" class="w-100" action="{{url('/admin/news/submit')}}">
+                        <form method="POST" id="form_news" class="w-100" action="{{url('/admin/news/update')}}">
+                            <input type="hidden" value="{{$news->id}}" name="id">
                             <div class="d-flex w-100">
                                 <div style="width: 70%;max-width: 70%">
                                     <div class="col-md-12">
                                         <div class="form-group row">
                                             <label for="staticEmail" class="col-form-label">Title</label>
-                                            <input class="form-control form-control-lg" name="title" type="text" placeholder="Title" autocomplete="off">
+                                            <input value="{{$news->title}}" class="form-control form-control-lg" name="title" type="text" placeholder="Title" autocomplete="off">
                                         </div>
                                         <div class="form-group row">
                                             <label for="staticEmail" class="col-form-label">Category</label>
                                             <select name="category[]" class="form-control form-control-lg select2" multiple="multiple">
                                                 @foreach($categories as $category)
-                                                    <option value="{{$category->id}}">{{$category->category_name}}</option>
+                                                    <option value="{{$category->id}}" {{$category->news_category_detail_count > 0 ? 'selected' : ''}}>{{$category->category_name}}</option>
                                                 @endforeach
                                             </select>
                                         </div>
@@ -37,6 +38,7 @@
                                             <label class="col-form-label">Body</label>
                                             <input type="hidden" name="body_content" id="hdn_body_content">
                                             <div id="body_content" style="height: 500px" class="w-100">
+                                                {!! htmlspecialchars_decode(nl2br($news->content)) !!}
                                             </div>
                                         </div>
                                         <div class="form-group row mt-4">
@@ -55,7 +57,7 @@
                                         <div>
                                             <div class="d-block">
                                                 <div class="preview-img-rectangle mb-2" style="max-width: 300px">
-                                                    <img id="preview_img_news" src="{{url('/assets/images/default.png')}}" width="300">
+                                                    <img id="preview_img_news" src="{{$news->url_to_image}}" width="300">
                                                 </div>
                                             </div>
                                             <div class="d-block">
@@ -68,11 +70,26 @@
                                     </div>
                                     <div class="form-group">
                                         <label for="company" class="col-form-label">Author</label>
-                                        <input class="form-control form-control" value="{{\Illuminate\Support\Facades\Auth::user()->name}}" name="author" type="text" placeholder="Title" autocomplete="off">
+                                        <input class="form-control form-control" value="{{$news->author}}" name="author" type="text" placeholder="Title" autocomplete="off">
                                     </div>
                                     <div class="form-group">
                                         <label for="company" class="col-form-label">Reward</label>
-                                        <input class="form-control form-control" value="10" name="author" type="text" placeholder="reward" autocomplete="off">
+                                        <input class="form-control form-control" value="{{$news->reward}}" name="reward" type="text" placeholder="reward" autocomplete="off">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="company" class="col-form-label">Status</label>
+                                        <div class="form-check mb-2">
+                                            <input class="form-check-input" name="row_status" type="radio" value="active" id="active" {{$news->row_status == 'active' ? 'checked':''}}>
+                                            <label class="form-check-label" for="active">
+                                                Active
+                                            </label>
+                                        </div>
+                                        <div class="form-check">
+                                            <input class="form-check-input" name="row_status" type="radio" value="inactive" id="inactive" {{$news->row_status == 'inactive' ? 'checked':''}}>
+                                            <label class="form-check-label" for="inactive">
+                                                Inactive
+                                            </label>
+                                        </div>
                                     </div>
                                     <div class="form-group">
                                         <label for="company" class="col-form-label">Publish To</label>
@@ -92,13 +109,13 @@
                                     <div class="form-group">
                                         <label for="company" class="col-form-label">Available For</label>
                                         <div class="form-check">
-                                            <input class="form-check-input" name="availability" type="radio" value="false" id="all" checked>
+                                            <input class="form-check-input" name="availability" type="radio" value="false" id="all" {{!$news->is_tester ? 'checked' : ''}}>
                                             <label class="form-check-label" for="all">
                                                 All
                                             </label>
                                         </div>
                                         <div class="form-check">
-                                            <input class="form-check-input" name="availability" type="radio" value="true" id="tester">
+                                            <input class="form-check-input" name="availability" type="radio" value="true" id="tester" {{$news->is_tester ? 'checked' : ''}}>
                                             <label class="form-check-label" for="tester">
                                                 Tester Only
                                             </label>

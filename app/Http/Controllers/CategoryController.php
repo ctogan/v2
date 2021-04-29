@@ -22,8 +22,10 @@ class CategoryController extends Controller
 
     public function submit(Request $request){
         $validation = Validator::make($request->all(), [
-            'category_name' => 'required',
-            'img' => 'required|image|mimes:jpg,jpeg,png,webapp'
+            'category_name_eng' => 'required',
+            'category_name_id' => 'required',
+            'img' => 'required|image|mimes:jpg,jpeg,png,webapp',
+            'deeplink' => 'required'
         ]);
 
         if($validation->fails()) {
@@ -32,7 +34,8 @@ class CategoryController extends Controller
 
         $data = [
             'row_status' => 'active',
-            'category_name' => $request->category_name,
+            'category_name_eng' => $request->category_name_eng,
+            'category_name_id' => $request->category_name_id,
             'deeplink' => $request->deeplink,
             'img' => Utils::upload($request,'img','category/'),
             'created_by' => Auth::user()->name,
@@ -40,13 +43,16 @@ class CategoryController extends Controller
         ];
 
         Category::insert($data);
+        $this->forget_cache('__categories_section');
 
         return json_encode(['status'=> true, 'message'=> "Success"]);
     }
 
     public function update(Request $request){
         $validation = Validator::make($request->all(), [
-            'category_name' => 'required',
+            'category_name_eng' => 'required',
+            'category_name_id' => 'required',
+            'deeplink' => 'required'
         ]);
 
         if($validation->fails()){
@@ -72,7 +78,8 @@ class CategoryController extends Controller
         }
 
         $category->row_status = $request->row_status;
-        $category->category_name = $request->category_name;
+        $category->category_name_eng = $request->category_name_eng;
+        $category->category_name_id = $request->category_name_id;
         $category->deeplink = $request->deeplink;
         $category->updated_by = Auth::user()->name;
         $category->updated_at = date('Y-m-d h:m:s');
@@ -80,6 +87,7 @@ class CategoryController extends Controller
         if(!$category->save()){
             return json_encode(['status'=> false, 'message'=> $this->single_message('Something wrong.')]);
         }
+        $this->forget_cache('__categories_section');
 
         return json_encode(['status'=> true, 'message'=> "Success"]);
     }
@@ -98,6 +106,7 @@ class CategoryController extends Controller
         if(!$category->save()){
             return json_encode(['status'=> false, 'message'=> $this->single_message('Something wrong.')]);
         }
+        $this->forget_cache('__categories_section');
 
         return json_encode(['status'=> true, 'message'=> "Success"]);
     }
@@ -123,6 +132,7 @@ class CategoryController extends Controller
                 );
             }
         }
+        $this->forget_cache('__categories_section');
 
         return json_encode(['status'=> true, 'message'=> "Success"]);
     }

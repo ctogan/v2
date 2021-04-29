@@ -133,7 +133,9 @@ Route::post('/admin/operation/theme/update', 'OperationalController@theme_update
 Route::get('/admin/news', 'NewsController@index');
 Route::post('/admin/news/paging', 'NewsController@paging');
 Route::get('/admin/news/add', 'NewsController@add');
+Route::get('/admin/news/edit/{id}', 'NewsController@edit');
 Route::post('/admin/news/submit', 'NewsController@submit');
+Route::post('/admin/news/update', 'NewsController@update');
 
 Route::get('/admin/flash-event','FlashEventController@index');
 Route::get('/admin/flash-event/add','FlashEventController@add');

@@ -2,6 +2,7 @@
 
 namespace App\Console\Commands;
 
+use App\Helpers\Utils;
 use App\News;
 use App\NewsCategory;
 use App\NewsCategoryDetail;
@@ -77,7 +78,7 @@ class CtreeMagzJob extends Command
                     "description"=>$item->id,
                     "url"=>$item->link,
                     "url_to_image"=>$this->getImage($item->featured_media),
-                    "content"=>str_replace(array("'", "\"", "&quot;"), "", htmlspecialchars($item->content->rendered)),
+                    "content"=>str_replace(array("'", "\"", "&quot;"), "", htmlspecialchars(Utils::mark_down($item->content->rendered))),
                     "published_at"=>$item->date,
                     "created_at" => date('Y-m-d H:m:s'),
                     "created_by" => "Job",
@@ -104,7 +105,7 @@ class CtreeMagzJob extends Command
                                 NewsCategoryDetail::where('id_news', '=', $item->id)->delete();
                                 foreach ($item->categories as $cat){
                                     $news_cat = array(
-                                        "id_news"=>$item->id,
+                                        "id_news"=>$news->id,
                                         "id_category"=>$cat
                                     );
                                     NewsCategoryDetail::insert($news_cat);
@@ -113,11 +114,11 @@ class CtreeMagzJob extends Command
                         }
                     }
                 }else{
-                    News::insert($news_insert);
+                    $nnews = News::create($news_insert);
                     if($item->categories) {
                         foreach ($item->categories as $cat){
                             $news_cat = array(
-                                "id_news"=>$item->id,
+                                "id_news"=>$nnews->id,
                                 "id_category"=>$cat
                             );
                             NewsCategoryDetail::insert($news_cat);

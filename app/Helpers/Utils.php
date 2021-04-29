@@ -39,4 +39,7 @@ class Utils {
         return openssl_decrypt(base64_decode($base64_text), 'aes-256-cbc', static::DEF_ENC_KEY, true, str_repeat(chr(0), 16));
     }
 
+    public static function mark_down($input){
+        return preg_replace('#<script(.*?)>(.*?)</script>#is', '', $input);
+    }
 }

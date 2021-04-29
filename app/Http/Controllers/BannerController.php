@@ -41,6 +41,7 @@ class BannerController extends Controller
 
         Banner::insert($data);
 
+        $this->forget_cache('__banner_section');
         return json_encode(['status'=> true, 'message'=> "Success"]);
     }
 
@@ -80,6 +81,7 @@ class BannerController extends Controller
         if(!$banner->save()){
             return json_encode(['status'=> false, 'message'=> $this->single_message('Something wrong.')]);
         }
+        $this->forget_cache('__banner_section');
 
         return json_encode(['status'=> true, 'message'=> "Success"]);
     }
@@ -98,6 +100,7 @@ class BannerController extends Controller
         if(!$banner->save()){
             return json_encode(['status'=> false, 'message'=> $this->single_message('Something wrong.')]);
         }
+        $this->forget_cache('__banner_section');
 
         return json_encode(['status'=> true, 'message'=> "Success"]);
     }
@@ -124,6 +127,7 @@ class BannerController extends Controller
             }
         }
 
+        $this->forget_cache('__banner_section');
         return json_encode(['status'=> true, 'message'=> "Success"]);
     }
 

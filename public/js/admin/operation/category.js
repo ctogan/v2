@@ -8,7 +8,8 @@ $(document).ready(function() {
         $.get(url, function (response) {
             let data = JSON.parse(response);
             $("#edit_category_modal #id").val(id);
-            $('#edit_category_modal #category_name').val(data.data.category_name);
+            $('#edit_category_modal #category_name_eng').val(data.data.category_name_eng);
+            $('#edit_category_modal #category_name_id').val(data.data.category_name_id);
             $('#edit_category_modal #deeplink').val(data.data.deeplink);
 
             if(data.data.row_status === 'active'){
@@ -29,6 +30,7 @@ $(document).ready(function() {
         $("#loading-content").show();
         $("#form-content").hide();
     });
+
     $("#dt_category_app tbody").sortable({
         update:function (event, ui) {
             $(this).children().each(function (index) {
@@ -53,6 +55,7 @@ function init_data_table(){
     let table = $('#dt_category_app');
     if (table != null) {
         table.DataTable({
+            order:[0,'asc'],
             responsive: true,
             processing: true,
             serverSide: true,
@@ -66,7 +69,8 @@ function init_data_table(){
             columns: [
                 { data: 'sequence', name: 'sequence'},
                 { data: 'img', name: 'img' },
-                { data: 'category_name', name: 'category_name' },
+                { data: 'category_name_eng', name: 'category_name_eng' },
+                { data: 'category_name_id', name: 'category_name_id' },
                 { data: 'deeplink', name: 'deeplink' },
                 { data: 'row_status', name: 'row_status'},
                 { data: 'id', name: 'id'},
@@ -88,7 +92,7 @@ function init_data_table(){
                     }
                 },
                 {
-                    targets: 4,
+                    targets: 5,
                     className: "text-center",
                     render:function (data, type, full, meta) {
                         let status = {active : 'badge badge-success', inactive : 'badge badge-dark'};
@@ -96,7 +100,7 @@ function init_data_table(){
                     }
                 },
                 {
-                    targets: 5,
+                    targets: 6,
                     className: "text-center",
                     render: function(data, type, full, meta) {
                         return '<a href="javascript:void(0)" data-id="'+data+'" data-toggle="modal" data-target="#edit_category_modal" class="btn btn-datatable btn-icon btn-transparent-dark btn-sm p-0 mr-2"><i data-feather="edit"></i></a>' +

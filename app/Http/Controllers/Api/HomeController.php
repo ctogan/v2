@@ -6,7 +6,6 @@ use App\Banner;
 use App\Category;
 use App\DynamicSection;
 use App\FlashEvent;
-use App\Helpers\Utils;
 use App\Http\Resources\BannerResource;
 use App\Http\Resources\CategoryResource;
 use App\Http\Resources\DynamicSectionResource;
@@ -15,6 +14,8 @@ use App\LayoutSetting;
 use App\News;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\DB;
 
 class HomeController extends ApiController
 {
@@ -49,9 +50,14 @@ class HomeController extends ApiController
     public function index(Request $request){
         $user = $this->user;
         $today = Carbon::now();
-        $banner = Banner::where('row_status','=','active')->get();
 
-        $category = Category::where('row_status','=','active')->get();
+        $banner =Cache::rememberForever('__banner_section',function (){
+            return Banner::where('row_status','=','active')->get();
+        });
+
+        $category =Cache::rememberForever('__categories_section',function (){
+            return Category::where('row_status','=','active')->get();
+        });
 
         $unfinished = [];
 
@@ -98,9 +104,38 @@ class HomeController extends ApiController
             array_push($arr_flash, $item);
         }
 
-        $dynamic_section = DynamicSection::where('row_status','=','active')->get();
-        $news = News::select('id_news','title','url_to_image','reward')->where('row_status','=','active')->take(5)->get();
-        $layout_settings = LayoutSetting::orderBy('sequence','ASC')->get();
+        $dynamic_section = Cache::rememberForever('__dynamic_section',function (){
+            return DynamicSection::where('row_status','=','active')->get();
+        });
+
+        $news = Cache::remember('__news_list_home',3600, function (){
+            return News::select('id_news','title','url_to_image','reward')->where('row_status','=','active')->take(5)->get();
+        });
+
+        $layout_settings = Cache::rememberForever('__layout_setting',function (){
+            return LayoutSetting::orderBy('sequence','ASC')->get();
+        });
+
+        $background_color = Cache::rememberForever('__background_color',function (){
+            $objColor = DB::connection('common')->table('settings')->where('setting_code','=', 'background_color')->first();
+            if($objColor){
+                return $objColor->setting_value_full;
+            }
+            return '';
+        });
+
+        $backgound_image = Cache::rememberForever('__background_image',function (){
+            $objImage = DB::connection('common')->table('settings')->where('setting_code','=', 'background_image')->first();
+            if($objImage){
+                return $objImage->setting_value_full;
+            }
+            return '';
+        });
+
+        $config = [
+            'background_color' => $background_color,
+            'background_image' => $backgound_image
+        ];
 
         $response = ['banner' => BannerResource::collection($banner)];
         foreach ($layout_settings as $setting){
@@ -120,6 +155,7 @@ class HomeController extends ApiController
                 $response ['news'] = $news;
             }
         }
+        $response['config']= $config;
         $response ['user'] = $user;
 
         return $this->successResponse($response);

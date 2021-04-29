@@ -33,7 +33,8 @@
                             <tr>
                                 <th>Index</th>
                                 <th width="200">Image</th>
-                                <th>Category Name</th>
+                                <th>Category Name (Eng)</th>
+                                <th>Category Name (Ina)</th>
                                 <th>Deeplink</th>
                                 <th>Status</th>
                                 <th>Action</th>
