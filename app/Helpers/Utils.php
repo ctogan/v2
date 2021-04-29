@@ -42,4 +42,8 @@ class Utils {
     public static function mark_down($input){
         return preg_replace('#<script(.*?)>(.*?)</script>#is', '', $input);
     }
+
+    public static function ad_part($i){
+        return 'ad_part_'.$i;
+    }
 }

@@ -162,6 +162,33 @@ class NewsController extends Controller
         return json_encode(['status'=> true, 'message'=> "Success"]);
     }
 
+    public function delete(Request $request){
+        $validation = Validator::make($request->all(), [
+            'id' => 'required',
+        ]);
+
+        if($validation->fails()) {
+            return json_encode(['status'=> false, 'message'=> $validation->messages()]);
+        }
+
+        $news = News::find($request->id);
+
+        if(!$news){
+            return json_encode(['status'=> false, 'message'=> $this->single_message('Data Not Found!')]);
+        }
+
+        $news->row_status = 'deleted';
+        $news->updated_by = Auth::user()->name;
+
+        if(!$news->save()){
+            return json_encode(['status'=> false, 'message'=> $this->single_message('Error!')]);
+        }
+
+        $this->forget_cache('__news_list_home');
+
+        return json_encode(['status'=> true, 'message'=> "Success"]);
+    }
+
     public function paging(Request $request){
         $query = News::where('row_status','!=','deleted');
 

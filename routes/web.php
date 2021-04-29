@@ -136,6 +136,7 @@ Route::get('/admin/news/add', 'NewsController@add');
 Route::get('/admin/news/edit/{id}', 'NewsController@edit');
 Route::post('/admin/news/submit', 'NewsController@submit');
 Route::post('/admin/news/update', 'NewsController@update');
+Route::post('/admin/news/delete', 'NewsController@delete');
 
 Route::get('/admin/flash-event','FlashEventController@index');
 Route::get('/admin/flash-event/add','FlashEventController@add');

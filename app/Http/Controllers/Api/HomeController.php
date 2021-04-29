@@ -2,14 +2,19 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\AD;
+use App\ADPart;
 use App\Banner;
 use App\Category;
 use App\DynamicSection;
 use App\FlashEvent;
+use App\Helpers\Utils;
 use App\Http\Resources\BannerResource;
 use App\Http\Resources\CategoryResource;
 use App\Http\Resources\DynamicSectionResource;
 use App\Http\Resources\FlashEventResource;
+use App\Http\Resources\NewsResource;
+use App\Http\Resources\UnfinishedResource;
 use App\LayoutSetting;
 use App\News;
 use Illuminate\Http\Request;
@@ -51,15 +56,35 @@ class HomeController extends ApiController
         $user = $this->user;
         $today = Carbon::now();
 
-        $banner =Cache::rememberForever('__banner_section',function (){
+        $banner = Cache::rememberForever('__banner_section',function (){
             return Banner::where('row_status','=','active')->get();
         });
 
-        $category =Cache::rememberForever('__categories_section',function (){
+        $category = Cache::rememberForever('__categories_section',function (){
             return Category::where('row_status','=','active')->get();
         });
 
-        $unfinished = [];
+        $unfinished=[];
+        for($i=1;$i<=2;$i++){
+            $adpart = ADPart::on(Utils::ad_part($i))
+                ->where('status','=',101)
+                ->where('uid','=',$user->uid)
+                ->where('tm', '>=', date('Y-m-d', strtotime('-3 month')))
+                ->take(10)
+                ->pluck('adid')
+                ->toArray();
+
+            if(count($adpart) > 0){
+                array_push( $unfinished,$adpart);
+            }
+        }
+        $ad = [];
+        if(count($unfinished)>0){
+            $ad = AD::whereIn('adid',$unfinished[0])
+                ->where('status','=','4010')
+                ->where('tm_end', '>=', date('Y-m-d H:i'))
+                ->get();;
+        }
 
         $query_flash_event = FlashEvent::where('row_status','=','active')->with('detail');
         if($user->is_tester){
@@ -109,7 +134,9 @@ class HomeController extends ApiController
         });
 
         $news = Cache::remember('__news_list_home',3600, function (){
-            return News::select('id_news','title','url_to_image','reward')->where('row_status','=','active')->take(5)->get();
+            return News::select('id','title','url_to_image','reward')
+                ->withCount('news_read')
+                ->where('row_status','=','active')->take(5)->get();
         });
 
         $layout_settings = Cache::rememberForever('__layout_setting',function (){
@@ -124,7 +151,7 @@ class HomeController extends ApiController
             return '';
         });
 
-        $backgound_image = Cache::rememberForever('__background_image',function (){
+        $background_image = Cache::rememberForever('__background_image',function (){
             $objImage = DB::connection('common')->table('settings')->where('setting_code','=', 'background_image')->first();
             if($objImage){
                 return $objImage->setting_value_full;
@@ -134,7 +161,7 @@ class HomeController extends ApiController
 
         $config = [
             'background_color' => $background_color,
-            'background_image' => $backgound_image
+            'background_image' => $background_image
         ];
 
         $response = ['banner' => BannerResource::collection($banner)];
@@ -146,13 +173,13 @@ class HomeController extends ApiController
                 $response ['flash_event'] = FlashEventResource::collection($arr_flash);
             }
             elseif ($setting->page_name == 'unfinished'){
-                $response ['unfinished,'] = $unfinished;
+                $response ['unfinished,'] = UnfinishedResource::collection($ad);
             }
             elseif ($setting->page_name == 'dynamic'){
                 $response ['dynamic_section'] = DynamicSectionResource::collection($dynamic_section);
             }
             elseif ($setting->page_name == 'news'){
-                $response ['news'] = $news;
+                $response ['news'] = NewsResource::collection($news);
             }
         }
         $response['config']= $config;
