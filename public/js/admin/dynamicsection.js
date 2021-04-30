@@ -25,8 +25,8 @@ $(document).ready(function(){
             $('#edit_dynamic_section #target_edit').val(data.data.target);
             $('#edit_dynamic_section #url').val(data.data.url);
             $('#edit_dynamic_section #deeplink').val(data.data.deeplink);
-            $('#edit_dynamic_section #snapcash').val(data.data.snapcash_id);
-            $('#edit_dynamic_section #campaign').val(data.data.adid);
+            $('#edit_dynamic_section #snapcash_id').val(data.data.snapcash_id);
+            $('#edit_dynamic_section #adid').val(data.data.adid);
 
             if(data.data.row_status === 'active'){
                 $('#edit_dynamic_section #active').attr('checked', true);

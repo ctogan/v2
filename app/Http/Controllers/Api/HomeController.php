@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\AD;
 use App\ADPart;
+use App\AffiliateAD;
 use App\Banner;
 use App\Category;
 use App\DynamicSection;
@@ -53,6 +54,7 @@ class HomeController extends ApiController
      * )
      */
     public function index(Request $request){
+//        echo date('Y-m-d H:i');die();
         $user = $this->user;
         $today = Carbon::now();
 
@@ -129,8 +131,38 @@ class HomeController extends ApiController
             array_push($arr_flash, $item);
         }
 
-        $dynamic_section = Cache::rememberForever('__dynamic_section',function (){
-            return DynamicSection::where('row_status','=','active')->get();
+        $arr_dynamic_section = Cache::rememberForever('__dynamic_section',function (){
+            $dynamic_section =[];
+            $arr_dynamic_section = DynamicSection::where('row_status','=','active')->get();
+            foreach ($arr_dynamic_section as $item){
+                if($item->target == 'snapcash'){
+                    $snapcash = AffiliateAD::where('af_id','=',$item->snapcash_id)
+                        ->where('status','=','4010')
+                        ->where('isactive','=','1')
+                        ->where('tm_end', '>=', date('Y-m-d H:i'))
+                        ->first();
+                    if(!$snapcash){
+                        continue;
+                    }
+                    $item->target = 'deeplink';
+                    $item->deeplink = 'cashtree://snapcash?code='.$snapcash->af_id;
+                }elseif ($item->target == 'campaign'){
+                    $objAd = AD::where('adid','=',$item->adid)
+                        ->where('status','=','4010')
+                        ->where('tm_end', '>=', date('Y-m-d H:i'))
+                        ->first();;
+
+                    if(!$objAd){
+                        continue;
+                    }
+
+                    $item->target = 'deeplink';
+                    $item->deeplink = 'cashtree://openad/'.$objAd->adid;
+                }
+                array_push($dynamic_section, $item);
+            }
+
+            return $dynamic_section;
         });
 
         $news = Cache::remember('__news_list_home',3600, function (){
@@ -176,14 +208,14 @@ class HomeController extends ApiController
                 $response ['unfinished,'] = UnfinishedResource::collection($ad);
             }
             elseif ($setting->page_name == 'dynamic'){
-                $response ['dynamic_section'] = DynamicSectionResource::collection($dynamic_section);
+                $response ['dynamic_section'] = DynamicSectionResource::collection($arr_dynamic_section);
             }
             elseif ($setting->page_name == 'news'){
                 $response ['news'] = NewsResource::collection($news);
             }
         }
         $response['config']= $config;
-        $response ['user'] = $user;
+        $response['user'] = $user;
 
         return $this->successResponse($response);
     }

@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\AD;
+use App\AffiliateAD;
 use App\DynamicSection;
 use App\Helpers\Utils;
 use Illuminate\Http\Request;
@@ -67,6 +69,16 @@ class DynamicSectionController extends Controller
             if($validation->fails()) {
                 return json_encode(['status'=> false, 'message'=> $validation->messages()]);
             }
+            $snapcash = AffiliateAD::where('af_id','=',$request->snapcash_id)
+                ->where('status','=','4010')
+                ->where('isactive','=','1')
+                ->where('tm_end', '>=', date('Y-m-d H:i'))
+                ->first();
+
+            if(!$snapcash){
+                return json_encode(['status'=> false, 'message'=> $this->single_message('Your Snapcash ID doesn\'t exist')]);
+            }
+
             $data['snapcash_id'] = $request->snapcash_id;
         }else if($request->target === 'campaign'){
             $validation = Validator::make($request->all(), [
@@ -76,11 +88,22 @@ class DynamicSectionController extends Controller
             if($validation->fails()) {
                 return json_encode(['status'=> false, 'message'=> $validation->messages()]);
             }
+
+            $objAd = AD::where('adid','=',$request->adid)
+                ->where('status','=','4010')
+                ->where('tm_end', '>=', date('Y-m-d H:i'))
+                ->first();;
+
+            if(!$objAd){
+                return json_encode(['status'=> false, 'message'=> $this->single_message('Your ADID doesn\'t exist')]);
+            }
+
             $data['adid'] = $request->adid;
         }
 
         DynamicSection::insert($data);
 
+        $this->forget_cache('__dynamic_section');
         return json_encode(['status'=> true, 'message'=> "Success"]);
     }
 
@@ -162,6 +185,7 @@ class DynamicSectionController extends Controller
             return json_encode(['status'=> true, 'message'=> $this->single_message('Server Error')]);
         }
 
+        $this->forget_cache('__dynamic_section');
         return json_encode(['status'=> true, 'message'=> "Success"]);
     }
 
@@ -192,6 +216,7 @@ class DynamicSectionController extends Controller
             return json_encode(['status'=> false, 'message'=> $this->single_message('Something wrong.')]);
         }
 
+        $this->forget_cache('__dynamic_section');
         return json_encode(['status'=> true, 'message'=> "Success"]);
     }
 }
