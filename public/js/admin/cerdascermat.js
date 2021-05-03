@@ -152,6 +152,39 @@ $(document).on('click' ,'.add_field' , function(){
     $('table #'+rownumber).fadeIn('slow');
 });
 
+$(document).on('click','#add_prize', function () {
+    let rownumber = parseInt($(this).attr('data-row')) + 1;
+    $(this).attr('data-row',rownumber);
+    $('#table_prize tbody').append(
+        '<tr id="'+rownumber+'">'+
+        '<td>'+
+        '<input type="number" class="form-control" value="1" name="prize['+rownumber+'][rank]">'+
+        '</td>'+
+        '<td>'+
+        '<select id="'+rownumber+'" style="width: 100%" class="form-control custom-select select2'+ rownumber +'" name="prize['+rownumber+'][item]">'+
+        $('#selection-field').html()+
+        '</select>'+
+        '</td>'+
+        '<td align="center" class="vertical-align-middle"><a class="delete_field" href="javascript:void(0)"><i data-feather="trash"></i></a></td>'+
+        '</tr>'
+    );
+    feather.replace();
+    $('#select2'+rownumber).select2();
+});
+
+$(document).on('click','#btn_generate_question', function () {
+    let btn = $(this);
+    btn.addClass('post').attr('disabled','disabled');
+    var table = $('#table_question_generated').DataTable();
+    table.ajax.reload(
+        function () {
+            feather.replace();
+            btn.removeClass('post');
+            btn.removeAttr('disabled')
+        }
+    );
+});
+
 function question_data_table() {
     let table = $('#dt_question');
     if (table != null) {
@@ -245,5 +278,54 @@ function question_data_table() {
 }
 
 function session_data_table() {
-    
+    let table = $('#table_question_generated');
+    if (table != null) {
+        table.DataTable({
+            responsive: true,
+            processing: true,
+            serverSide: true,
+            ajax: {
+                url: '/admin/cerdas-cermat/question/random_paging',
+                type:"POST",
+                data: function ( d ) {
+                    d._token = $('meta[name="csrf-token"]').attr('content');
+                }
+            },
+            columns: [
+                { data: 'DT_RowIndex', name: 'DT_RowIndex'},
+                { data: 'question', name: 'question' },
+                { data: 'question_image', name: 'question_image' },
+                { data: 'question_level', name: 'question_level' },
+                { data: 'answer_count', name: 'answer_count' },
+            ],
+            columnDefs: [
+                {
+                    targets: 0,
+                    className: "text-center"
+                },
+                {
+                    targets: 2,
+                    className: "text-center",
+                    render:function (data, type, full, meta) {
+                        if(data !== null && data !== ''){
+                            return '<img src="'+data+'" width="100px">'
+                        }
+                        return '';
+                    }
+                },
+                {
+                    targets: 4,
+                    className: "text-center"
+                },
+                {
+                    targets: 3,
+                    className: "text-capitalize",
+                    render:function (data, type, full, meta) {
+                        let level = {easy : 'badge badge-success', medium : 'badge badge-warning', hard : 'badge badge-danger'};
+                        return '<span class="text-capitalize p-1 '+level[data]+'">'+data+'</span>'
+                    }
+                }
+            ]
+        })
+    }
 }

@@ -166,6 +166,7 @@ Route::post('/admin/cerdas-cermat/question/submit','CerdasCermatController@submi
 Route::post('/admin/cerdas-cermat/question/update','CerdasCermatController@update_question');
 Route::post('/admin/cerdas-cermat/question/delete','CerdasCermatController@delete_question');
 Route::post('/admin/cerdas-cermat/question/paging','CerdasCermatController@question_paging');
+Route::post('/admin/cerdas-cermat/question/random_paging','CerdasCermatController@random_paging');
 Route::get('/admin/cerdas-cermat/question/edit/{id}','CerdasCermatController@get_question');
 Route::post('/admin/cerdas-cermat/answer/delete','CerdasCermatController@delete_answer');
 

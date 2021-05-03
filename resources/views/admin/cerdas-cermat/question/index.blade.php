@@ -16,7 +16,7 @@
                         <h4 class="m-0 text-secondary page-title">Cerdas Cermat Question</h4>
                     </div>
                     <div class="col-md-6 text-right">
-                        <a href="{{url('/admin/cerdas-cermat/session')}}" class="btn btn-outline-primary mr-2"><i data-feather="list"></i>Session</a>
+                        <a href="{{url('/admin/cerdas-cermat')}}" class="btn btn-outline-primary mr-2"><i data-feather="list"></i>Session</a>
                         <a href="javascript:void(0)" class="btn btn-primary" data-toggle="modal" data-target="#add_question_modal"><i data-feather="plus"></i>Add Question</a>
                     </div>
                 </div>

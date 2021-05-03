@@ -168,7 +168,7 @@ class HomeController extends ApiController
             return News::select('id','title','url_to_image','reward')
                 ->withCount('news_read')
                 ->orderBy('id','DESC')
-                ->where('row_status','=','active')->take(15)->get();
+                ->where('row_status','=','active')->take(10)->get();
         });
 
         $layout_settings = Cache::rememberForever('__layout_setting',function (){

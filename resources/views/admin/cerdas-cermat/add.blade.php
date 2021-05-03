@@ -23,6 +23,7 @@
             <div class="col-md-12 mt-3">
                 <div class="card">
                     <div class="card-body overflow-hidden">
+                        <b>Basic Information</b>
                         <form action="{{url('/admin/cerdas-cermat/submit')}}">
                             <div class="row">
                                 <div class="col-md-6">
@@ -35,7 +36,7 @@
                                     <div class="form-group">
                                         <label for="company" class="col-sm-4 col-form-label">Registration Fee*</label>
                                         <div class="col-sm-12">
-                                            <input type="text" class="form-control" placeholder="Input Point" name="registration_fee" id="registration_fee" autocomplete="off">
+                                            <input type="number" class="form-control" placeholder="Input Point" name="registration_fee" id="registration_fee" autocomplete="off">
                                         </div>
                                     </div>
                                     <div class="form-group">
@@ -76,54 +77,65 @@
                                     <div class="form-group">
                                         <label for="company" class="col-sm-4 col-form-label">Prize*</label>
                                         <div class="col-sm-12">
-                                            <table class="table w-100">
+                                            <select id="selection-field" class="hide">
+                                                @foreach($products as $product)
+                                                    <option class="text-muted" value="{{$product->id}}">{{$product->product_name}}</option>
+                                                @endforeach
+                                            </select>
+                                            <table id="table_prize" class="table w-100">
                                                 <thead>
-                                                <tr>
-                                                    <th width="100">Rank</th>
-                                                    <th>Prize Name</th>
-                                                    <th class="text-right" width="20"><button class="btn btn-outline-primary btn-sm">Add</button></th>
-                                                </tr>
+                                                    <tr>
+                                                        <th width="100">Rank</th>
+                                                        <th>Prize Name</th>
+                                                        <th class="text-center" width="20"><a href="javascript:void(0)" id="add_prize" data-row="0" class="btn btn-outline-primary btn-sm">Add</a></th>
+                                                    </tr>
                                                 </thead>
                                                 <tbody>
-                                                <tr>
-                                                    <td>
-                                                        <input type="number" class="form-control" value="1">
-                                                    </td>
-                                                    <td>
-                                                        <select class="form-control custom-select" name="prize" id="prize">
-                                                            <option value="pk5">Pulsa 5000</option>
-                                                        </select>
-                                                    </td>
-                                                    <td align="center">
-                                                        <a class="btn delete_field" href="javascript:void(0)"><i data-feather="trash"></i></a>
-                                                    </td>
-                                                </tr>
+                                                    <tr>
+                                                        <td>
+                                                            <input type="number" class="form-control" value="1" name="prize[0][rank]">
+                                                        </td>
+                                                        <td>
+                                                            <select class="form-control custom-select select2" name="prize[0][item]" id="prize">
+                                                                @foreach($products as $product)
+                                                                    <option class="text-muted" value="{{$product->id}}">{{$product->product_name}}</option>
+                                                                @endforeach
+                                                            </select>
+                                                        </td>
+                                                        <td align="center" class="vertical-align-middle">
+                                                            <a class="btn delete_field" href="javascript:void(0)"><i data-feather="trash"></i></a>
+                                                        </td>
+                                                    </tr>
                                                 </tbody>
                                             </table>
                                         </div>
                                     </div>
-
-                                    {{--<div class="form-group">--}}
-                                        {{--<div class="row">--}}
-                                            {{--<div class="col-md-8">--}}
-                                                {{--<label for="company" class="col-form-label">Question*</label>--}}
-                                            {{--</div>--}}
-                                            {{--<div class="col-md-4 text-right">--}}
-                                                {{--<button class="btn btn-outline-primary">Generate</button>--}}
-                                            {{--</div>--}}
-                                        {{--</div>--}}
-                                    {{--</div>--}}
                                 </div>
                             </div>
                             <hr>
-                            <div class="row">
+                            <div class="row p-2">
                                 <div class="col-md-12">
-                                    <label for="company" class="col-sm-4 col-form-label">Question*</label>
-                                    <table class="table table-hover w-100">
+                                    <div class="d-flex mb-2">
+                                        <div>
+                                            <b>List of Question</b>
+                                        </div>
+                                        <div class="flex-1">
+                                            <button id="btn_generate_question" type="button" class="btn btn-primary mb-3 btn-submit float-right">
+                                                <span class="text">Generate Question</span>
+                                                <span class="show-loading">
+                                            <span class="spinner-border spinner-border-sm mr-2" role="status" aria-hidden="true"></span>Please Wait ...
+                                        </span>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-12">
+                                    <table id="table_question_generated" class="table table-hover table-striped w-100">
                                         <thead>
                                         <tr>
                                             <th>No</th>
                                             <th>Question</th>
+                                            <th>Image</th>
                                             <th>Level</th>
                                             <th>Answer</th>
                                         </tr>
@@ -154,4 +166,8 @@
 
 @section('js')
     <script src="{{url('/js/admin/cerdascermat.js')}}"></script>
+    <script>
+        // $("#table_question_generated").DataTable();
+        session_data_table();
+    </script>
 @endsection

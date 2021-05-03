@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\CCAnswer;
 use App\CCQuestion;
 use App\Helpers\Utils;
+use App\Product;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -22,7 +23,12 @@ class CerdasCermatController extends Controller
     }
 
     public function add(Request $request){
-        return view('admin.cerdas-cermat.add');
+        $products = Product::where('row_status','=','active')->get();
+        $data = [
+          'products' => $products
+        ];
+
+        return view('admin.cerdas-cermat.add',$data);
     }
 
     public function question_list(Request $request){
@@ -151,7 +157,6 @@ class CerdasCermatController extends Controller
             $item = [];
         }
 
-//        print_r($arr_update_answer); die();
         if(!$has_correct_answer){
             return json_encode(['status'=> false, 'message'=> $this->single_message('Please select the correct answer')]);
         }
@@ -212,6 +217,12 @@ class CerdasCermatController extends Controller
 
     public function question_paging(Request $request){
         $query = CCQuestion::where('row_status','!=','deleted')->withCount('answer');
+
+        return $this->data_table($query);
+    }
+
+    public function random_paging(Request $request){
+        $query = CCQuestion::inRandomOrder()->where('row_status','!=','deleted')->withCount('answer');
 
         return $this->data_table($query);
     }
