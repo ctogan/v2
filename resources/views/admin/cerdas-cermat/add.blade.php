@@ -118,6 +118,22 @@
                             <hr>
                             <div class="row">
                                 <div class="col-md-12">
+                                    <label for="company" class="col-sm-4 col-form-label">Question*</label>
+                                    <table class="table table-hover w-100">
+                                        <thead>
+                                        <tr>
+                                            <th>No</th>
+                                            <th>Question</th>
+                                            <th>Level</th>
+                                            <th>Answer</th>
+                                        </tr>
+                                        </thead>
+                                    </table>
+                                </div>
+                            </div>
+                            <hr>
+                            <div class="row">
+                                <div class="col-md-12">
                                     <div class="form-group pl-2">
                                         <button id="btn_submit_news" class="btn btn-primary btn-submit" type="submit">
                                             <span class="text">SUBMIT</span>

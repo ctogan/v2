@@ -197,23 +197,50 @@ class HomeController extends ApiController
         ];
 
         $response = ['banner' => BannerResource::collection($banner)];
+        $dynamic_position = [];
         foreach ($layout_settings as $setting){
             if($setting->page_name == 'categories'){
-                $response ['category'] = CategoryResource::collection($category);
+                $section = [
+                    'content_type' => 'categories',
+                    'sequence' => $setting->sequence,
+                    'data' => CategoryResource::collection($category)
+                ];
+                array_push($dynamic_position, $section);
             }
             elseif ($setting->page_name == 'flash_event'){
-                $response ['flash_event'] = FlashEventResource::collection($arr_flash);
+                $section = [
+                    'content_type' => 'flash_event',
+                    'sequence' => $setting->sequence,
+                    'data' => FlashEventResource::collection($arr_flash)
+                ];
+                array_push($dynamic_position, $section);
             }
             elseif ($setting->page_name == 'unfinished'){
-                $response ['unfinished,'] = UnfinishedResource::collection($ad);
+                $section = [
+                    'content_type' => 'unfinished',
+                    'sequence' => $setting->sequence,
+                    'data' => UnfinishedResource::collection($ad)
+                ];
+                array_push($dynamic_position, $section);
             }
             elseif ($setting->page_name == 'dynamic'){
-                $response ['dynamic_section'] = DynamicSectionResource::collection($arr_dynamic_section);
+                $section = [
+                    'content_type' => 'unfinished',
+                    'sequence' => $setting->sequence,
+                    'data' => DynamicSectionResource::collection($arr_dynamic_section)
+                ];
+                array_push($dynamic_position, $section);
             }
             elseif ($setting->page_name == 'news'){
-                $response ['news'] = NewsResource::collection($news);
+                $section = [
+                    'content_type' => 'unfinished',
+                    'sequence' => $setting->sequence,
+                    'data' => NewsResource::collection($news)
+                ];
+                array_push($dynamic_position, $news);
             }
         }
+        $response['dynamic_position'] = $dynamic_position;
         $response['config']= $config;
         $response['user'] = $user;
 
