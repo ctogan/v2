@@ -225,7 +225,7 @@ class HomeController extends ApiController
             }
             elseif ($setting->page_name == 'dynamic'){
                 $section = [
-                    'content_type' => 'unfinished',
+                    'content_type' => 'dynamic',
                     'sequence' => $setting->sequence,
                     'data' => DynamicSectionResource::collection($arr_dynamic_section)
                 ];
