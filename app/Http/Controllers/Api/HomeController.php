@@ -233,7 +233,7 @@ class HomeController extends ApiController
             }
             elseif ($setting->page_name == 'news'){
                 $section = [
-                    'content_type' => 'unfinished',
+                    'content_type' => 'news',
                     'sequence' => $setting->sequence,
                     'data' => NewsResource::collection($news)
                 ];
