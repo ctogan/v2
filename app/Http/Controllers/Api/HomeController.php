@@ -237,7 +237,7 @@ class HomeController extends ApiController
                     'sequence' => $setting->sequence,
                     'data' => NewsResource::collection($news)
                 ];
-                array_push($dynamic_position, $news);
+                array_push($dynamic_position, $section);
             }
         }
         $response['dynamic_position'] = $dynamic_position;
