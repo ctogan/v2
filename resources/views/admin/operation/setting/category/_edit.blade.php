@@ -1,4 +1,4 @@
-<div id="edit_category_modal" class="modal" tabindex="-1" role="dialog">
+<div id="edit_category_modal" class="modal" data-backdrop="static" role="dialog">
     <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
             <div class="modal-header">

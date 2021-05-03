@@ -54,7 +54,6 @@ class HomeController extends ApiController
      * )
      */
     public function index(Request $request){
-//        echo date('Y-m-d H:i');die();
         $user = $this->user;
         $today = Carbon::now();
 
@@ -165,10 +164,11 @@ class HomeController extends ApiController
             return $dynamic_section;
         });
 
-        $news = Cache::remember('__news_list_home',3600, function (){
+        $news = Cache::tags('news')->remember('__news_list_home',3600, function (){
             return News::select('id','title','url_to_image','reward')
                 ->withCount('news_read')
-                ->where('row_status','=','active')->take(5)->get();
+                ->orderBy('id','DESC')
+                ->where('row_status','=','active')->take(15)->get();
         });
 
         $layout_settings = Cache::rememberForever('__layout_setting',function (){

@@ -96,7 +96,7 @@ class NewsController extends Controller
             }
         }
 
-        $this->forget_cache('__news_list_home');
+        $this->forget_cache_tag('news');
 
         return json_encode(['status'=> true, 'message'=> "Success"]);
     }
@@ -157,7 +157,7 @@ class NewsController extends Controller
             }
         }
 
-        $this->forget_cache('__news_list_home');
+        $this->forget_cache_tag('news');
 
         return json_encode(['status'=> true, 'message'=> "Success"]);
     }
@@ -184,7 +184,7 @@ class NewsController extends Controller
             return json_encode(['status'=> false, 'message'=> $this->single_message('Error!')]);
         }
 
-        $this->forget_cache('__news_list_home');
+        $this->forget_cache_tag('news');
 
         return json_encode(['status'=> true, 'message'=> "Success"]);
     }

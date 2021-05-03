@@ -7,6 +7,7 @@ use Illuminate\Foundation\Bus\DispatchesJobs;
 use Illuminate\Foundation\Validation\ValidatesRequests;
 use Illuminate\Routing\Controller as BaseController;
 use Illuminate\Support\Facades\Cache;
+use Yajra\DataTables\DataTables;
 
 class Controller extends BaseController
 {
@@ -33,7 +34,7 @@ class Controller extends BaseController
     // TRANSACTION
     protected const CODE_ERROR_ORDER_NUMBER_NOT_FOUND = '401';
     protected const CODE_SUCCESS = '200';
-    protected const CODE_ERROR_VALIDATION = 'E201';
+    protected const CODE_ERROR_VALIDATION = '201';
     protected const ERROR_USER_AUTH = '202';
     protected const ERROR_USER_BLOCK = '203';
     protected const ERROR_USER_NEED_LOGIN = '204';
@@ -71,5 +72,13 @@ class Controller extends BaseController
 
     public function forget_cache($key){
         Cache::forget($key);
+    }
+
+    public function forget_cache_tag($tag){
+        Cache::tags($tag)->flush();
+    }
+
+    public function data_table($query){
+        return DataTables::of($query->get())->addIndexColumn()->make(true);
     }
 }

@@ -88,3 +88,11 @@ Route::get('/part-time/generate/cv', 'ApiPartTimeController@generate_cv')->name(
 Route::get('/part-time/faq', 'ApiPartTimeController@faq')->name('api.pt.faq')->middleware('localization');
 
 Route::get('/home', 'Api\HomeController@index');
+
+//News
+Route::get('/news', 'Api\NewsController@index');
+Route::get('/news/detail', 'Api\NewsController@get_news');
+
+//Flash Event
+Route::get('/flash-event', 'Api\FlashEventcontroller@get_flash_event');
+//Route::get('/news/detail', 'Api\NewsController@get_news');

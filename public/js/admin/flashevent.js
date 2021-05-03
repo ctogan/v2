@@ -6,7 +6,7 @@ $(document).ready(function(){
 
         $('#table_flash_product').append('<tr>'+
             '<td>'+
-            '<select style="width: 100%" class="form-control custom-select select2 '+ rownumber +'" name="detail['+rownumber+'][product_id]">    '+
+            '<select id="'+rownumber+'" style="width: 100%" class="form-control custom-select select2 '+ rownumber +'" name="detail['+rownumber+'][product_id]">    '+
             $('#selection-field').html()+
             '</select>'+
             '</td>'+
@@ -19,9 +19,7 @@ $(document).ready(function(){
             '</tr>');
 
         feather.replace();
-        $('.select2').select2({
-            theme: "bootstrap4"
-        });
+        $('#'+rownumber).select2();
     });
 
     $("#period").on('change',function (e) {

@@ -9,6 +9,8 @@ class FlashEventDetail extends Model
     protected $connection = 'common';
     protected $table = 'flash_event_details';
 
+    public $timestamps = false;
+
     protected $fillable = [
         'row_status','flash_detail_code','flash_event_id','product_id','point','cap','updated_by','updated_at'
     ];
