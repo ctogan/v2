@@ -16,4 +16,14 @@ class CCQuestion extends Model
     public function answer(){
         return $this->hasMany(CCAnswer::class,'cc_question_id')->where('row_status','=', 'active');
     }
+
+    public function correct_answer(){
+        return $this->hasOne(CCAnswer::class,'cc_question_id')
+            ->where('row_status','=', 'active')
+            ->where('is_correct_answer','=', true);
+    }
+
+    public function session_question(){
+        return $this->hasOne(CCSessionQuestion::class, 'cc_question_id');
+    }
 }

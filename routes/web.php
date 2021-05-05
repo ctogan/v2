@@ -169,6 +169,10 @@ Route::post('/admin/cerdas-cermat/question/paging','CerdasCermatController@quest
 Route::post('/admin/cerdas-cermat/question/random_paging','CerdasCermatController@random_paging');
 Route::get('/admin/cerdas-cermat/question/edit/{id}','CerdasCermatController@get_question');
 Route::post('/admin/cerdas-cermat/answer/delete','CerdasCermatController@delete_answer');
+Route::post('/admin/cerdas-cermat/session-paging','CerdasCermatController@session_paging');
+Route::get('/admin/cerdas-cermat/edit/{id}','CerdasCermatController@edit');
+Route::post('/admin/cerdas-cermat/update','CerdasCermatController@update');
+Route::post('/admin/cerdas-cermat/prize/delete','CerdasCermatController@delete_prize');
 
 Route::get('/admin/product','ProductController@index');
 Route::get('/admin/product/edit/{id}','ProductController@get');

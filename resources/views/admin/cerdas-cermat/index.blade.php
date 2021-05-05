@@ -27,18 +27,16 @@
                         <strong>List Of Cerdas Cermat</strong>
                     </div>
                     <div class="card-body overflow-hidden">
-                        <table id="dt_dynamic_section" class="datatable table table-striped table-bordered responsive nowrap table-hover" style="width:100%">
+                        <table id="dt_session" class="datatable table table-striped table-bordered responsive nowrap table-hover" style="width:100%">
                             <thead>
                             <tr>
                                 <th>No</th>
                                 <th>Title</th>
                                 <th>Question</th>
                                 <th>Open Date</th>
-                                <th>Point</th>
-                                <th>Prize 1st</th>
-                                <th>Prize 2nd</th>
-                                <th>Prize 3nd</th>
-                                <th>Contribution Prize</th>
+                                <th>Registration Fee</th>
+                                <th>Winner Count</th>
+                                <th>Participant</th>
                                 <th>Created At</th>
                                 <th>Created By</th>
                                 <th>Updated At</th>
@@ -59,4 +57,7 @@
 
 @section('js')
     <script src="{{url('/js/admin/cerdascermat.js')}}"></script>
+    <script>
+        session_data_table();
+    </script>
 @endsection
