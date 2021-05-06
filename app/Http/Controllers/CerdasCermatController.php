@@ -13,6 +13,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Str;
 
 class CerdasCermatController extends Controller
 {
@@ -109,6 +110,7 @@ class CerdasCermatController extends Controller
         }
 
         $arr_session = [
+            'session_code' => Str::random(8),
             'row_status' => 'active',
             'title' => $request->title,
             'registration_fee' => $request->registration_fee,

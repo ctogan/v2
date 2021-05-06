@@ -10,6 +10,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Str;
 use Yajra\DataTables\DataTables;
 
 class NewsController extends Controller
@@ -61,6 +62,7 @@ class NewsController extends Controller
         }
 
         $news_insert = array(
+            'news_code' => Str::random(16),
             "row_status" => 'active',
             "id_news"=>0,
             "featured_media_id"=>0,

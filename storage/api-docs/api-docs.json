@@ -1,0 +1,222 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "Cashtree Revamp API Documentation",
+        "version": "1.0.0"
+    },
+    "paths": {
+        "/api/cerdas-cermat": {
+            "get": {
+                "tags": [
+                    "cerdas-cermat"
+                ],
+                "summary": "list of cerdas cermat",
+                "operationId": "App\\Http\\Controllers\\Api\\CerdasCermatController::index",
+                "parameters": [
+                    {
+                        "name": "mmses",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "A list with cerdas cermat"
+                    }
+                }
+            }
+        },
+        "/api/flash-event/detail": {
+            "get": {
+                "tags": [
+                    "flash-event"
+                ],
+                "summary": "get detail of flash event by event_code",
+                "operationId": "App\\Http\\Controllers\\Api\\FlashEventController::get_flash_event",
+                "parameters": [
+                    {
+                        "name": "mmses",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "event_code",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "A list with flash-event"
+                    }
+                }
+            }
+        },
+        "/api/home": {
+            "get": {
+                "tags": [
+                    "home"
+                ],
+                "summary": "Fetching data home",
+                "description": "Fetching data",
+                "operationId": "fetchingdata",
+                "parameters": [
+                    {
+                        "name": "mmses",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "lang",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful Operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "code": {
+                                            "type": "string",
+                                            "example": "000"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "data": {
+                                            "type": "object",
+                                            "example": ""
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/news": {
+            "get": {
+                "tags": [
+                    "news"
+                ],
+                "summary": "list news",
+                "operationId": "App\\Http\\Controllers\\Api\\NewsController::index",
+                "parameters": [
+                    {
+                        "name": "mmses",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "A list with news"
+                    }
+                }
+            }
+        },
+        "/api/news/detail": {
+            "get": {
+                "tags": [
+                    "news"
+                ],
+                "summary": "get news detail by id",
+                "operationId": "App\\Http\\Controllers\\Api\\NewsController::get",
+                "parameters": [
+                    {
+                        "name": "mmses",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "news_code",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "detail of news"
+                    }
+                }
+            }
+        },
+        "/api/news/point": {
+            "post": {
+                "tags": [
+                    "news"
+                ],
+                "summary": "give reward after read news",
+                "operationId": "App\\Http\\Controllers\\Api\\NewsController::point",
+                "parameters": [
+                    {
+                        "name": "mmses",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "news_code",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "news detail"
+                    }
+                }
+            }
+        }
+    },
+    "security": [
+        []
+    ]
+}

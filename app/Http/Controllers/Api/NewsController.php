@@ -12,6 +12,33 @@ use Illuminate\Support\Facades\Validator;
 
 class NewsController extends ApiController
 {
+    /**
+     * @OA\Get(
+     *   path="/api/news",
+     *   summary="list news",
+     *   tags={"news"},
+     *     @OA\Parameter(
+     *          name="mmses",
+     *          required=true,
+     *          in="query",
+     *          @OA\Schema(
+     *              type="string"
+     *          )
+     *     ),
+     *     @OA\Parameter(
+     *          name="page",
+     *          required=true,
+     *          in="query",
+     *          @OA\Schema(
+     *              type="integer"
+     *          )
+     *     ),
+     *   @OA\Response(
+     *     response=200,
+     *     description="A list with news"
+     *   )
+     * )
+     */
     public function index(Request $request){
         $page = $request->page;
 
@@ -30,24 +57,52 @@ class NewsController extends ApiController
         return $this->successResponse($response);
     }
 
-    public function get_news(Request $request){
+    /**
+     * @OA\Get(
+     *   path="/api/news/detail",
+     *   summary="get news detail by id",
+     *   tags={"news"},
+     *     @OA\Parameter(
+     *          name="mmses",
+     *          required=true,
+     *          in="query",
+     *          @OA\Schema(
+     *              type="string"
+     *          )
+     *     ),
+     *     @OA\Parameter(
+     *          name="news_code",
+     *          required=true,
+     *          in="query",
+     *          @OA\Schema(
+     *              type="string"
+     *          )
+     *     ),
+     *   @OA\Response(
+     *     response=200,
+     *     description="detail of news"
+     *   )
+     * )
+     */
+    public function get(Request $request){
         $user = $this->user;
         $validation = Validator::make($request->all(), [
-            'id' => 'required'
+            'news_code' => 'required'
         ]);
 
         if ($validation->fails()) {
             return $this->errorResponse($validation->errors(),static::CODE_ERROR_VALIDATION);
         }
 
-        $id = $request->id;
+        $code = $request->news_code;
         $uid = $user->uid;
-        $news = Cache::tags('news')->remember('__news_detail'.$id, 3600, function () use ($id, $uid){
-            $objNews = News::where('id','=',$id)->get();
-            if(count($objNews) > 0){
-                $objNewsRead = NewsRead::where('uid','=',$uid)->where('id_news','=',$id)->first();
+
+        $news = Cache::tags('news')->remember('__news_detail11'.$code, 3600, function () use ($code, $uid){
+            $objNews = News::where('news_code','=',$code)->first();
+            if($objNews){
+                $objNewsRead = NewsRead::where('uid','=',$uid)->where('id_news','=',$objNews->id)->first();
                 if($objNewsRead){
-                    $objNews[0]['reward'] = 0;
+                    $objNews->reward = 0;
                 }
             }
 
@@ -55,11 +110,84 @@ class NewsController extends ApiController
         });
 
         if(!$news){
-            return $this->errorResponse(static::ERROR_NOT_FOUND,static::CODE_ERROR_VALIDATION);
+            return $this->errorResponse(static::ERROR_NOT_FOUND,static::ERROR_CODE_NOT_FOUND);
         }
 
         $response = [
-          'news' => NewsDetailResource::collection($news)
+          'news' => NewsDetailResource::collection(array($news))
+        ];
+
+        return $this->successResponse($response);
+    }
+
+    /**
+     * @OA\Post(
+     *   path="/api/news/point",
+     *   summary="give reward after read news",
+     *   tags={"news"},
+     *     @OA\Parameter(
+     *          name="mmses",
+     *          required=true,
+     *          in="query",
+     *          @OA\Schema(
+     *              type="string"
+     *          )
+     *     ),
+     *     @OA\Parameter(
+     *          name="news_code",
+     *          required=true,
+     *          in="query",
+     *          @OA\Schema(
+     *              type="string"
+     *          )
+     *     ),
+     *   @OA\Response(
+     *     response=200,
+     *     description="news detail"
+     *   )
+     * )
+     */
+    public function point(Request $request){
+        $user = $this->user;
+        $validation = Validator::make($request->all(), [
+            'news_code' => 'required'
+        ]);
+
+        if ($validation->fails()) {
+            return $this->errorResponse($validation->errors(),static::CODE_ERROR_VALIDATION);
+        }
+
+        $news_code = $request->news_code;
+        $news = Cache::tags('news')->remember('__news_'.$news_code,3600, function () use ($news_code){
+            return News::where('row_status','=','active')
+                ->where('news_code','=',$news_code)
+                ->first();
+        });
+
+        if(!$news){
+            return $this->errorResponse(static::ERROR_NOT_FOUND,static::ERROR_CODE_NOT_FOUND);
+        }
+
+        $news_id = $news->id;
+        $uid = $user->uid;
+        $news_read = Cache::tags('news_point')->rememberForever('__news_point_'.$news_code.$user->uid, function () use ($news_id, $uid){
+            return NewsRead::where('id_news','=',$news_id)
+                ->where('uid','=',$uid)->first();
+        });
+
+        if(!$news_read){
+            $arr_insert = [
+                'id_news' => $news->id,
+                'uid' => $user->uid,
+                'reward' => $news->reward,
+                'created_at' => date('Y-m-d h:m:s')
+            ];
+
+            NewsRead::insert($arr_insert);
+        }
+
+        $response = [
+            'news' => $news
         ];
 
         return $this->successResponse($response);

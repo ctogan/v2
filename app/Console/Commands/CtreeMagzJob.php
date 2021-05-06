@@ -7,6 +7,7 @@ use App\News;
 use App\NewsCategory;
 use App\NewsCategoryDetail;
 use Illuminate\Console\Command;
+use Illuminate\Support\Str;
 
 class CtreeMagzJob extends Command
 {
@@ -69,6 +70,7 @@ class CtreeMagzJob extends Command
             $data = json_decode($result);
             foreach($data as $item){
                 $news_insert = array(
+                    'news_code' => Str::random(16),
                     "row_status" => 'active',
                     "id_news"=>$item->id,
                     "featured_media_id"=>$item->featured_media,
