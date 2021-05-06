@@ -91,8 +91,11 @@ Route::get('/home', 'Api\HomeController@index');
 
 //News
 Route::get('/news', 'Api\NewsController@index');
-Route::get('/news/detail', 'Api\NewsController@get_news');
+Route::get('/news/detail', 'Api\NewsController@get');
+Route::post('/news/point', 'Api\NewsController@point');
 
 //Flash Event
-Route::get('/flash-event', 'Api\FlashEventcontroller@get_flash_event');
-//Route::get('/news/detail', 'Api\NewsController@get_news');
+Route::get('/flash-event/detail', 'Api\FlashEventController@get_flash_event');
+
+//Cerdas Cermat
+Route::get('cerdas-cermat', 'Api\CerdasCermatController@index');

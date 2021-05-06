@@ -9,6 +9,12 @@ use Illuminate\Routing\Controller as BaseController;
 use Illuminate\Support\Facades\Cache;
 use Yajra\DataTables\DataTables;
 
+/**
+ * @OA\Info(
+ *    title="Cashtree Revamp API Documentation",
+ *    version="1.0.0",
+ * )
+ */
 class Controller extends BaseController
 {
     use AuthorizesRequests, DispatchesJobs, ValidatesRequests;
@@ -47,6 +53,8 @@ class Controller extends BaseController
     protected const ERROR_PIN_CODE = '212';
     protected const ERROR_MAINTENANCE = '213';
     protected const CODE_REFUND_ERROR_FAILED = '214';
+
+    protected const ERROR_CODE_NOT_FOUND = '215';
 
 
     // MESAAGE

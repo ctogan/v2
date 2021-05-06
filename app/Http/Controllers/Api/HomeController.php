@@ -32,9 +32,16 @@ class HomeController extends ApiController
      * description="Fetching data",
      * operationId="fetchingdata",
      * tags={"home"},
-     * security={ {"bearer": {} }},
      *     @OA\Parameter(
      *          name="mmses",
+     *          required=true,
+     *          in="query",
+     *          @OA\Schema(
+     *              type="string"
+     *          )
+     *     ),
+     *     @OA\Parameter(
+     *          name="lang",
      *          required=false,
      *          in="query",
      *          @OA\Schema(
@@ -164,8 +171,8 @@ class HomeController extends ApiController
             return $dynamic_section;
         });
 
-        $news = Cache::tags('news')->remember('__news_list_home',3600, function (){
-            return News::select('id','title','url_to_image','reward')
+        $news = Cache::tags('news')->remember('__news_list_home1',3600, function (){
+            return News::select('id','news_code','title','url_to_image','reward')
                 ->withCount('news_read')
                 ->orderBy('id','DESC')
                 ->where('row_status','=','active')->take(10)->get();

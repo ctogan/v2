@@ -17,4 +17,8 @@ class CCSessionPrize extends Model
     public function session(){
         return $this->belongsTo(CCSession::class, 'cc_session_id');
     }
+
+    public function product(){
+        return $this->belongsTo(Product::class, 'product_id');
+    }
 }

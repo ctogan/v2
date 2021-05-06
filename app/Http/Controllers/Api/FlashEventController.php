@@ -10,6 +10,33 @@ use Illuminate\Support\Facades\Validator;
 
 class FlashEventController extends ApiController
 {
+    /**
+     * @OA\Get(
+     *   path="/api/flash-event/detail",
+     *   summary="get detail of flash event by event_code",
+     *   tags={"flash-event"},
+     *     @OA\Parameter(
+     *          name="mmses",
+     *          required=true,
+     *          in="query",
+     *          @OA\Schema(
+     *              type="string"
+     *          )
+     *     ),
+     *     @OA\Parameter(
+     *          name="event_code",
+     *          required=true,
+     *          in="query",
+     *          @OA\Schema(
+     *              type="string"
+     *          )
+     *     ),
+     *   @OA\Response(
+     *     response=200,
+     *     description="A list with flash-event"
+     *   )
+     * )
+     */
     public function get_flash_event(Request $request){
         $user = $this->user;
         $today = Carbon::now();

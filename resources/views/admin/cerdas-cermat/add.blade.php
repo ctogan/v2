@@ -5,7 +5,7 @@
         <nav aria-label="breadcrumb">
             <ol class="breadcrumb">
                 <li class="breadcrumb-item"><a href="#">Home</a></li>
-                <li class="breadcrumb-item"><a href="#">Cerdas Cermat</a></li>
+                <li class="breadcrumb-item"><a href="{{url('admin/cerdas-cermat/')}}">Cerdas Cermat</a></li>
                 <li class="breadcrumb-item active" aria-current="page">New</li>
             </ol>
         </nav>

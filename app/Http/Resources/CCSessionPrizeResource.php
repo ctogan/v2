@@ -4,7 +4,7 @@ namespace App\Http\Resources;
 
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class NewsResource extends JsonResource
+class CCSessionPrizeResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -15,10 +15,9 @@ class NewsResource extends JsonResource
     public function toArray($request)
     {
         return [
-            'news_code' => $this->news_code,
-            'title' => $this->title,
-            'url_to_image' => $this->url_to_image,
-            'reward'=> $this->news_read_count > 0 ? 0 : $this->reward
+            'rank' => $this->rank,
+            'img' => $this->product->img,
+            'prize_name' => $this->product->product_name,
         ];
     }
 }
