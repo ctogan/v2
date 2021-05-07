@@ -60,7 +60,7 @@ class NewsController extends ApiController
     /**
      * @OA\Get(
      *   path="/api/news/detail",
-     *   summary="get news detail by id",
+     *   summary="get news detail by news_code",
      *   tags={"news"},
      *     @OA\Parameter(
      *          name="mmses",

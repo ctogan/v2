@@ -99,3 +99,5 @@ Route::get('/flash-event/detail', 'Api\FlashEventController@get_flash_event');
 
 //Cerdas Cermat
 Route::get('cerdas-cermat', 'Api\CerdasCermatController@index');
+Route::get('cerdas-cermat/detail', 'Api\CerdasCermatController@get');
+Route::post('cerdas-cermat/register', 'Api\CerdasCermatController@register');

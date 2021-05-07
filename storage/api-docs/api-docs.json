@@ -29,6 +29,79 @@
                 }
             }
         },
+        "/api/cerdas-cermat/detail": {
+            "get": {
+                "tags": [
+                    "cerdas-cermat"
+                ],
+                "summary": "get cerdas cermat by session_code",
+                "operationId": "App\\Http\\Controllers\\Api\\CerdasCermatController::get",
+                "parameters": [
+                    {
+                        "name": "mmses",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "session_code",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "A list with cerdas cermat"
+                    }
+                }
+            }
+        },
+        "/api/cerdas-cermat/register": {
+            "post": {
+                "tags": [
+                    "cerdas-cermat"
+                ],
+                "summary": "user register to join cerdas cermat session",
+                "operationId": "App\\Http\\Controllers\\Api\\CerdasCermatController::register",
+                "parameters": [
+                    {
+                        "name": "mmses",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "session_code",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "registration successfully"
+                    },
+                    "216": {
+                        "description": "insufficient point"
+                    },
+                    "217": {
+                        "description": "already registered"
+                    },
+                    "218": {
+                        "description": "session expired"
+                    }
+                }
+            }
+        },
         "/api/flash-event/detail": {
             "get": {
                 "tags": [
@@ -156,7 +229,7 @@
                 "tags": [
                     "news"
                 ],
-                "summary": "get news detail by id",
+                "summary": "get news detail by news_code",
                 "operationId": "App\\Http\\Controllers\\Api\\NewsController::get",
                 "parameters": [
                     {

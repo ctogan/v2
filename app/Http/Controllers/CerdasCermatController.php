@@ -485,6 +485,7 @@ class CerdasCermatController extends Controller
 
     public function session_paging(Request $request){
         $query = CCSession::where('row_status','!=','deleted')
+            ->orderBy('open_date', 'DESC')
             ->withCount('question')
             ->withCount('participant')
             ->withCount('prize');

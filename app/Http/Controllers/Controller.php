@@ -35,7 +35,9 @@ class Controller extends BaseController
     protected const ERROR_PIN_DESC = 'Pin Salah';
     protected const SUCCESSPIN_DESC = 'Pin Salah';
     protected const REFUND_ERROR_FAILED = 'Anda hanya memiliki kesempatan 5 kali untuk Refund';
-
+    protected const ERROR_INSUFFICIENT_POINT = 'Point Tidak cukup';
+    protected const ERROR_CC_ALREADY_REGISTERED = 'Sudah Pernah Mendaftar';
+    protected const ERROR_CC_REGISTRATION_CLOSED = 'Pendaftaran Ditutup';
 
     // TRANSACTION
     protected const CODE_ERROR_ORDER_NUMBER_NOT_FOUND = '401';
@@ -55,6 +57,9 @@ class Controller extends BaseController
     protected const CODE_REFUND_ERROR_FAILED = '214';
 
     protected const ERROR_CODE_NOT_FOUND = '215';
+    protected const ERROR_CODE_INSUFFICIENT = '216';
+    protected const ERROR_CODE_CC_ALREADY_REGISTERED = '217';
+    protected const ERROR_CODE_CC_REGISTRATION_CLOSED = '218';
 
 
     // MESAAGE
