@@ -9,7 +9,6 @@ use App\UserView;
 class Push {
 
     protected const ERR_PUSH_NOTIFICATION = "Push Notification Error";
-    protected const FCM_SERVER_KEY = 'AAAARIBZvgU:APA91bE7hhOF4JWOrqqAiLzQL2ZrFJtQQQew69tnsA55tpx1UNX9LmOMMQSBFFjq-vT6zdQ0B_nna-mcIwfF5uacbfP7rGCHnSa2X8EESqT-Yzg4hPKjrKd3O4eeCZbvqn6Kg7aDfioA';
 
     public static function send_by_uid($id , $notification){
         $id_notification = Notifications::create($notification)->id;
@@ -81,7 +80,7 @@ class Push {
         $url = 'https://fcm.googleapis.com/fcm/send';
         $headers = array(
             'Content-Type:application/json',
-            'Authorization:key='.static::FCM_SERVER_KEY
+            'Authorization:key='.env('FCM_SERVER_KEY','')
         );
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_URL, $url);

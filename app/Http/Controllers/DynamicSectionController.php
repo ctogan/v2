@@ -160,7 +160,7 @@ class DynamicSectionController extends Controller
             if($validation->fails()) {
                 return json_encode(['status'=> false, 'message'=> $validation->messages()]);
             }
-            $data['deeplink'] = $request->deeplink;
+            $dynamic_section->deeplink = $request->deeplink;
         }else if($request->target  == 'snapcash'){
             $validation = Validator::make($request->all(), [
                 'snapcash_id' => 'required'
