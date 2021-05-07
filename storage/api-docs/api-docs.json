@@ -284,6 +284,12 @@
                 "responses": {
                     "200": {
                         "description": "news detail"
+                    },
+                    "201": {
+                        "description": "validation error, session code not exist"
+                    },
+                    "215": {
+                        "description": "news not found"
                     }
                 }
             }

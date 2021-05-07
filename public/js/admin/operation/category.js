@@ -76,6 +76,7 @@ function init_data_table(){
                 { data: 'id', name: 'id'},
             ],
             createdRow: function( row, data, dataIndex ) {
+                $(row).addClass('cursor-pointer');
                 $(row).attr('data-index', data.id);
                 $(row).attr('data-position', data.sequence);
             },
@@ -88,7 +89,7 @@ function init_data_table(){
                     targets: 1,
                     className: "text-center",
                     render:function (data, type, full, meta) {
-                        return '<img src="'+data+'" width="200">';
+                        return '<img src="'+data+'" width="100">';
                     }
                 },
                 {

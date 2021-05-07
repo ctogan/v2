@@ -9,43 +9,9 @@ use App\UserView;
 class Push {
 
     protected const ERR_PUSH_NOTIFICATION = "Push Notification Error";
-    protected const FCM_KEY = 'AAAARIBZvgU:APA91bH5d2oLBfCmhbzAt-Q0A2QM0gS-reEr1jusdtb4XuO0D0b_vDpVte2fM1mnytycyEh8g9c5XqJUd2M72iKk-lTuB-6UfVitCVs4xm_mY4h1iiRhJe69A05P6HoDY2dW2TdtpiwhU2xJR81aJBT8vqBHbDokxg';
+    protected const FCM_SERVER_KEY = 'AAAARIBZvgU:APA91bE7hhOF4JWOrqqAiLzQL2ZrFJtQQQew69tnsA55tpx1UNX9LmOMMQSBFFjq-vT6zdQ0B_nna-mcIwfF5uacbfP7rGCHnSa2X8EESqT-Yzg4hPKjrKd3O4eeCZbvqn6Kg7aDfioA';
 
-    public static function inbox($uid=null , $title=null , $body=null , $click_action=null ,$image=null){
-        if(!$uid){
-            return false;
-        }
-        $users = UserView::select('push_token')->where("uid", '=', $uid)->first();
-        if(!$users){
-            return false;
-        }
-        $inbox = array(
-            'uid' => $uid,
-            'title' => $title,
-            'message' => $body,
-            'status' => 'unread',
-            'img' => $image,
-            'deeplink' => $click_action,
-            'created_by' => 'sistem',
-            'created_at' => date('yy-m-d h:m:s'),
-        );
-        if(UserInbox::create($inbox)){
-            $data = array(
-                'to' => $users->push_token,
-                'notification' => array(
-                    "title" => $title,
-                    "body" => $body,
-                    "click_action" => $click_action
-                )
-            );
-            self::fcm_connect(json_encode($data));
-        }else{
-            return false;
-        }
-        return true;
-    }
-
-    public static function send_by_id($id , $notification){
+    public static function send_by_uid($id , $notification){
         $id_notification = Notifications::create($notification)->id;
         if($id_notification) {
             $user = explode(',', $id);
@@ -115,7 +81,7 @@ class Push {
         $url = 'https://fcm.googleapis.com/fcm/send';
         $headers = array(
             'Content-Type:application/json',
-            'Authorization:key='.static::FCM_KEY
+            'Authorization:key='.static::FCM_SERVER_KEY
         );
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_URL, $url);

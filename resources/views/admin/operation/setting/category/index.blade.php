@@ -28,7 +28,7 @@
                         <strong>List Of Banner</strong>
                     </div>
                     <div class="card-body overflow-hidden">
-                        <table id="dt_category_app" class="datatable table table-striped table-bordered responsive nowrap table-hover" style="width:100%">
+                        <table id="dt_category_app" class="datatable table table-striped table-bordered responsive table-hover" style="width:100%">
                             <thead>
                             <tr>
                                 <th>Index</th>

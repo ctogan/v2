@@ -144,6 +144,14 @@ class NewsController extends ApiController
      *   @OA\Response(
      *     response=200,
      *     description="news detail"
+     *   ),
+     *   @OA\Response(
+     *     response=201,
+     *     description="validation error, session code not exist"
+     *   ),
+     *   @OA\Response(
+     *     response=215,
+     *     description="news not found"
      *   )
      * )
      */
