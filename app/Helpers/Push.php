@@ -1,31 +1,31 @@
 <?php
 namespace App\Helpers;
 
-use App\Notifications;
-use App\NotificationsDetails;
-use App\UserInbox;
-use App\UserView;
+use App\Notification;
+use App\NotificationDetail;
+use App\UserToken;
 
 class Push {
 
     protected const ERR_PUSH_NOTIFICATION = "Push Notification Error";
 
-    public static function send_by_uid($id , $notification){
-        $id_notification = Notifications::create($notification)->id;
+    public static function send_by_uid($uids , $notification){
+        $id_notification = Notification::create($notification)->id;
         if($id_notification) {
-            $user = explode(',', $id);
+            $user = explode(',', $uids);
             $detail_data = [];
             foreach ($user as $uid) {
-                $users = UserView::select('push_token')->where("uid", '=', $uid)->first();
+                $users = UserToken::select('token')->where("uid", '=', $uid)->first();
                 if ($users) {
                     $detail_data[] = array(
                         'uid' => $uid,
                         'notification_id' => $id_notification,
-                        'status' => 'unread',
-                        'created_at' => date('yy-m-d h:m:s'),
+                        'is_read' => false,
+                        'created_at' => date('Y-m-d h:m:s'),
                     );
+
                     $data = array(
-                        'to' => $users->push_token,
+                        'to' => $users->token,
                         'notification' => array(
                             "title" => $notification['title'],
                             "body" => $notification['body'],
@@ -33,16 +33,11 @@ class Push {
                             "click_action" => $notification['deeplink']
                         )
                     );
-                    if (self::fcm_connect(json_encode($data))) {
-                        $update_notif = Notifications::where('id', $id_notification)
-                            ->first();
-                        $update_notif->status = 'sent';
-                        $update_notif->save();
-                    } else {
-                        return false;
-                    }
+
+                    self::fcm_connect($data);
                 }
-                if(!NotificationsDetails::insert($detail_data)){
+
+                if(!NotificationDetail::insert($detail_data)){
                     return false;
                 }
             }
@@ -53,10 +48,10 @@ class Push {
     }
 
     public static function send_all_user($notification){
-        $id_notification = Notifications::create($notification)->id;
+        $id_notification = Notification::create($notification)->id;
         if($id_notification){
             $data = array(
-                'to' => "/topics/PROMO",
+                'to' => "/topics/ALL",
                 'notification' => array(
                     "title"=> $notification['title'],
                     "body" =>$notification['body'],
@@ -64,12 +59,7 @@ class Push {
                     "click_action" => $notification['deeplink']
                 )
             );
-            if(self::fcm_connect(json_encode($data))){
-                $update_notif = Notifications::where('id' , $id_notification)
-                    ->first();
-                $update_notif->status = 'sent';
-                $update_notif->save();
-            }
+            self::fcm_connect($data);
         }else{
             return false;
         }
@@ -89,8 +79,9 @@ class Push {
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
         curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
-        curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($data));
         $result = curl_exec($ch);
+
         if ($result === FALSE) {
             curl_close($ch);
             return false;

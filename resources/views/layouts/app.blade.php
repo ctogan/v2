@@ -103,7 +103,7 @@
                                     <li><a href="{{url('/admin/operation/theme')}}">Theme</a></li>
                                 </ul>
                             </li>
-                            <li><a href="javascript:void(0)">Push Notification</a></li>
+                            <li><a href="{{url('/admin/notification')}}">Push Notification</a></li>
                         </ul>
                     </li>
                     <li class="drop-down"><a href="javascript:void(0)">Settings</a>

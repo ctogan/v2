@@ -40,13 +40,6 @@ function init_data_table(){
                     targets: 0,
                     className: "text-center"
                 },
-                // {
-                //     targets: 1,
-                //     className: "text-center",
-                //     render:function (data, type, full, meta) {
-                //         return '<img src="'+data+'" width="200">';
-                //     }
-                // },
                 {
                     targets: 4,
                     className: "text-center",

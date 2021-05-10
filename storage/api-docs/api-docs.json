@@ -293,6 +293,73 @@
                     }
                 }
             }
+        },
+        "/api/notification": {
+            "get": {
+                "tags": [
+                    "notification"
+                ],
+                "summary": "list of notification",
+                "operationId": "App\\Http\\Controllers\\Api\\NotificationController::index",
+                "parameters": [
+                    {
+                        "name": "mmses",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "A list of notifications"
+                    }
+                }
+            }
+        },
+        "/api/notification/read": {
+            "post": {
+                "tags": [
+                    "notification"
+                ],
+                "summary": "list of notification",
+                "operationId": "App\\Http\\Controllers\\Api\\NotificationController::read",
+                "parameters": [
+                    {
+                        "name": "mmses",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "notification_id",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "success message"
+                    },
+                    "201": {
+                        "description": "Notification ID Mandatory"
+                    }
+                }
+            }
         }
     },
     "security": [

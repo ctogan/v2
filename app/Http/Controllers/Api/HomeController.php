@@ -18,6 +18,7 @@ use App\Http\Resources\NewsResource;
 use App\Http\Resources\UnfinishedResource;
 use App\LayoutSetting;
 use App\News;
+use App\Notification;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Cache;
@@ -203,6 +204,16 @@ class HomeController extends ApiController
             'background_image' => $background_image
         ];
 
+        $uid = $user->uid;
+        $notification = Notification::leftJoin('notification_details','notification_details.notification_id','notifications.id')
+            ->where(function ($query) use ($uid) {
+                $query->where('uid', '=', $uid)
+                    ->Where('notification_details.is_read','=', false);
+            })
+            ->orWhereNull('uid')
+            ->where('notifications.created_at','>=', date('Y-m-d', strtotime('-1 month')))
+            ->count();
+
         $response = ['banner' => BannerResource::collection($banner)];
         $dynamic_position = [];
         foreach ($layout_settings as $setting){
@@ -250,6 +261,7 @@ class HomeController extends ApiController
         $response['dynamic_position'] = $dynamic_position;
         $response['config']= $config;
         $response['user'] = $user;
+        $response['notification'] = ['count'=>$notification];
 
         return $this->successResponse($response);
     }

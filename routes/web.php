@@ -178,3 +178,9 @@ Route::get('/admin/product','ProductController@index');
 Route::get('/admin/product/edit/{id}','ProductController@get');
 Route::post('/admin/product/paging','ProductController@paging');
 Route::post('/admin/product/update','ProductController@update');
+
+Route::get('/admin/notification', 'NotificationController@index');
+Route::post('/admin/notification/submit', 'NotificationController@send');
+Route::post('/admin/notification/paging', 'NotificationController@paging');
+Route::post('/admin/notification/paging/detail', 'NotificationController@paging_detail');
+Route::get('/admin/notification/{id}', 'NotificationController@detail');
