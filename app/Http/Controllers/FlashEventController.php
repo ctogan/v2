@@ -366,7 +366,8 @@ class FlashEventController extends Controller
     }
 
     public function paging(Request $request){
-        $query = FlashEvent::where('row_status','!=','deleted')->withCount('detail');
+        $query = FlashEvent::where('row_status','!=','deleted')
+            ->withCount('detail');
 
         return DataTables::of($query->get())->addIndexColumn()->make(true);
     }

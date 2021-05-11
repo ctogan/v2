@@ -10,7 +10,7 @@ class FlashEvent extends Model
     protected $connection = 'common';
     protected $table = 'flash_events';
 
-    protected $appends = array('event_start','event_end');
+    protected $appends = array('event_start','event_end','status');
 
     public function getEventStartAttribute()
     {
@@ -32,6 +32,11 @@ class FlashEvent extends Model
         }else{
             return Carbon::parse(date_format(date_create(date('Y-m-d') .' '. $this->attributes['time_to']),"Y-m-d H:i"));
         }
+    }
+
+    public function getStatusAttribute()
+    {
+
     }
 
     protected $fillable = [

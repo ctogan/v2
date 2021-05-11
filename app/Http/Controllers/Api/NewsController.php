@@ -50,8 +50,18 @@ class NewsController extends ApiController
                 ->paginate();
         });
 
+        $latest = Cache::tags('news')->remember('__new_news_list'.$page,3600, function (){
+            return News::select('id','title','url_to_image','reward')
+                ->withCount('news_read')
+                ->where('row_status','=','active')
+                ->orderBy('id','DESC')
+                ->take(5)
+                ->get();
+        });
+
         $response = [
-            'news' => NewsResource::collection($news)
+            'news' => NewsResource::collection($news),
+            'latest' => NewsResource::collection($latest),
         ];
 
         return $this->successResponse($response);
@@ -113,8 +123,19 @@ class NewsController extends ApiController
             return $this->errorResponse(static::ERROR_NOT_FOUND,static::ERROR_CODE_NOT_FOUND);
         }
 
+        $recommendation = Cache::tags('news')->remember('__recommendation_news_list',3600, function (){
+            return News::select('id','title','url_to_image','reward')
+                ->withCount('news_read')
+                ->where('row_status','=','active')
+                ->orderBy('id','DESC')
+                ->inRandomOrder()
+                ->limit(5)
+                ->get();
+        });
+
         $response = [
-          'news' => NewsDetailResource::collection(array($news))
+            'news' => NewsDetailResource::collection(array($news)),
+            'recommendation' => NewsResource::collection(array($recommendation))
         ];
 
         return $this->successResponse($response);

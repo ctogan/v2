@@ -52,10 +52,10 @@
 
             <nav class="nav-menu d-none d-lg-block">
                 <ul>
-                    <li class="active"><a href="index.html">Home</a></li>
-                    <li><a href="#">Campaigns</a></li>
-                    <li><a href="#">Analytics</a></li>
-                    <li><a href="#">Data</a></li>
+                    {{--<li class="active"><a href="index.html">Home</a></li>--}}
+                    {{--<li><a href="#">Campaigns</a></li>--}}
+                    {{--<li><a href="#">Analytics</a></li>--}}
+                    {{--<li><a href="#">Data</a></li>--}}
                     <li class="drop-down"><a href="javascript:void(0)">Master</a>
                         <ul>
                             <li><a href="{{url('/admin/master/province')}}">Province</a></li>
