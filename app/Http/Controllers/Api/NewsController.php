@@ -43,15 +43,15 @@ class NewsController extends ApiController
         $page = $request->page;
 
         $news = Cache::tags('news')->remember('__news_list2'.$page,3600, function (){
-            return News::select('id','title','url_to_image','reward')
+            return News::select('id','title','url_to_image','reward','news_code')
                 ->withCount('news_read')
                 ->where('row_status','=','active')
                 ->orderBy('id','DESC')
                 ->paginate();
         });
 
-        $latest = Cache::tags('news')->remember('__new_news_list'.$page,3600, function (){
-            return News::select('id','title','url_to_image','reward')
+        $latest = Cache::tags('news')->remember('__latest_news_list'.$page,3600, function (){
+            return News::select('id','title','url_to_image','reward','news_code')
                 ->withCount('news_read')
                 ->where('row_status','=','active')
                 ->orderBy('id','DESC')
@@ -107,7 +107,7 @@ class NewsController extends ApiController
         $code = $request->news_code;
         $uid = $user->uid;
 
-        $news = Cache::tags('news')->remember('__news_detail11'.$code, 3600, function () use ($code, $uid){
+        $news = Cache::tags('news')->remember('__news_detail5'.$code, 3600, function () use ($code, $uid){
             $objNews = News::where('news_code','=',$code)->first();
             if($objNews){
                 $objNewsRead = NewsRead::where('uid','=',$uid)->where('id_news','=',$objNews->id)->first();
@@ -124,7 +124,7 @@ class NewsController extends ApiController
         }
 
         $recommendation = Cache::tags('news')->remember('__recommendation_news_list',3600, function (){
-            return News::select('id','title','url_to_image','reward')
+            return News::select('id','title','url_to_image','reward','news_code')
                 ->withCount('news_read')
                 ->where('row_status','=','active')
                 ->orderBy('id','DESC')
@@ -135,7 +135,7 @@ class NewsController extends ApiController
 
         $response = [
             'news' => NewsDetailResource::collection(array($news)),
-            'recommendation' => NewsResource::collection(array($recommendation))
+            'recommendation' => NewsResource::collection($recommendation)
         ];
 
         return $this->successResponse($response);
