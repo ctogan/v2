@@ -180,6 +180,7 @@ return [
         App\Providers\UtilsServiceProvider::class,
         App\Providers\UserServiceProvider::class,
         Barryvdh\DomPDF\ServiceProvider::class,
+        App\Providers\CodeServiceProvider::class,
     ],
 
     /*
@@ -237,6 +238,7 @@ return [
         'User' => App\Helpers\User::class,
         'Excel' => Maatwebsite\Excel\Facades\Excel::class,
         'PDF' => Barryvdh\DomPDF\Facade::class,
+        'Code' => App\Helpers\Code::class,
     ],
 
 ];

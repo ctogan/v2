@@ -38,6 +38,8 @@
                                 <th>Created By</th>
                                 <th>Updated At</th>
                                 <th>Updated By</th>
+                                <th data-priority="4">Periode</th>
+                                <th data-priority="3">Progress</th>
                                 <th data-priority="2">Status</th>
                                 <th data-priority="1">Action</th>
                             </tr>

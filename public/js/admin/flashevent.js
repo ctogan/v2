@@ -165,6 +165,8 @@ function init_data_table(){
                 { data: 'created_by', name: 'created_by' },
                 { data: 'updated_at', name: 'updated_at' },
                 { data: 'updated_by', name: 'updated_by' },
+                { data: 'event_period', name: 'event_period' },
+                { data: 'status', name: 'status' },
                 { data: 'row_status', name: 'row_status'},
                 { data: 'id', name: 'id'},
             ],
@@ -204,12 +206,33 @@ function init_data_table(){
                     targets: 9,
                     className: "text-center",
                     render:function (data, type, full, meta) {
+                        if(data === 'special_date'){
+                            return 'S : ' + full.event_start.date.replace(':00.000000','') + ' <br/> ' + 'E : ' + full.event_end.date.replace(':00.000000','') ;
+                        }else if(data === 'weekly'){
+                            return full.day_name;
+                        }else{
+                            return 'S : ' + full.event_start.date.replace(':00.000000','') + ' <br/> ' + 'E : ' + full.event_end.date.replace(':00.000000','') ;
+                        }
+                    }
+                },
+                {
+                    targets: 10,
+                    className: "text-center",
+                    render:function (data, type, full, meta) {
+                        let status = {running : 'badge badge-success', waiting:'badge badge-danger', expired : 'badge badge-dark'};
+                        return '<span class="text-capitalize p-1 '+status[data]+'">'+data+'</span>'
+                    }
+                },
+                {
+                    targets: 11,
+                    className: "text-center",
+                    render:function (data, type, full, meta) {
                         let status = {active : 'badge badge-success', inactive : 'badge badge-dark'};
                         return '<span class="text-capitalize p-1 '+status[data]+'">'+data+'</span>'
                     }
                 },
                 {
-                    targets: 10,
+                    targets: 12,
                     className: "text-center",
                     render: function(data, type, full, meta) {
                         return '<a href="/admin/flash-event/'+data+'" class="btn btn-datatable btn-icon btn-transparent-dark btn-sm p-0 mr-2"><i data-feather="edit"></i></a>' +

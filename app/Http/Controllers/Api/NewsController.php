@@ -41,27 +41,29 @@ class NewsController extends ApiController
      */
     public function index(Request $request){
         $page = $request->page;
+        $latest = null;
 
-        $news = Cache::tags('news')->remember('__news_list2'.$page,3600, function (){
+        if($page == 1){
+            $latest = Cache::tags('news')->remember('__latest_news_list'.$page,3600, function (){
+                return News::select('id','title','url_to_image','reward','news_code')
+                    ->withCount('news_read')
+                    ->where('row_status','=','active')
+                    ->orderBy('id','DESC')
+                    ->take(5)
+                    ->get();
+            });
+        }
+        $news = Cache::tags('news')->remember('__news_list5'.$page,3600, function (){
             return News::select('id','title','url_to_image','reward','news_code')
                 ->withCount('news_read')
                 ->where('row_status','=','active')
                 ->orderBy('id','DESC')
-                ->paginate();
-        });
-
-        $latest = Cache::tags('news')->remember('__latest_news_list'.$page,3600, function (){
-            return News::select('id','title','url_to_image','reward','news_code')
-                ->withCount('news_read')
-                ->where('row_status','=','active')
-                ->orderBy('id','DESC')
-                ->take(5)
-                ->get();
+                ->paginate(5);
         });
 
         $response = [
             'news' => NewsResource::collection($news),
-            'latest' => NewsResource::collection($latest),
+            'latest' => $latest ? NewsResource::collection($latest) : null,
         ];
 
         return $this->successResponse($response);

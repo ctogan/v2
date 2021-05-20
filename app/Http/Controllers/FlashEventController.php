@@ -191,7 +191,8 @@ class FlashEventController extends Controller
             'event_tnc'=> 'required',
             'detail' => 'required',
             'time_from' => 'required',
-            'time_to' => 'required'
+            'time_to' => 'required',
+            'row_status' => 'required'
         ]);
 
         if($validation->fails()) {
@@ -273,6 +274,7 @@ class FlashEventController extends Controller
             $flash_event->target_point_to = $request->target_point_to;
         }
 
+        $flash_event->row_status = $request->row_status;
         $flash_event->event_name = $request->event_name;
         $flash_event->event_description = $request->event_description;
         $flash_event->event_period = $request->event_period;
@@ -369,6 +371,7 @@ class FlashEventController extends Controller
         $query = FlashEvent::where('row_status','!=','deleted')
             ->withCount('detail');
 
-        return DataTables::of($query->get())->addIndexColumn()->make(true);
+        return DataTables::of($query->get())
+            ->addIndexColumn()->make(true);
     }
 }

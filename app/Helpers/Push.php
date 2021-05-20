@@ -7,7 +7,7 @@ use App\UserToken;
 
 class Push {
 
-    protected const ERR_PUSH_NOTIFICATION = "Push Notification Error";
+    const ERR_PUSH_NOTIFICATION = "Push Notification Error";
 
     public static function send_by_uid($uids , $notification){
         $id_notification = Notification::create($notification)->id;
@@ -64,6 +64,19 @@ class Push {
             return false;
         }
         return true;
+    }
+
+    public static function notification($token, $title, $body, $img, $deeplink){
+        $data = array(
+            'to' => $token,
+            'notification' => array(
+                "title"=> $title,
+                "body" => $body,
+                "image" => $img,
+                "click_action" => $deeplink
+            )
+        );
+        self::fcm_connect($data);
     }
 
     static function fcm_connect($data){

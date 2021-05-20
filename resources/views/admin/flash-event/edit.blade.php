@@ -93,6 +93,19 @@
                                             </div>
                                         </div>
                                     </div>
+                                    <div class="col-md-12">
+                                        <label for="event_name">Status</label>
+                                        <div class="d-flex align-center">
+                                            <div class="form-check form-check-inline">
+                                                <input class="form-check-input" type="radio" name="row_status" id="active" value="active" {{$flash_event->row_status == 'active' ? 'checked' : ''}}>
+                                                <label class="form-check-label" for="active">Active</label>
+                                            </div>
+                                            <div class="form-check form-check-inline">
+                                                <input class="form-check-input" type="radio" name="row_status" id="inactive" value="inactive" {{$flash_event->row_status == 'inactive' ? 'checked' : ''}}>
+                                                <label class="form-check-label" for="inactive">Inactive</label>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
                                 <div class="col-md-6">
                                     <div class="col-md-12 mb-3">
