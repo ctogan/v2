@@ -77,7 +77,8 @@ class NewsController extends Controller
             "published_at"=> date('Y-m-d H:m:s'),
             "created_at" => date('Y-m-d H:m:s'),
             "created_by" => Auth::user()->name,
-            "is_tester" => $request->availability
+            "is_tester" => $request->availability,
+            "is_recommendation" => $request->is_recommendation
         );
 
         $news = News::create($news_insert);
@@ -143,6 +144,7 @@ class NewsController extends Controller
         $news->updated_at = date('Y-m-d H:m:s');
         $news->updated_by = Auth::user()->name;
         $news->is_tester = $request->availability;
+        $news->is_recommendation = $request->is_recommendation;
 
         if($news->save()){
             if($request->category){

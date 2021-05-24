@@ -105,11 +105,11 @@
                                         </div>
                                     </div>
                                     <div class="form-group">
-                                        <label for="company" class="col-form-label">Search Recommendation</label>
                                         <div class="form-check">
-                                            <input class="form-check-input" name="availability" type="radio" value="false" id="all" checked>
-                                            <label class="form-check-label" for="all">
-                                                Yes
+                                            <input type="hidden" name="is_recommendation" value="false">
+                                            <input id="is_recommendation" class="form-check-input" name="is_recommendation" type="checkbox" value="true">
+                                            <label class="form-check-label" for="is_recommendation">
+                                                Search Recommendation
                                             </label>
                                         </div>
                                     </div>
