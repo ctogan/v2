@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Helpers\Code;
+use App\Helpers\User;
 use App\Http\Resources\NewsDetailResource;
 use App\Http\Resources\NewsResource;
 use App\News;
@@ -215,6 +217,8 @@ class NewsController extends ApiController
             ];
 
             NewsRead::insert($arr_insert);
+
+            User::earn_point($user, Code::CODE_BONUS, $news->reward,'News : '.substr($news->title,0,20)."..." );
         }
 
         $response = [

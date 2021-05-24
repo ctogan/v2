@@ -20,7 +20,6 @@ class NewsDetailResource extends JsonResource
             'author' => $this->author,
             'url_to_image' => $this->url_to_image,
             'content' => htmlspecialchars_decode(nl2br($this->content)),
-//            'content' => $this->content,
             'view_count' => $this->view_count,
             'reward' => $this->reward
         ];

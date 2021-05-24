@@ -105,3 +105,7 @@ Route::post('cerdas-cermat/register', 'Api\CerdasCermatController@register');
 //Notification
 Route::get('/notification', 'Api\NotificationController@index');
 Route::post('/notification/read', 'Api\NotificationController@read');
+
+//Search
+Route::get('/search/recommendation', 'Api\SearchController@index');
+Route::get('/search', 'Api\SearchController@search');
