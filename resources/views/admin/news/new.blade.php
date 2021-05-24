@@ -104,6 +104,15 @@
                                             </label>
                                         </div>
                                     </div>
+                                    <div class="form-group">
+                                        <label for="company" class="col-form-label">Search Recommendation</label>
+                                        <div class="form-check">
+                                            <input class="form-check-input" name="availability" type="radio" value="false" id="all" checked>
+                                            <label class="form-check-label" for="all">
+                                                Yes
+                                            </label>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </form>

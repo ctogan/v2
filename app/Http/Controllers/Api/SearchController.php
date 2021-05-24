@@ -39,7 +39,7 @@ class SearchController extends ApiController
      */
     public function index(Request $request){
         $news = Cache::remember('__search_recommendation',3600,function (){
-            return News::where('is_recommendation',false)->take(4)
+            return News::where('is_recommendation',true)->take(4)
                 ->orderBy('id','DESC')
                 ->get();
         });
@@ -90,7 +90,8 @@ class SearchController extends ApiController
             ->take(5)->paginate();
 
         $response = [
-            'result' => NewsDetailResource::collection($result)
+            'news' => NewsDetailResource::collection($result),
+            'campaign' => null
         ];
 
         return $this->successResponse($response);
