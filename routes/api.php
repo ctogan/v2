@@ -109,3 +109,6 @@ Route::post('/notification/read', 'Api\NotificationController@read');
 //Search
 Route::get('/search/recommendation', 'Api\SearchController@index');
 Route::get('/search', 'Api\SearchController@search');
+
+//entertainment
+Route::get('/entertainment', 'Api\EntertainmentController@index');

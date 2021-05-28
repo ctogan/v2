@@ -19,7 +19,7 @@ class CCSessionResource extends JsonResource
         $today = Carbon::now();
         $start = Carbon::parse(date_format(date_create($this->open_date .' '. $this->time_start),"Y-m-d H:i"));
         $end = Carbon::parse(date_format(date_create($this->open_date .' '. $this->time_end),"Y-m-d H:i"));
-        $status = 'close';
+        $status = 'waiting';
         if($today->gte($end)){
             $status = 'expired';
         }else{

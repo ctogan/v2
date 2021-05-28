@@ -32,6 +32,14 @@ class Utils {
         return $badge[$status];
     }
 
+    public static function encrypt($plain_text, $hex = false) {
+        $enc = base64_encode(openssl_encrypt($plain_text, 'aes-256-cbc', static::DEF_ENC_KEY, true, str_repeat(chr(0), 16)));
+        if ($hex) {
+            $enc = strtolower(bin2hex($enc));
+        }
+        return $enc;
+    }
+
     public static function decrypt($base64_text, $hex = false) {
         if ($hex) {
             $base64_text = hex2bin(strtolower($base64_text));

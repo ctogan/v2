@@ -94,4 +94,19 @@ class Controller extends BaseController
     public function data_table($query){
         return DataTables::of($query->get())->addIndexColumn()->make(true);
     }
+
+    public function session($request){
+        $mmses = null;
+        if($request->mmses){
+            $mmses = $request->mmses;
+            setcookie('mmses',$mmses,time() + (86400 * 30), "/"); //1 day
+        }else{
+            $cookie = $_COOKIE['mmses'];
+            if($cookie){
+                $mmses = $cookie;
+            }
+        }
+
+        return $mmses;
+    }
 }

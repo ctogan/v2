@@ -1,0 +1,63 @@
+@keyframes placeHolderShimmer{
+    0%{
+        background-position: -468px 0
+    }
+    100%{
+        background-position: 468px 0
+    }
+}
+.bg-placeholder{
+    animation-duration: 1s;
+    animation-fill-mode: forwards;
+    animation-iteration-count: infinite;
+    animation-name: placeHolderShimmer;
+    animation-timing-function: linear;
+    background: #f6f7f8;
+    background: linear-gradient(to right, #eeeeee 8%, #dddddd 18%, #eeeeee 33%);
+    background-size: 1000px 104px;
+    position: relative;
+    overflow: hidden;
+    display: list-item;
+}
+.bg-placeholder-secondary{
+    background-color: #f9f9f9;
+}
+.hr-ph{
+    width: 100%;
+    border-radius: 0px;
+    min-height: 1px;
+}
+.login-text-ph{
+    border-radius: 0px;
+    min-height: 10px;
+}
+.login-field-ph{
+    width: 300px;
+    margin: auto;
+    border-radius: 30px;
+    height: 50px;
+}
+
+.login-icon-ph{
+    width: 30px;
+    margin-left: 17px;
+    border-radius: 20px;
+    height: 30px;
+    background-color: #e6e6e6;
+}
+
+.hide{
+    display: none;
+}
+
+.profile-ph-md{
+    height: 50px;
+    width: 50px;
+    border-radius: 50%;
+}
+
+.profile-ph-sm{
+    height: 30px;
+    width: 30px;
+    border-radius: 50%;
+}

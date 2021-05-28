@@ -102,6 +102,30 @@
                 }
             }
         },
+        "/api/entertainment": {
+            "get": {
+                "tags": [
+                    "entertainment"
+                ],
+                "summary": "list entertainment",
+                "operationId": "App\\Http\\Controllers\\Api\\EntertainmentController::index",
+                "parameters": [
+                    {
+                        "name": "mmses",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "A list entertainment"
+                    }
+                }
+            }
+        },
         "/api/flash-event/detail": {
             "get": {
                 "tags": [

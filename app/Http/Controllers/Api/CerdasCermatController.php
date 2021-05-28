@@ -164,7 +164,7 @@ class CerdasCermatController extends ApiController
             return $this->errorResponse(static::ERROR_INSUFFICIENT_POINT,static::ERROR_CODE_INSUFFICIENT);
         }
 
-        $start = Carbon::parse(date_format(date_create($session->open_date .' '. $session->time_start),"Y-m-d H:i"));
+        $start = Carbon::parse(date_format(date_create($session->open_date .' '. $session->time_end),"Y-m-d H:i"));
         if($today->gte($start)){
             return $this->errorResponse(static::ERROR_CC_REGISTRATION_CLOSED,static::ERROR_CODE_CC_REGISTRATION_CLOSED);
         }
@@ -175,12 +175,12 @@ class CerdasCermatController extends ApiController
             'uid' => $user->uid,
             'last_point' => $point,
             'cc_register_date' => date('Y-m-d h:m:s'),
-            'app_register_date' => $user->register,
+            'app_register_date' => date_format(date_create($user->register), "Y-m-d H:i"),
             'score' => 0
         ];
 
         CCParticipant::insert($data);
-        $response['session'] = CCSessionResource::collection($session);
+        $response['session'] = CCSessionResource::collection(array($session));
 
         return $this->successResponse($response);
     }
