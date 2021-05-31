@@ -45,30 +45,34 @@ class EntertainmentController extends ApiController
             ]
         ];
         $leaderboard = [
-            'image' => 'https://scdn.ctree.id/f/200625/1593073004462_Friendmatch_1000x1000.webp',
-            'deeplink' => 'cashtree://webnew/cashplus/leaderboard/game?title=Leaderboard&gm=2',
-            'rank' => [
-                [
-                    'name' => 'Rifa',
-                    'point' => '12000P'
-                ],
-                [
-                    'name' => 'Kervin',
-                    'point' => '10000P'
-                ],
-                [
-                    'name' => 'Ogan',
-                    'point' => '9000P'
-                ],
-                [
-                    'name' => 'Ridcat',
-                    'point' => '8000P'
+            [
+                'image' => 'https://scdn.ctree.id/f/200625/1593073004462_Friendmatch_1000x1000.webp',
+                'deeplink' => 'cashtree://webnew/cashplus/leaderboard/game?title=Leaderboard&gm=2',
+                'rank' => [
+                    [
+                        'name' => 'Rifa',
+                        'point' => '12000P'
+                    ],
+                    [
+                        'name' => 'Kervin',
+                        'point' => '10000P'
+                    ],
+                    [
+                        'name' => 'Ogan',
+                        'point' => '9000P'
+                    ],
+                    [
+                        'name' => 'Ridcat',
+                        'point' => '8000P'
+                    ]
                 ]
             ]
         ];
         $comic = [
-            'image' => 'https://scdn.ctree.id/f/200901/1598928562071_Banner_front.webp',
-            'deeplink' => 'cashtree://webnew/cashplus/comiccenter?p=19&adcl=app8218dcffe093453289&zone=vz5ab55c75fe154bcbb2&adsz=BANNER&interstitial=on&placement='.Code::INMOBY_PLACEMENT_ID['19'],
+            [
+                'image' => 'https://scdn.ctree.id/f/200901/1598928562071_Banner_front.webp',
+                'deeplink' => 'cashtree://webnew/cashplus/comiccenter?p=19&adcl=app8218dcffe093453289&zone=vz5ab55c75fe154bcbb2&adsz=BANNER&interstitial=on&placement='.Code::INMOBY_PLACEMENT_ID['19'],
+            ]
         ];
         $horoscope = [
             [

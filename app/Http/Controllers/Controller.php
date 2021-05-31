@@ -38,6 +38,8 @@ class Controller extends BaseController
     protected const ERROR_INSUFFICIENT_POINT = 'Point Tidak cukup';
     protected const ERROR_CC_ALREADY_REGISTERED = 'Sudah Pernah Mendaftar';
     protected const ERROR_CC_REGISTRATION_CLOSED = 'Pendaftaran Ditutup';
+    const ERROR_USER_NOT_FOUND = 'User Not Found';
+    const ERROR_USER_OTP = 'Invalid OTP';
 
     // TRANSACTION
     protected const CODE_ERROR_ORDER_NUMBER_NOT_FOUND = '401';
@@ -47,6 +49,8 @@ class Controller extends BaseController
     protected const ERROR_USER_BLOCK = '203';
     protected const ERROR_USER_NEED_LOGIN = '204';
     protected const ERROR_USER_POINT = '205';
+    protected const ERROR_CODE_USER_NOT_FOUND = '219';
+    protected const ERROR_CODE_USER_OTP = '220';
     protected const ERROR_OUT_OF_STOCK = '207';
     protected const ERROR_GIFTN_WAPI = '208';
     protected const ERROR_TRANSACTION_CONFIRM_VALIDATION = '209';

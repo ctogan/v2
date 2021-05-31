@@ -15,6 +15,12 @@ class ApiController extends Controller
 
     protected $user;
 
+    const IGNORE_PATH = array(
+        'api/user/auth/check-phone-number',
+        'api/user/auth/verify-otp',
+        'api/user/auth/request-otp'
+    );
+
     public function __construct()
     {
         $this->middleware(function ($request, $next) {
@@ -22,6 +28,11 @@ class ApiController extends Controller
 //            if($maintenance){
 //                return $this->errorResponse('UNDER MAINTENANCE',static::ERROR_MAINTENANCE);
 //            }
+
+            if(in_array($request->path(), self::IGNORE_PATH)){
+                return $next($request);
+            }
+
             if($request->mmses){
                 $user = User::session($request);
                 if(!$user['status']){

@@ -491,6 +491,143 @@
                     }
                 }
             }
+        },
+        "/api/user/auth/login": {
+            "post": {
+                "tags": [
+                    "auth"
+                ],
+                "summary": "login",
+                "operationId": "App\\Http\\Controllers\\Api\\UserController::login",
+                "parameters": [
+                    {
+                        "name": "phone_number",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "user is exist = true | false"
+                    }
+                }
+            }
+        },
+        "/api/user/auth/register": {
+            "post": {
+                "tags": [
+                    "auth"
+                ],
+                "summary": "register",
+                "operationId": "App\\Http\\Controllers\\Api\\UserController::register",
+                "parameters": [
+                    {
+                        "name": "phone_number",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "user is exist = true | false"
+                    }
+                }
+            }
+        },
+        "/api/user/auth/check-phone-number": {
+            "post": {
+                "tags": [
+                    "auth"
+                ],
+                "summary": "check the user whether it exists or not",
+                "operationId": "App\\Http\\Controllers\\Api\\UserController::check_phone_number",
+                "parameters": [
+                    {
+                        "name": "phone_number",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "user is exist = true | false"
+                    }
+                }
+            }
+        },
+        "/api/user/auth/verify-otp": {
+            "post": {
+                "tags": [
+                    "auth"
+                ],
+                "summary": "check the user number and otp",
+                "operationId": "App\\Http\\Controllers\\Api\\UserController::verify_otp",
+                "parameters": [
+                    {
+                        "name": "phone_number",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "otp",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "user is verified = true | false"
+                    },
+                    "219": {
+                        "description": "user not found"
+                    },
+                    "220": {
+                        "description": "invalid OTP"
+                    }
+                }
+            }
+        },
+        "/api/user/auth/request-otp": {
+            "post": {
+                "tags": [
+                    "auth"
+                ],
+                "summary": "generate a new otp for phone number",
+                "operationId": "App\\Http\\Controllers\\Api\\UserController::request_otp",
+                "parameters": [
+                    {
+                        "name": "phone_number",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Generated OTP"
+                    },
+                    "219": {
+                        "description": "user not found"
+                    }
+                }
+            }
         }
     },
     "security": [
