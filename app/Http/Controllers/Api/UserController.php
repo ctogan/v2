@@ -201,8 +201,8 @@ class UserController extends ApiController
             return $this->errorResponse(static::ERROR_USER_NOT_FOUND,static::ERROR_CODE_USER_NOT_FOUND);
         }
         $otp = rand(1000,9000);
-
-        //todo update otp
+        $user->otp = $otp;
+        $user->save();
 
         //todo send sms
 
