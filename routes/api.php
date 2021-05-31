@@ -117,5 +117,6 @@ Route::get('/entertainment', 'Api\EntertainmentController@index');
 Route::post('/user/auth/check-phone-number', 'Api\UserController@check_phone_number');
 Route::post('/user/auth/verify-otp', 'Api\UserController@verify_otp');
 Route::post('/user/auth/request-otp', 'Api\UserController@request_otp');
-Route::post('/user/auth/login', 'Api\UserController@login');
+Route::post('/user/auth/login/email', 'Api\UserController@login_email');
+Route::post('/user/auth/login/phone', 'Api\UserController@login_phone');
 Route::post('/user/auth/register', 'Api\UserController@register');

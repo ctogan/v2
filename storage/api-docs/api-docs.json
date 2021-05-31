@@ -492,16 +492,48 @@
                 }
             }
         },
-        "/api/user/auth/login": {
+        "/api/user/auth/login/email": {
             "post": {
                 "tags": [
                     "auth"
                 ],
-                "summary": "login",
-                "operationId": "App\\Http\\Controllers\\Api\\UserController::login",
+                "summary": "login to app using gmail",
+                "operationId": "App\\Http\\Controllers\\Api\\UserController::login_email",
+                "parameters": [
+                    {
+                        "name": "email",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "user is exist = true | false"
+                    }
+                }
+            }
+        },
+        "/api/user/auth/login/phone": {
+            "post": {
+                "tags": [
+                    "auth"
+                ],
+                "summary": "login to application using phone number",
+                "operationId": "App\\Http\\Controllers\\Api\\UserController::login_phone",
                 "parameters": [
                     {
                         "name": "phone_number",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "email",
                         "in": "query",
                         "required": true,
                         "schema": {

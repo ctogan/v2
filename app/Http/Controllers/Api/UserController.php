@@ -12,11 +12,11 @@ class UserController extends ApiController
 {
     /**
      * @OA\Post(
-     *   path="/api/user/auth/login",
-     *   summary="login",
+     *   path="/api/user/auth/login/email",
+     *   summary="login to app using gmail",
      *   tags={"auth"},
      *     @OA\Parameter(
-     *          name="phone_number",
+     *          name="email",
      *          required=true,
      *          in="query",
      *          @OA\Schema(
@@ -29,7 +29,38 @@ class UserController extends ApiController
      *   )
      * )
      */
-    public function login(Request $request){
+    public function login_email(Request $request){
+
+    }
+
+    /**
+     * @OA\Post(
+     *   path="/api/user/auth/login/phone",
+     *   summary="login to application using phone number",
+     *   tags={"auth"},
+     *     @OA\Parameter(
+     *          name="phone_number",
+     *          required=true,
+     *          in="query",
+     *          @OA\Schema(
+     *              type="string"
+     *          )
+     *     ),
+     *     @OA\Parameter(
+     *          name="email",
+     *          required=true,
+     *          in="query",
+     *          @OA\Schema(
+     *              type="string"
+     *          )
+     *     ),
+     *   @OA\Response(
+     *     response=200,
+     *     description="user is exist = true | false"
+     *   )
+     * )
+     */
+    public function login_phone(Request $request){
 
     }
 
@@ -200,7 +231,8 @@ class UserController extends ApiController
         if(!$user){
             return $this->errorResponse(static::ERROR_USER_NOT_FOUND,static::ERROR_CODE_USER_NOT_FOUND);
         }
-        $otp = rand(1000,9000);
+//        $otp = rand(1000,9000);
+        $otp = 1234;
         $user->otp = $otp;
         $user->save();
 
