@@ -77,7 +77,7 @@ class EntertainmentController extends ApiController
         $horoscope = [
             [
                 'image'=>'https://scdn.ctree.id/f/200724/1595557820124_Banner_front_leaderboard.webp',
-                'deeplink' => 'cashtree://webnew/cashplus/leaderboard/game?title=Leaderboard&amp;gm=2'
+                'deeplink' => 'cashtree://web/game/horoscope?inst_type=297'
             ]
         ];
         $response = [
