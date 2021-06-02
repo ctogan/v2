@@ -9,6 +9,11 @@ class UserApp extends Model
     protected $connection = 'users';
     protected $table = 'users';
 
+    protected $primaryKey = 'uid';
+    protected $keyType = 'int';
+
+    public $timestamps = false;
+
     protected $fillable = [
         'uid','sim','anid','imei', 'gaid','phone','phone_auth_tm','mtime','inv_code','user_type','country_code','email','full_name','first_name','last_name','otp', 'profile_img'
     ];

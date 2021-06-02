@@ -572,30 +572,6 @@
                 }
             }
         },
-        "/api/user/auth/check-phone-number": {
-            "post": {
-                "tags": [
-                    "auth"
-                ],
-                "summary": "check the user whether it exists or not",
-                "operationId": "App\\Http\\Controllers\\Api\\UserController::check_phone_number",
-                "parameters": [
-                    {
-                        "name": "phone_number",
-                        "in": "query",
-                        "required": true,
-                        "schema": {
-                            "type": "string"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "user is exist = true | false"
-                    }
-                }
-            }
-        },
         "/api/user/auth/verify-otp": {
             "post": {
                 "tags": [
@@ -653,7 +629,7 @@
                 ],
                 "responses": {
                     "200": {
-                        "description": "Generated OTP"
+                        "description": "Generated OTP, OTP status, if need_otp=false means no need OTP"
                     },
                     "219": {
                         "description": "user not found"

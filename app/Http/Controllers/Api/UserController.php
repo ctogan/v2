@@ -87,25 +87,6 @@ class UserController extends ApiController
 
     }
 
-    /**
-     * @OA\Post(
-     *   path="/api/user/auth/check-phone-number",
-     *   summary="check the user whether it exists or not",
-     *   tags={"auth"},
-     *     @OA\Parameter(
-     *          name="phone_number",
-     *          required=true,
-     *          in="query",
-     *          @OA\Schema(
-     *              type="string"
-     *          )
-     *     ),
-     *   @OA\Response(
-     *     response=200,
-     *     description="user is exist = true | false"
-     *   )
-     * )
-     */
     public function check_phone_number(Request $request){
         $validation = Validator::make($request->all(), [
             'phone_number' => 'required'
@@ -209,7 +190,7 @@ class UserController extends ApiController
      *     ),
      *   @OA\Response(
      *     response=200,
-     *     description="Generated OTP"
+     *     description="Generated OTP, OTP status, if need_otp=false means no need OTP"
      *   ),
      *   @OA\Response(
      *     response=219,
@@ -231,16 +212,29 @@ class UserController extends ApiController
         if(!$user){
             return $this->errorResponse(static::ERROR_USER_NOT_FOUND,static::ERROR_CODE_USER_NOT_FOUND);
         }
-//        $otp = rand(1000,9000);
-        $otp = 1234;
-        $user->otp = $otp;
-        $user->save();
 
-        //todo send sms
+        $exist = false;
+        $need_otp = true;
+        $otp = null;
+        if($user){
+            $exist = true;
+
+            if($user->email != null){
+                $need_otp = false;
+            }else{
+                //$otp = rand(1000,9000);
+                $otp = 1234;
+                $user->otp = $otp;
+                $user->save();
+
+                //todo send sms
+            }
+        }
 
         $data = [
             'auth' => [
-                'exist' => true,
+                'exist' => $exist,
+                'need_otp' => $need_otp,
                 'otp' =>$otp
             ]
         ];
