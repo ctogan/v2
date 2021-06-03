@@ -143,7 +143,8 @@ class UserController extends ApiController
             'ov' => 'required',
             'av' => 'required',
             'lc' => 'required',
-            'phone' => 'required'
+            'phone_number' => 'required',
+            'id' => 'required'
         ]);
 
         if ($validation->fails()) {
@@ -156,11 +157,11 @@ class UserController extends ApiController
         if ($user) {
             if (is_null($user->account_id)) {
                 $connectEmail = UserApp::where('uid', $user->uid)->update([
-                    'first_name' => $request->first_name,
-                    'last_name' => $request->last_name,
-                    'full_name' => $request->full_name,
+                    'first_name' => $request->give_name,
+                    'last_name' => $request->family_name,
+                    'full_name' => $request->display_name,
                     'email' => $request->email,
-                    'account_id' => $request->account_id
+                    'account_id' => $request->id
                 ]);
 
                 if ($connectEmail <= 0) {
@@ -269,10 +270,11 @@ class UserController extends ApiController
                 'anid' => $request->anid,
                 'imei' => $request->imei,
                 'gaid' => $request->gaid,
+                'first_name' => $request->give_name,
+                'last_name' => $request->family_name,
+                'full_name' => $request->display_name,
                 'email' => $request->email,
-                'full_name' => $request->full_name,
-                'first_name' => $request->first_name,
-                'last_name' => $request->last_name
+                'account_id' => $request->id
             ]);
 
             $createUserConfig = UserConfig::create([
