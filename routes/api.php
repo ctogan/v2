@@ -101,6 +101,8 @@ Route::get('/flash-event/detail', 'Api\FlashEventController@get_flash_event');
 Route::get('cerdas-cermat', 'Api\CerdasCermatController@index');
 Route::get('cerdas-cermat/detail', 'Api\CerdasCermatController@get');
 Route::post('cerdas-cermat/register', 'Api\CerdasCermatController@register');
+Route::get('cerdas-cermat/question/free', 'Api\CerdasCermatController@free_question');
+Route::post('cerdas-cermat/free/submit', 'Api\CerdasCermatController@submit_free_trial');
 
 //Notification
 Route::get('/notification', 'Api\NotificationController@index');

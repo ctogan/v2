@@ -82,7 +82,7 @@
             </ul>
 
             <div class="btn-footer">
-                <a href="/cerdas-cermat/free">Coba Secara GRATIS</a>
+                <a href="/app/cerdas-cermat/free">Coba Secara GRATIS</a>
             </div>
         </div>
 
