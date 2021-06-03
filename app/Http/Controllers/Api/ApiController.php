@@ -18,7 +18,10 @@ class ApiController extends Controller
     const IGNORE_PATH = array(
         'api/user/auth/check-phone-number',
         'api/user/auth/verify-otp',
-        'api/user/auth/request-otp'
+        'api/user/auth/request-otp',
+        '/api/user/auth/login/email',
+        '/api/user/auth/login/phone',
+        '/api/user/auth/register'
     );
 
     public function __construct()

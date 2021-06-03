@@ -533,7 +533,7 @@
                         }
                     },
                     {
-                        "name": "account_id",
+                        "name": "id",
                         "in": "query",
                         "required": true,
                         "schema": {
