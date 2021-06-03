@@ -60,4 +60,8 @@ class Utils {
 
         return$mmses;
     }
+
+    public static function get_ip() {
+        return $_SERVER['HTTP_X_FORWARDED_FOR'] ? array_pop(preg_split('/\s*,\s*/', $_SERVER['HTTP_X_FORWARDED_FOR'])) : $_SERVER['REMOTE_ADDR'];
+    }
 }
