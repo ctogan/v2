@@ -139,7 +139,7 @@ class UserController extends ApiController
      *          )
      *     ),
      *     @OA\Parameter(
-     *          name="email",
+     *          name="id",
      *          required=true,
      *          in="query",
      *          @OA\Schema(
@@ -256,7 +256,7 @@ class UserController extends ApiController
      *   summary="register",
      *   tags={"auth"},
      *     @OA\Parameter(
-     *          name="phone_number",
+     *          name="email",
      *          required=true,
      *          in="query",
      *          @OA\Schema(
