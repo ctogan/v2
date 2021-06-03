@@ -111,6 +111,10 @@ class Controller extends BaseController
             }
         }
 
+        if($mmses == null){
+            abort(404);
+        }
+
         return $mmses;
     }
 }

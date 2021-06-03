@@ -57,7 +57,7 @@
                         <div class="session-name">{{item.title}}</div>
                         <div :class="'timer ' + item.status">{{item.status === 'waiting' ? 'Start' : 'End'}} <span :id="'hour'+item.session_code">00</span>:<span :id="'minute'+item.session_code">00</span>:<span :id="'second'+item.session_code">00</span></div>
                     </div>
-                    <p>Registrasi Poin : <span class="orange">{{item.registration_fee}} P</span></p>
+                    <p class="reg-info">Registrasi Poin : <span class="orange">{{item.registration_fee}} P</span></p>
                     <div class="d-flex justify-content-between align-items-center">
                         <div>
                             <a class="more" href="javascript:void(0)">Lihat Hadiah</a>
@@ -69,7 +69,7 @@
                             <a v-on:click="register(item.session_code, item.registration_fee)" class="btn open" href="javascript:void(0)">Daftar</a>
                         </div>
                         <div v-else-if="item.status === 'active' && item.is_registered">
-                            <a class="btn start" :href="'/cerdas-cermat/start/'+item.session_code">Mulai</a>
+                            <a class="btn start" v-on:click="start(item.session_code)" href="javascript:void(0)">Mulai</a>
                         </div>
                         <div v-else-if="item.status === 'waiting' && !item.is_registered">
                             <a v-on:click="waiting(item.session_code)" class="btn start" href="javascript:void(0)">Mulai</a>
@@ -82,7 +82,7 @@
             </ul>
 
             <div class="btn-footer">
-                <a href="/cerdas-cermat/free">Coba Secara GRATIS</a>
+                <a href="/app/cerdas-cermat/free">Coba Secara GRATIS</a>
             </div>
         </div>
 
@@ -117,7 +117,17 @@
                 alert('Mohon menunggu, sesi ini belum dimulai');
             },
             start(code){
-                alert(code);
+                alertify.confirm('Kamu sudah siap? Waktu akan dimulai setelah memilih <b>Mulai</b>.')
+                    .setting(
+                        {
+                            'autoReset' :false,
+                            'title':'Mulai Cerdas Cermat',
+                            'closable' :false,
+                            'onok': function(){
+                                window.location = '/app/cerdas-cermat/start/'+code;
+                            }
+                        }
+                    ).set('labels', {cancel:'Batalkan', ok:'Mulai'});
             },
             register(code, point){
                 if(confirm("Point yang dibutuhan untuk mengikuti event ini " + point + "p. Apakah kamu bersedia?")){

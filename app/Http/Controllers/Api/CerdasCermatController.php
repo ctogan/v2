@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\CCAnswer;
 use App\CCParticipant;
+use App\CCQuestion;
 use App\CCSession;
 use App\Http\Resources\CCSessionResource;
 use Carbon\Carbon;
@@ -183,5 +185,52 @@ class CerdasCermatController extends ApiController
         $response['session'] = CCSessionResource::collection(array($session));
 
         return $this->successResponse($response);
+    }
+
+    public function free_question(Request $request){
+        $question = CCQuestion::inRandomOrder()->where('row_status','=','active')
+            ->with('answer')
+            ->take(1)
+            ->get();
+
+        $data = [
+            'mmses'=>$request->mmses,
+            'question' => $question
+        ];
+
+        return $this->successResponse($data);
+    }
+
+    public function submit_free_trial(Request $request){
+        $validation = Validator::make($request->all(), [
+            'item' => 'required',
+        ]);
+
+        if ($validation->fails()) {
+            return $this->errorResponse($validation->errors(),static::CODE_ERROR_VALIDATION);
+        }
+
+        $score =0;
+        foreach ($request->item as $item){
+            if(!isset($item['answer'])){
+                continue;
+            }
+            $answer = CCAnswer::where('cc_question_id','=',$item['question'])
+                ->where('id','=',$item['answer'])
+                ->first();
+
+            if($answer){
+                if($answer->is_correct_answer){
+                    $score+=1;
+                }
+            }
+        }
+
+        $data = [
+            'correct' => $score,
+            'wrong' => 10 - $score
+        ];
+
+        return $this->successResponse($data);
     }
 }
