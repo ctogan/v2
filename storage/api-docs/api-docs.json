@@ -501,6 +501,14 @@
                 "operationId": "App\\Http\\Controllers\\Api\\UserController::login_email",
                 "parameters": [
                     {
+                        "name": "id",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
                         "name": "email",
                         "in": "query",
                         "required": true,
@@ -533,7 +541,7 @@
                         }
                     },
                     {
-                        "name": "id",
+                        "name": "email",
                         "in": "query",
                         "required": true,
                         "schema": {

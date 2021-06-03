@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Helpers\Utils;
 use App\Http\Controllers\Controller;
 use App\UserApp;
 use App\UserCash;
@@ -10,8 +11,8 @@ use App\UserTargetInfo;
 use App\UserTime;
 use Aws\RAM\Exception\RAMException;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
-@define('REMOTE_ADDR', $_SERVER['HTTP_X_FORWARDED_FOR'] ? array_pop(preg_split('/\s*,\s*/', $_SERVER['HTTP_X_FORWARDED_FOR'])) : $_SERVER['REMOTE_ADDR']);
 
 class UserController extends ApiController
 {
@@ -20,6 +21,14 @@ class UserController extends ApiController
      *   path="/api/user/auth/login/email",
      *   summary="login to app using gmail",
      *   tags={"auth"},
+     *     @OA\Parameter(
+     *          name="id",
+     *          required=true,
+     *          in="query",
+     *          @OA\Schema(
+     *              type="string"
+     *          )
+     *     ),
      *     @OA\Parameter(
      *          name="email",
      *          required=true,
@@ -36,14 +45,15 @@ class UserController extends ApiController
      */
     public function login_email(Request $request){
         $validation = Validator::make($request->all(), [
-            'email' => 'required',
+            'id' => 'required',
+            'email' => 'required'
         ]);
 
         if ($validation->fails()) {
             return $this->errorResponse($validation->errors(),static::CODE_ERROR_VALIDATION);
         }
 
-        $user = UserApp::where('email', $request->email)->first();
+        $user = UserApp::where('account_id', $request->id)->first();
 
         //Prepare login here
         if ($user) {
@@ -71,7 +81,7 @@ class UserController extends ApiController
             ]);
             $updateUserTime = UserTime::where('uid', $user->uid)->update([
                 'ses' => $ses,
-                'last_ip' => ip2long(REMOTE_ADDR)
+                'last_ip' => Utils::get_ip()
             ]);
 
             $data = [
@@ -93,7 +103,12 @@ class UserController extends ApiController
                     'opname' => strval(\Operator::$list[$userTargetInfo->opcode]),
                     'opcode' => strval($userTargetInfo->opcode),
                     'gender' => $userTargetInfo->gender ? $userTargetInfo->gender : 'U',
-                    'birth' => strval($userTargetInfo->birth)
+                    'birth' => strval($userTargetInfo->birth),
+                    'email' => $user->email,
+                    'full_name' => $user->full_name,
+                    'first_name' => $user->first_name,
+                    'last_name' => $user->last_name,
+                    'profile_img' => $user->profile_img
                 ],
                 'cash_status' => [
                     'total' => intval($userCash->cash),
@@ -193,7 +208,7 @@ class UserController extends ApiController
             ]);
             $updateUserTime = UserTime::where('uid', $user->uid)->update([
                 'ses' => $ses,
-                'last_ip' => ip2long(REMOTE_ADDR)
+                'last_ip' => Utils::get_ip()
             ]);
 
             $data = [
@@ -215,7 +230,12 @@ class UserController extends ApiController
                     'opname' => strval(\Operator::$list[$userTargetInfo->opcode]),
                     'opcode' => strval($userTargetInfo->opcode),
                     'gender' => $userTargetInfo->gender ? $userTargetInfo->gender : 'U',
-                    'birth' => strval($userTargetInfo->birth)
+                    'birth' => strval($userTargetInfo->birth),
+                    'email' => $user->email,
+                    'full_name' => $user->full_name,
+                    'first_name' => $user->first_name,
+                    'last_name' => $user->last_name,
+                    'profile_img' => $user->profile_img
                 ],
                 'cash_status' => [
                     'total' => intval($userCash->cash),
@@ -264,71 +284,80 @@ class UserController extends ApiController
             //Register logic
             $query = "nextval('uid') as uid";
             $uid = UserApp::selectRaw($query)->value('uid');
-            $createUser = UserApp::create([
-                'uid' => $uid,
-                'sim' => $request->anid,
-                'anid' => $request->anid,
-                'imei' => $request->imei,
-                'gaid' => $request->gaid,
-                'first_name' => $request->give_name,
-                'last_name' => $request->family_name,
-                'full_name' => $request->display_name,
-                'email' => $request->email,
-                'account_id' => $request->id
-            ]);
+            DB::beginTransaction();
+            try {
 
-            $createUserConfig = UserConfig::create([
-                'uid' => $uid,
-                'auto_buying' => false,
-                'lock_screen' => false,
-                'allow_noti' => true,
-                'status' => '0',
-                'abuse' => '0',
-                'sel_goods_id' => null,
-                'is_rooted' => false
-            ]);
+                $createUser = UserApp::create([
+                    'uid' => $uid,
+                    'sim' => $request->anid,
+                    'anid' => $request->anid,
+                    'imei' => $request->imei,
+                    'gaid' => $request->gaid,
+                    'first_name' => $request->give_name,
+                    'last_name' => $request->family_name,
+                    'full_name' => $request->display_name,
+                    'email' => $request->email,
+                    'account_id' => $request->id
+                ]);
 
-            $createUserCash = UserCash::create([
-                'uid' => $uid,
-                'total_earn' => 0,
-                'total_use' => 0,
-                'last_earn' => null,
-                'month_earn' => 0,
-                'total_pulsa' => 0,
-                'parent_uid' => null,
-                'inv_count' => 0,
-                'inv_cash_total' => 0
-            ]);
+                $createUserConfig = UserConfig::create([
+                    'uid' => $uid,
+                    'auto_buying' => false,
+                    'lock_screen' => false,
+                    'allow_noti' => true,
+                    'status' => '0',
+                    'abuse' => '0',
+                    'sel_goods_id' => null,
+                    'is_rooted' => false
+                ]);
 
-            $ses = substr(md5(microtime()), 0, 20);
-            $createUserTime = UserTime::create([
-                'uid' => $uid,
-                'register' => date("Y-m-d H:i:s"),
-                'changed' => date("Y-m-d H:i:s"),
-                'login' => date("Y-m-d H:i:s"),
-                'last_ad_list' => null,
-                'appopen' => date("Y-m-d H:i:s"),
-                'ses' => $ses,
-                'last_ip' => ip2long(REMOTE_ADDR)
-            ]);
+                $createUserCash = UserCash::create([
+                    'uid' => $uid,
+                    'total_earn' => 0,
+                    'total_use' => 0,
+                    'last_earn' => null,
+                    'month_earn' => 0,
+                    'total_pulsa' => 0,
+                    'parent_uid' => null,
+                    'inv_count' => 0,
+                    'inv_cash_total' => 0
+                ]);
 
-            $createUserTargetInfo = UserTargetInfo::create([
-                'uid' => $uid,
-                'tm_target_changed' => date("Y-m-d H:i:s"),
-                'locale' => 'id',
-                'opcode' => $request->op,
-                'osver' => $request->ov,
-                'appver' => $request->av,
-                'resw' => $request->resw,
-                'resh' => $request->resh,
-                'lat' => $request->lat,
-                'lng' => $request->lng,
-                'gender' => null,
-                'birth' => null,
-                'marriage' => null,
-                'religion' => null,
-                'device_name' => null,
-            ]);
+                $ses = substr(md5(microtime()), 0, 20);
+                $createUserTime = UserTime::create([
+                    'uid' => $uid,
+                    'register' => date("Y-m-d H:i:s"),
+                    'changed' => date("Y-m-d H:i:s"),
+                    'login' => date("Y-m-d H:i:s"),
+                    'last_ad_list' => null,
+                    'appopen' => date("Y-m-d H:i:s"),
+                    'ses' => $ses,
+                    'last_ip' => Utils::get_ip()
+                ]);
+
+                $createUserTargetInfo = UserTargetInfo::create([
+                    'uid' => $uid,
+                    'tm_target_changed' => date("Y-m-d H:i:s"),
+                    'locale' => 'id',
+                    'opcode' => $request->op,
+                    'osver' => $request->ov,
+                    'appver' => $request->av,
+                    'resw' => $request->resw,
+                    'resh' => $request->resh,
+                    'lat' => $request->lat,
+                    'lng' => $request->lng,
+                    'gender' => null,
+                    'birth' => null,
+                    'marriage' => null,
+                    'religion' => null,
+                    'device_name' => null,
+                ]);
+
+                DB::commit();
+            }catch (\Exception $e) {
+                DB::rollback();
+            }
+
         } else {
             return $this->errorResponse($validation->errors(),static::USER_EMAIL_EXIST);
         }
@@ -353,7 +382,12 @@ class UserController extends ApiController
                 'opname' => strval(\Operator::$list[$createUserTargetInfo->opcode]),
                 'opcode' => strval($createUserTargetInfo->opcode),
                 'gender' => $createUserTargetInfo->gender ? $createUserTargetInfo->gender : 'U',
-                'birth' => strval($createUserTargetInfo->birth)
+                'birth' => strval($createUserTargetInfo->birth),
+                'email' => $createUser->email,
+                'full_name' => $createUser->full_name,
+                'first_name' => $createUser->first_name,
+                'last_name' => $createUser->last_name,
+                'profile_img' => $createUser->profile_img
             ],
             'cash_status' => [
                 'total' => intval($createUserCash->cash),
