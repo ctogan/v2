@@ -57,7 +57,7 @@
                         <div class="session-name">{{item.title}}</div>
                         <div :class="'timer ' + item.status">{{item.status === 'waiting' ? 'Start' : 'End'}} <span :id="'hour'+item.session_code">00</span>:<span :id="'minute'+item.session_code">00</span>:<span :id="'second'+item.session_code">00</span></div>
                     </div>
-                    <p>Registrasi Poin : <span class="orange">{{item.registration_fee}} P</span></p>
+                    <p class="reg-info">Registrasi Poin : <span class="orange">{{item.registration_fee}} P</span></p>
                     <div class="d-flex justify-content-between align-items-center">
                         <div>
                             <a class="more" href="javascript:void(0)">Lihat Hadiah</a>

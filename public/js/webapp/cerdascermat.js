@@ -793,7 +793,7 @@ var render = function() {
                       ]
                     ),
                     _vm._v(" "),
-                    _c("p", [
+                    _c("p", { staticClass: "reg-info" }, [
                       _vm._v("Registrasi Poin : "),
                       _c("span", { staticClass: "orange" }, [
                         _vm._v(_vm._s(item.registration_fee) + " P")
