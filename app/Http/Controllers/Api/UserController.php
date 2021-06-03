@@ -81,7 +81,7 @@ class UserController extends ApiController
             ]);
             $updateUserTime = UserTime::where('uid', $user->uid)->update([
                 'ses' => $ses,
-                'last_ip' => $request->getClientIp()
+                'last_ip' => ip2long($request->getClientIp())
             ]);
 
             $data = [
@@ -208,7 +208,7 @@ class UserController extends ApiController
             ]);
             $updateUserTime = UserTime::where('uid', $user->uid)->update([
                 'ses' => $ses,
-                'last_ip' => $request->getClientIp()
+                'last_ip' => ip2long($request->getClientIp())
             ]);
 
             $data = [
@@ -332,7 +332,7 @@ class UserController extends ApiController
                     'last_ad_list' => null,
                     'appopen' => date("Y-m-d H:i:s"),
                     'ses' => $ses,
-                    'last_ip' => $request->getClientIp()
+                    'last_ip' => ip2long($request->getClientIp())
                 ]);
 
                 $createUserTargetInfo = UserTargetInfo::create([
