@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Webapp;
 
 use App\CCQuestion;
 use App\CCSession;
+use App\CCSessionQuestion;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
@@ -11,9 +12,7 @@ use Illuminate\Support\Str;
 class CerdasCermatController extends Controller
 {
     public function index(Request $request){
-        $this->session($request);
-
-        $mmses = $request->mmses;
+        $mmses = $this->session($request);
 
         $data = [
             'mmses' => $mmses
@@ -24,7 +23,7 @@ class CerdasCermatController extends Controller
 
     public function start(Request $request){
         $session = CCSession::where('session_code','=', $request->code)->first();
-        $question = CCQuestion::where('session_id','=',$session->id)->get();
+        $question = CCSessionQuestion::where('cc_session_id','=',$session->id)->get();
 
         $data = [
             'session' => $session,

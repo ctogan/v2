@@ -14,4 +14,5 @@ const mix = require('laravel-mix');
 mix.js('resources/js/app.js', 'public/js')
     .js('resources/js/cerdascermat','public/js/webapp')
     .js('resources/js/cerdascermatfree','public/js/webapp')
+    .js('resources/js/cerdascermatstart','public/js/webapp')
     .sass('resources/sass/app.scss', 'public/css');

@@ -69,7 +69,7 @@
                             <a v-on:click="register(item.session_code, item.registration_fee)" class="btn open" href="javascript:void(0)">Daftar</a>
                         </div>
                         <div v-else-if="item.status === 'active' && item.is_registered">
-                            <a class="btn start" :href="'/cerdas-cermat/start/'+item.session_code">Mulai</a>
+                            <a class="btn start" v-on:click="start(item.session_code)" href="javascript:void(0)">Mulai</a>
                         </div>
                         <div v-else-if="item.status === 'waiting' && !item.is_registered">
                             <a v-on:click="waiting(item.session_code)" class="btn start" href="javascript:void(0)">Mulai</a>
@@ -117,7 +117,9 @@
                 alert('Mohon menunggu, sesi ini belum dimulai');
             },
             start(code){
-                alert(code);
+                if(confirm("Kamu yakin? Waktu akan dimulai klik OK?")){
+                    window.location = '/app/cerdas-cermat/start/'+code;
+                }
             },
             register(code, point){
                 if(confirm("Point yang dibutuhan untuk mengikuti event ini " + point + "p. Apakah kamu bersedia?")){

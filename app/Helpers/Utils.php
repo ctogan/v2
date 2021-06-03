@@ -54,4 +54,10 @@ class Utils {
     public static function ad_part($i){
         return 'ad_part_'.$i;
     }
+
+    public static function get_cookie($key){
+        $mmses = isset($_COOKIE[$key]) ? $_COOKIE[$key] : '';
+
+        return$mmses;
+    }
 }
