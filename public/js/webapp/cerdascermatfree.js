@@ -16908,7 +16908,8 @@ vue__WEBPACK_IMPORTED_MODULE_0___default.a.use(vue_alertify__WEBPACK_IMPORTED_MO
   title: 'Cashtree Cerdas Cermat',
   closableByDimmer: true,
   autoReset: true,
-  closable: false
+  closable: false,
+  transition: 'zoom'
 });
 
 var list = new vue__WEBPACK_IMPORTED_MODULE_0___default.a({

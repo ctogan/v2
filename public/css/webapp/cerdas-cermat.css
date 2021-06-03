@@ -6,7 +6,7 @@
     padding:0;
 }
 .cerdas-cermat{
-    padding:15px 0 80px 0;
+    padding:30px 0 80px 0;
 }
 .image-banner{
     width: 100%;
@@ -46,11 +46,13 @@ ul{
 .session-list{
     list-style: none;
     color:#8F8F8F;
+    margin-bottom: 30px;
 }
 .session-list li{
     padding:15px;
-    margin-bottom: 10px;
+    margin-bottom: 25px;
     border-radius: 5px;
+    box-shadow: 0px 5px 33px -5px rgb(0 0 0 / 15%);
 }
 .session-list li.strip{
     background-color: #f5f5f5;
@@ -60,6 +62,9 @@ ul{
     color:#8F8F8F;
     font-weight: 600;
     font-family: 'Nunito', sans-serif;
+}
+.timer{
+    font-size: 1rem;
 }
 .timer span{
     color:#fff;
