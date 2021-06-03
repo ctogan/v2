@@ -533,7 +533,7 @@
                         }
                     },
                     {
-                        "name": "email",
+                        "name": "account_id",
                         "in": "query",
                         "required": true,
                         "schema": {
