@@ -541,7 +541,7 @@
                         }
                     },
                     {
-                        "name": "email",
+                        "name": "id",
                         "in": "query",
                         "required": true,
                         "schema": {
@@ -565,7 +565,7 @@
                 "operationId": "App\\Http\\Controllers\\Api\\UserController::register",
                 "parameters": [
                     {
-                        "name": "phone_number",
+                        "name": "email",
                         "in": "query",
                         "required": true,
                         "schema": {
