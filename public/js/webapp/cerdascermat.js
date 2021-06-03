@@ -214,9 +214,17 @@ __webpack_require__.r(__webpack_exports__);
       alert('Mohon menunggu, sesi ini belum dimulai');
     },
     start: function start(code) {
-      if (confirm("Kamu yakin? Waktu akan dimulai klik OK?")) {
-        window.location = '/app/cerdas-cermat/start/' + code;
-      }
+      alertify.confirm('Kamu sudah siap? Waktu akan dimulai setelah menekan OK').setting({
+        'autoReset': false,
+        'title': 'Mulai Cerdas Cermat',
+        'closable': false,
+        'onok': function onok() {
+          window.location = '/app/cerdas-cermat/start/' + code;
+        }
+      }).set('labels', {
+        cancel: 'Batalkan',
+        ok: 'Mulai'
+      });
     },
     register: function register(code, point) {
       if (confirm("Point yang dibutuhan untuk mengikuti event ini " + point + "p. Apakah kamu bersedia?")) {
