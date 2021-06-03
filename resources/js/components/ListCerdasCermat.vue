@@ -117,7 +117,7 @@
                 alert('Mohon menunggu, sesi ini belum dimulai');
             },
             start(code){
-                alertify.confirm('Kamu sudah siap? Waktu akan dimulai setelah menekan OK')
+                alertify.confirm('Kamu sudah siap? Waktu akan dimulai setelah memilih <b>Mulai</b>.')
                     .setting(
                         {
                             'autoReset' :false,

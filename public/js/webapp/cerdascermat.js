@@ -214,7 +214,7 @@ __webpack_require__.r(__webpack_exports__);
       alert('Mohon menunggu, sesi ini belum dimulai');
     },
     start: function start(code) {
-      alertify.confirm('Kamu sudah siap? Waktu akan dimulai setelah menekan OK').setting({
+      alertify.confirm('Kamu sudah siap? Waktu akan dimulai setelah memilih <b>Mulai</b>.').setting({
         'autoReset': false,
         'title': 'Mulai Cerdas Cermat',
         'closable': false,
