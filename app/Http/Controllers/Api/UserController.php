@@ -168,7 +168,7 @@ class UserController extends ApiController
             return $this->errorResponse(static::ERROR_USER_NOT_FOUND,static::ERROR_CODE_USER_NOT_FOUND);
         }
 
-        if($user->otp != $request->otp){
+        if(trim($user->otp) != trim($request->otp)){
             return $this->errorResponse(static::ERROR_USER_OTP,static::ERROR_CODE_USER_OTP);
         }
 
