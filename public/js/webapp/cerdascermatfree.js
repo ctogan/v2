@@ -3855,6 +3855,7 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
@@ -4537,26 +4538,15 @@ var render = function() {
       ]),
       _vm._v(" "),
       _vm.is_loading
-        ? _c(
-            "div",
-            {
-              staticStyle: {
-                position: "fixed",
-                width: "83%",
-                background: "#fff",
-                height: "100vh"
-              }
-            },
-            [
-              _vm._m(0),
-              _vm._v(" "),
-              _vm._m(1),
-              _vm._v(" "),
-              _vm._m(2),
-              _vm._v(" "),
-              _vm._m(3)
-            ]
-          )
+        ? _c("div", { staticClass: "ph-loading" }, [
+            _vm._m(0),
+            _vm._v(" "),
+            _vm._m(1),
+            _vm._v(" "),
+            _vm._m(2),
+            _vm._v(" "),
+            _vm._m(3)
+          ])
         : _vm._e(),
       _vm._v(" "),
       _c("div", [
@@ -4599,6 +4589,8 @@ var render = function() {
                   ]),
                   _vm._v(" "),
                   _c("div", { staticClass: "answer" }, [
+                    _c("p", [_vm._v("Pilihan Jawaban:")]),
+                    _vm._v(" "),
                     _c(
                       "ul",
                       _vm._l(item.answer, function(answer) {

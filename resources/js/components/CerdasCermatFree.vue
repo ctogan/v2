@@ -8,7 +8,7 @@
                 </ul>
             </div>
 
-            <div v-if="is_loading" style="position: fixed;width: 83%;background: #fff;height: 100vh;">
+            <div v-if="is_loading" class="ph-loading">
                 <div class="mb-4">
                     <div class="d-block justify-content-between">
                         <div class="h-25 w-100 bg-placeholder mb-2 flex-1 mr-5"></div>
@@ -67,6 +67,7 @@
                             <img v-if="item.question_image !== null" :src="item.question_image" alt="" width="100%">
                         </div>
                         <div class="answer">
+                            <p>Pilihan Jawaban:</p>
                             <ul>
                                 <li v-for="answer in item.answer">
                                     <input :id="answer.id" :name="'item['+item.id+'][answer]'" type="radio" :value="answer.id"><label :for="answer.id">{{ answer.answer }}</label>
