@@ -58,6 +58,6 @@ class Utils {
     public static function get_cookie($key){
         $mmses = isset($_COOKIE[$key]) ? $_COOKIE[$key] : '';
 
-        return$mmses;
+        return $mmses;
     }
 }

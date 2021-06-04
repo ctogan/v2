@@ -52,12 +52,12 @@ ul{
     margin-bottom: 30px;
 }
 .session-list li{
-    padding: 15px;
+    padding: 20px 15px;
     margin-bottom: 25px;
     border-radius: 7px;
-    box-shadow: 5px 8px 9px 0px rgb(0 0 0 / 25%);
-    -webkit-box-shadow: 5px 8px 9px 0px rgb(0 0 0 / 25%);
-    -moz-box-shadow: 5px 8px 9px 0px rgb(0 0 0 / 25%);
+    box-shadow: 5px 8px 9px 0px rgb(0 0 0 / 15%);
+    -webkit-box-shadow: 5px 8px 9px 0px rgb(0 0 0 / 15%);
+    -moz-box-shadow: 5px 8px 9px 0px rgb(0 0 0 / 15%);
     background: #612aa3;
 }
 .session-list li.strip{
@@ -105,13 +105,14 @@ ul{
     color:#555555;
 }
 .btn.open{
-    background: #FF2468;
     color: #fff;
+    background: #612aa3;
+    border: 1px solid #ffffff;
 }
 .btn.start{
-    background: #6129A3;
+    background: #FF2468;
+    border: 1px solid #FF2468;
     color: #fff;
-    border: 1px solid;
 }
 .btn-footer{
     position: fixed;

@@ -57,7 +57,7 @@ function init_data_table(){
     let table = $('#dt_banner_app');
     if (table != null) {
         table.DataTable({
-            responsive: true,
+            responsive: false,
             processing: true,
             serverSide: true,
             ajax: {
@@ -91,6 +91,10 @@ function init_data_table(){
                     render:function (data, type, full, meta) {
                         return '<img src="'+data+'" width="200">';
                     }
+                },
+                {
+                    targets: 3,
+                    className: "td-wrap"
                 },
                 {
                     targets: 4,
