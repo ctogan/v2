@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Helpers\Operator;
 use App\Helpers\Utils;
 use App\Http\Controllers\Controller;
 use App\UserApp;
@@ -100,7 +101,7 @@ class UserController extends ApiController
                     'lock_screen' => boolval($userConfig->lock_screen),
                     'allow_noti' => boolval($userConfig->allow_noti),
                     'invite_url' => 'http://inv.sctrk.site/',
-                    'opname' => strval(\Operator::$list[$userTargetInfo->opcode]),
+                    'opname' => strval(Operator::$list[$userTargetInfo->opcode]),
                     'opcode' => strval($userTargetInfo->opcode),
                     'gender' => $userTargetInfo->gender ? $userTargetInfo->gender : 'U',
                     'birth' => strval($userTargetInfo->birth),
@@ -227,7 +228,7 @@ class UserController extends ApiController
                     'lock_screen' => boolval($userConfig->lock_screen),
                     'allow_noti' => boolval($userConfig->allow_noti),
                     'invite_url' => 'http://inv.sctrk.site/',
-                    'opname' => strval(\Operator::$list[$userTargetInfo->opcode]),
+                    'opname' => strval(Operator::$list[$userTargetInfo->opcode]),
                     'opcode' => strval($userTargetInfo->opcode),
                     'gender' => $userTargetInfo->gender ? $userTargetInfo->gender : 'U',
                     'birth' => strval($userTargetInfo->birth),
@@ -379,7 +380,7 @@ class UserController extends ApiController
                 'lock_screen' => boolval($createUserConfig->lock_screen),
                 'allow_noti' => boolval($createUserConfig->allow_noti),
                 'invite_url' => 'http://inv.sctrk.site/',
-                'opname' => strval(\Operator::$list[$createUserTargetInfo->opcode]),
+                'opname' => strval(Operator::$list[$createUserTargetInfo->opcode]),
                 'opcode' => strval($createUserTargetInfo->opcode),
                 'gender' => $createUserTargetInfo->gender ? $createUserTargetInfo->gender : 'U',
                 'birth' => strval($createUserTargetInfo->birth),
