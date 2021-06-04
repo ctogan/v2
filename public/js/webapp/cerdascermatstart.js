@@ -3855,6 +3855,9 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
@@ -3863,32 +3866,17 @@ __webpack_require__.r(__webpack_exports__);
       page_count: 10,
       list: null,
       mmses: null,
-      is_submit: false
+      is_submit: false,
+      minute: 0,
+      second: 0,
+      x: null
     };
-  },
-  mounted: function mounted() {
-    var _this = this;
-
-    axios.get('/api/cerdas-cermat/question/free', {
-      params: {
-        mmses: $('meta[name=usr-token]').attr('content'),
-        page: this.page
-      }
-    }).then(function (response) {
-      if (response.data.code === "202") {
-        alert('Need Login');
-      }
-
-      _this.is_loading = false;
-      _this.page += 1;
-      _this.list = response.data.data.question;
-      _this.mmses = response.data.data.mmses;
-    });
   },
   methods: {
     next: function next() {
-      var _this2 = this;
+      var _this = this;
 
+      this.stop();
       this.is_loading = true;
       axios.get('/api/cerdas-cermat/question/free', {
         params: {
@@ -3900,19 +3888,92 @@ __webpack_require__.r(__webpack_exports__);
           alert('Need Login');
         }
 
-        _this2.is_loading = false;
-        _this2.page += 1;
-        var datas = _this2.list;
+        _this.is_loading = false;
+        _this.page += 1;
+        var datas = _this.list;
         $('.list-question').addClass('hide');
         $.each(response.data.data.question, function (key, value) {
           datas.push(value);
         });
+
+        _this.start();
       });
     },
     submit: function submit() {
       this.is_submit = true;
+      this.stop();
       $("#submit_free_session").submit();
+    },
+    start: function start() {
+      var self = this;
+      var s = this.second;
+      var m = this.minute;
+      this.x = setInterval(function () {
+        var sec = '00';
+        var min = '00';
+        s++;
+
+        if (s < 10) {
+          sec = '0' + s;
+        } else {
+          sec = s;
+        }
+
+        if (s === 60) {
+          s = 0;
+          m++;
+
+          if (m < 10) {
+            min = '0' + m;
+          } else {
+            min = m;
+          }
+
+          $('.minute').html(min);
+
+          if (self.page !== self.page_count) {
+            self.next();
+          } else {
+            self.submit();
+          }
+
+          sec = '00';
+        }
+
+        $('.second').html(sec);
+        self.second = s;
+        self.minute = m;
+      }, 1000);
+    },
+    stop: function stop() {
+      clearTimeout(this.x);
+    },
+    updateTime: function updateTime(s, m) {
+      console.log(s);
+      this.second = s;
+      this.minute = m;
     }
+  },
+  mounted: function mounted() {
+    var _this2 = this;
+
+    axios.get('/api/cerdas-cermat/question/free', {
+      params: {
+        mmses: $('meta[name=usr-token]').attr('content'),
+        page: this.page
+      }
+    }).then(function (response) {
+      if (response.data.code === "202") {
+        alert('Need Login');
+      }
+
+      _this2.is_loading = false;
+      _this2.page += 1;
+      _this2.list = response.data.data.question;
+      _this2.mmses = response.data.data.mmses;
+
+      _this2.start();
+    });
   }
 });
 $(document).ready(function () {
@@ -4533,30 +4594,44 @@ var render = function() {
             ])
           }),
           0
+        ),
+        _vm._v(" "),
+        _c(
+          "div",
+          {
+            staticClass:
+              "stopwatch d-flex justify-content-between align-items-center"
+          },
+          [
+            _c("div", [_vm._v("Waktu Anda")]),
+            _vm._v(" "),
+            _c("div", [
+              _c(
+                "span",
+                { staticClass: "minute", attrs: { "data-minute": "0" } },
+                [_vm._v("00")]
+              ),
+              _vm._v(" : "),
+              _c(
+                "span",
+                { staticClass: "second", attrs: { "data-second": "0" } },
+                [_vm._v("0" + _vm._s(_vm.second))]
+              )
+            ])
+          ]
         )
       ]),
       _vm._v(" "),
       _vm.is_loading
-        ? _c(
-            "div",
-            {
-              staticStyle: {
-                position: "fixed",
-                width: "83%",
-                background: "#fff",
-                height: "100vh"
-              }
-            },
-            [
-              _vm._m(0),
-              _vm._v(" "),
-              _vm._m(1),
-              _vm._v(" "),
-              _vm._m(2),
-              _vm._v(" "),
-              _vm._m(3)
-            ]
-          )
+        ? _c("div", { staticClass: "ph-loading" }, [
+            _vm._m(0),
+            _vm._v(" "),
+            _vm._m(1),
+            _vm._v(" "),
+            _vm._m(2),
+            _vm._v(" "),
+            _vm._m(3)
+          ])
         : _vm._e(),
       _vm._v(" "),
       _c("div", [
