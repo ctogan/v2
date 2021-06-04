@@ -2214,4 +2214,5 @@ legend{
 }
 .td-wrap{
   word-wrap: break-word!important;
+  word-break: break-word;
 }

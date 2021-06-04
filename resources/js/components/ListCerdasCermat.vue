@@ -72,10 +72,17 @@
                             <a class="btn start" v-on:click="start(item.session_code)" href="javascript:void(0)">Mulai</a>
                         </div>
                         <div v-else-if="item.status === 'waiting' && !item.is_registered">
-                            <a v-on:click="waiting(item.session_code)" class="btn start" href="javascript:void(0)">Mulai</a>
+                            <a v-on:click="register(item.session_code, item.registration_fee)" class="btn open" href="javascript:void(0)">
+                                <div v-if="is_registering" class="spinner-border spinner-border-sm" role="status">
+                                    <span class="sr-only">Loading...</span>
+                                </div>
+                                <div v-else="is_registering === false">
+                                    Daftar
+                                </div>
+                            </a>
                         </div>
                         <div v-else-if="item.status === 'waiting' && item.is_registered">
-                            <a v-on:click="register(item.session_code, item.registration_fee)" class="btn start" href="javascript:void(0)">Daftar</a>
+                            <a v-on:click="waiting(item.session_code, item.registration_fee)" class="btn open" href="javascript:void(0)">Mulai</a>
                         </div>
                     </div>
                 </li>
@@ -94,7 +101,8 @@
         data () {
             return {
                 is_loading: true,
-                list : null
+                list : null,
+                is_registering :false
             }
         },
         mounted () {
@@ -106,7 +114,7 @@
                 })
                 .then(response => {
                     if(response.data.code === "202"){
-                        alert('Need Login')
+                        alertify.alert('Need Login').setting({'title':'Cerdas Cermat'});
                     }
                     this.is_loading = false;
                     this.list = response.data.data;
@@ -114,7 +122,7 @@
         },
         methods:{
             waiting(){
-                alert('Mohon menunggu, sesi ini belum dimulai');
+                alertify.alert('Mohon menunggu, sesi ini belum dimulai.').setting({'title':'Cerdas Cermat'});
             },
             start(code){
                 alertify.confirm('Kamu sudah siap? Waktu akan dimulai setelah memilih <b>Mulai</b>.')
@@ -129,23 +137,42 @@
                         }
                     ).set('labels', {cancel:'Batalkan', ok:'Mulai'});
             },
-            register(code, point){
-                if(confirm("Point yang dibutuhan untuk mengikuti event ini " + point + "p. Apakah kamu bersedia?")){
-                    axios
-                        .post('/api/cerdas-cermat/register' , {
-                            mmses: $('meta[name=usr-token]').attr('content'),
-                            session_code : code
-                        })
-                        .then(response => {
-                            let code = response.data.code;
-                            if(code === "216"){
-                                alert('Point Tidak Cukup')
-                            }else if(code === '217'){
-                                alert('Kamu Sudah Terdaftar. Mohon menunggu sesi ini dimulai')
-                            }else if(code === '218'){
-                                alert('Sesi ini sudah berakhir')
+            register(code, point) {
+                if (!this.is_registering) {
+                    this.is_registering = true;
+                    alertify.confirm("Point yang dibutuhan untuk mengikuti event ini <b>" + point + "P</b>. Apakah kamu bersedia?")
+                        .setting(
+                            {
+                                'autoReset': false,
+                                'title': 'Pendaftaran',
+                                'closable': false,
+                                'onok': function () {
+                                    $(".btn.open").html('');
+                                    // axios
+                                    //     .post('/api/cerdas-cermat/register' , {
+                                    //         mmses: $('meta[name=usr-token]').attr('content'),
+                                    //         session_code : code
+                                    //     })
+                                    //     .then(response => {
+                                    //         let code = response.data.code;
+                                    //         if(code === "216"){
+                                    //             alertify.alert('Point Tidak Cukup').setting({'title':'Cerdas Cermat'});
+                                    //         }else if(code === '217'){
+                                    //             alertify.alert('Kamu Sudah Terdaftar. Mohon menunggu sesi ini dimulai').setting({'title':'Cerdas Cermat'});
+                                    //         }else if(code === '218'){
+                                    //             alertify.alert('Sesi ini sudah berakhir').setting({'title':'Cerdas Cermat'});
+                                    //         }else{
+                                    //             alertify.alert('Pendaftaran Berhasil').setting({'title':'Cerdas Cermat'});;
+                                    //             location.reload();
+                                    //         }
+                                    //     })
+                                },
+                                'oncancel':function () {
+                                    this.is_registering = false;
+                                    alert(this.is_registering);
+                                }
                             }
-                        })
+                        ).set('labels', {cancel: 'Batalkan', ok: 'Ya Daftar Sekarang'});
                 }
             }
         }

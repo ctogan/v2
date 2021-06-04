@@ -28,13 +28,13 @@
                         <strong>List Of Banner</strong>
                     </div>
                     <div class="card-body overflow-hidden">
-                        <table id="dt_banner_app" class="datatable table table-striped table-bordered responsive nowrap table-hover" style="width:100%">
+                        <table id="dt_banner_app" class="datatable table table-striped table-bordered table-hover" style="width:100%">
                             <thead>
                             <tr>
                                 <th>Index</th>
                                 <th width="200">Image</th>
                                 <th>Banner Name</th>
-                                <th>Deeplink</th>
+                                <th width="200">Deeplink</th>
                                 <th>Status</th>
                                 <th>Action</th>
                             </tr>

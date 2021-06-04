@@ -186,11 +186,19 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
       is_loading: true,
-      list: null
+      list: null,
+      is_registering: false
     };
   },
   mounted: function mounted() {
@@ -202,7 +210,9 @@ __webpack_require__.r(__webpack_exports__);
       }
     }).then(function (response) {
       if (response.data.code === "202") {
-        alert('Need Login');
+        alertify.alert('Need Login').setting({
+          'title': 'Cerdas Cermat'
+        });
       }
 
       _this.is_loading = false;
@@ -211,7 +221,9 @@ __webpack_require__.r(__webpack_exports__);
   },
   methods: {
     waiting: function waiting() {
-      alert('Mohon menunggu, sesi ini belum dimulai');
+      alertify.alert('Mohon menunggu, sesi ini belum dimulai.').setting({
+        'title': 'Cerdas Cermat'
+      });
     },
     start: function start(code) {
       alertify.confirm('Kamu sudah siap? Waktu akan dimulai setelah memilih <b>Mulai</b>.').setting({
@@ -227,20 +239,39 @@ __webpack_require__.r(__webpack_exports__);
       });
     },
     register: function register(code, point) {
-      if (confirm("Point yang dibutuhan untuk mengikuti event ini " + point + "p. Apakah kamu bersedia?")) {
-        axios.post('/api/cerdas-cermat/register', {
-          mmses: $('meta[name=usr-token]').attr('content'),
-          session_code: code
-        }).then(function (response) {
-          var code = response.data.code;
-
-          if (code === "216") {
-            alert('Point Tidak Cukup');
-          } else if (code === '217') {
-            alert('Kamu Sudah Terdaftar. Mohon menunggu sesi ini dimulai');
-          } else if (code === '218') {
-            alert('Sesi ini sudah berakhir');
+      if (!this.is_registering) {
+        this.is_registering = true;
+        alertify.confirm("Point yang dibutuhan untuk mengikuti event ini <b>" + point + "P</b>. Apakah kamu bersedia?").setting({
+          'autoReset': false,
+          'title': 'Pendaftaran',
+          'closable': false,
+          'onok': function onok() {
+            $(".btn.open").html(''); // axios
+            //     .post('/api/cerdas-cermat/register' , {
+            //         mmses: $('meta[name=usr-token]').attr('content'),
+            //         session_code : code
+            //     })
+            //     .then(response => {
+            //         let code = response.data.code;
+            //         if(code === "216"){
+            //             alertify.alert('Point Tidak Cukup').setting({'title':'Cerdas Cermat'});
+            //         }else if(code === '217'){
+            //             alertify.alert('Kamu Sudah Terdaftar. Mohon menunggu sesi ini dimulai').setting({'title':'Cerdas Cermat'});
+            //         }else if(code === '218'){
+            //             alertify.alert('Sesi ini sudah berakhir').setting({'title':'Cerdas Cermat'});
+            //         }else{
+            //             alertify.alert('Pendaftaran Berhasil').setting({'title':'Cerdas Cermat'});;
+            //             location.reload();
+            //         }
+            //     })
+          },
+          'oncancel': function oncancel() {
+            this.is_registering = false;
+            alert(this.is_registering);
           }
+        }).set('labels', {
+          cancel: 'Batalkan',
+          ok: 'Ya Daftar Sekarang'
         });
       }
     }
@@ -860,23 +891,7 @@ var render = function() {
                               _c(
                                 "a",
                                 {
-                                  staticClass: "btn start",
-                                  attrs: { href: "javascript:void(0)" },
-                                  on: {
-                                    click: function($event) {
-                                      return _vm.waiting(item.session_code)
-                                    }
-                                  }
-                                },
-                                [_vm._v("Mulai")]
-                              )
-                            ])
-                          : item.status === "waiting" && item.is_registered
-                          ? _c("div", [
-                              _c(
-                                "a",
-                                {
-                                  staticClass: "btn start",
+                                  staticClass: "btn open",
                                   attrs: { href: "javascript:void(0)" },
                                   on: {
                                     click: function($event) {
@@ -887,7 +902,48 @@ var render = function() {
                                     }
                                   }
                                 },
-                                [_vm._v("Daftar")]
+                                [
+                                  _vm.is_registering
+                                    ? _c(
+                                        "div",
+                                        {
+                                          staticClass:
+                                            "spinner-border spinner-border-sm",
+                                          attrs: { role: "status" }
+                                        },
+                                        [
+                                          _c(
+                                            "span",
+                                            { staticClass: "sr-only" },
+                                            [_vm._v("Loading...")]
+                                          )
+                                        ]
+                                      )
+                                    : _c("div", [
+                                        _vm._v(
+                                          "\n                                Daftar\n                            "
+                                        )
+                                      ])
+                                ]
+                              )
+                            ])
+                          : item.status === "waiting" && item.is_registered
+                          ? _c("div", [
+                              _c(
+                                "a",
+                                {
+                                  staticClass: "btn open",
+                                  attrs: { href: "javascript:void(0)" },
+                                  on: {
+                                    click: function($event) {
+                                      return _vm.waiting(
+                                        item.session_code,
+                                        item.registration_fee
+                                      )
+                                    }
+                                  }
+                                },
+                                [_vm._v("Mulai")]
                               )
                             ])
                           : _vm._e()
