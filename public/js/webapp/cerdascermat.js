@@ -193,6 +193,13 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
@@ -239,41 +246,48 @@ __webpack_require__.r(__webpack_exports__);
       });
     },
     register: function register(code, point) {
-      if (!this.is_registering) {
-        this.is_registering = true;
-        alertify.confirm("Point yang dibutuhan untuk mengikuti event ini <b>" + point + "P</b>. Apakah kamu bersedia?").setting({
-          'autoReset': false,
-          'title': 'Pendaftaran',
-          'closable': false,
-          'onok': function onok() {
-            $(".btn.open").html(''); // axios
-            //     .post('/api/cerdas-cermat/register' , {
-            //         mmses: $('meta[name=usr-token]').attr('content'),
-            //         session_code : code
-            //     })
-            //     .then(response => {
-            //         let code = response.data.code;
-            //         if(code === "216"){
-            //             alertify.alert('Point Tidak Cukup').setting({'title':'Cerdas Cermat'});
-            //         }else if(code === '217'){
-            //             alertify.alert('Kamu Sudah Terdaftar. Mohon menunggu sesi ini dimulai').setting({'title':'Cerdas Cermat'});
-            //         }else if(code === '218'){
-            //             alertify.alert('Sesi ini sudah berakhir').setting({'title':'Cerdas Cermat'});
-            //         }else{
-            //             alertify.alert('Pendaftaran Berhasil').setting({'title':'Cerdas Cermat'});;
-            //             location.reload();
-            //         }
-            //     })
-          },
-          'oncancel': function oncancel() {
-            this.is_registering = false;
-            alert(this.is_registering);
-          }
-        }).set('labels', {
-          cancel: 'Batalkan',
-          ok: 'Ya Daftar Sekarang'
-        });
-      }
+      $("#" + code + " .spinner").show();
+      $("#" + code + " .no-spinner").hide();
+      alertify.confirm("Point yang dibutuhan untuk mengikuti event ini <b>" + point + "P</b>. Apakah kamu bersedia?").setting({
+        'autoReset': false,
+        'title': 'Pendaftaran',
+        'closable': false,
+        'onok': function onok() {
+          axios.post('/api/cerdas-cermat/register', {
+            mmses: $('meta[name=usr-token]').attr('content'),
+            session_code: code
+          }).then(function (response) {
+            var code = response.data.code;
+
+            if (code === "216") {
+              alertify.alert('Point Tidak Cukup').setting({
+                'title': 'Cerdas Cermat'
+              });
+            } else if (code === '217') {
+              alertify.alert('Kamu Sudah Terdaftar. Mohon menunggu sesi ini dimulai').setting({
+                'title': 'Cerdas Cermat'
+              });
+            } else if (code === '218') {
+              alertify.alert('Sesi ini sudah berakhir').setting({
+                'title': 'Cerdas Cermat'
+              });
+            } else {
+              alertify.alert('Pendaftaran Berhasil').setting({
+                'title': 'Cerdas Cermat'
+              });
+              ;
+              location.reload();
+            }
+          });
+        },
+        'oncancel': function oncancel() {
+          $("#" + code + " .spinner").hide();
+          $("#" + code + " .no-spinner").show();
+        }
+      }).set('labels', {
+        cancel: 'Batalkan',
+        ok: 'Ya Daftar Sekarang'
+      });
     }
   }
 });
@@ -857,7 +871,10 @@ var render = function() {
                                 "a",
                                 {
                                   staticClass: "btn open",
-                                  attrs: { href: "javascript:void(0)" },
+                                  attrs: {
+                                    id: item.session_code,
+                                    href: "javascript:void(0)"
+                                  },
                                   on: {
                                     click: function($event) {
                                       return _vm.register(
@@ -867,7 +884,15 @@ var render = function() {
                                     }
                                   }
                                 },
-                                [_vm._v("Daftar")]
+                                [
+                                  _vm._m(5, true),
+                                  _vm._v(" "),
+                                  _c("div", { staticClass: "no-spinner" }, [
+                                    _vm._v(
+                                      "\n                                Daftar\n                            "
+                                    )
+                                  ])
+                                ]
                               )
                             ])
                           : item.status === "active" && item.is_registered
@@ -892,7 +917,10 @@ var render = function() {
                                 "a",
                                 {
                                   staticClass: "btn open",
-                                  attrs: { href: "javascript:void(0)" },
+                                  attrs: {
+                                    id: item.session_code,
+                                    href: "javascript:void(0)"
+                                  },
                                   on: {
                                     click: function($event) {
                                       return _vm.register(
@@ -903,27 +931,13 @@ var render = function() {
                                   }
                                 },
                                 [
-                                  _vm.is_registering
-                                    ? _c(
-                                        "div",
-                                        {
-                                          staticClass:
-                                            "spinner-border spinner-border-sm",
-                                          attrs: { role: "status" }
-                                        },
-                                        [
-                                          _c(
-                                            "span",
-                                            { staticClass: "sr-only" },
-                                            [_vm._v("Loading...")]
-                                          )
-                                        ]
-                                      )
-                                    : _c("div", [
-                                        _vm._v(
-                                          "\n                                Daftar\n                            "
-                                        )
-                                      ])
+                                  _vm._m(6, true),
+                                  _vm._v(" "),
+                                  _c("div", { staticClass: "no-spinner" }, [
+                                    _vm._v(
+                                      "\n                                Daftar\n                            "
+                                    )
+                                  ])
                                 ]
                               )
                             ])
@@ -955,7 +969,7 @@ var render = function() {
               )
             : _vm._e(),
           _vm._v(" "),
-          _vm._m(5)
+          _vm._m(7)
         ])
       : _vm._e()
   ])
@@ -1055,6 +1069,32 @@ var staticRenderFns = [
         _vm._v("Lihat Hadiah")
       ])
     ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c(
+      "div",
+      {
+        staticClass: "spinner spinner-border spinner-border-sm hide",
+        attrs: { role: "status" }
+      },
+      [_c("span", { staticClass: "sr-only" }, [_vm._v("Loading...")])]
+    )
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c(
+      "div",
+      {
+        staticClass: "spinner spinner-border spinner-border-sm hide",
+        attrs: { role: "status" }
+      },
+      [_c("span", { staticClass: "sr-only" }, [_vm._v("Loading...")])]
+    )
   },
   function() {
     var _vm = this

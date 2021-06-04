@@ -6,9 +6,12 @@
                 <ul>
                     <li v-for="n in page_count" :class="n === page ? 'active' : ''">{{ n }}</li>
                 </ul>
+                <div class="stopwatch d-flex justify-content-between align-items-center">
+                    <div>Waktu Anda</div>
+                    <div><span data-minute="0" class="minute">00</span> : <span data-second="0" class="second">0{{second}}</span></div>
+                </div>
             </div>
-
-            <div v-if="is_loading" style="position: fixed;width: 83%;background: #fff;height: 100vh;">
+            <div v-if="is_loading" class="ph-loading">
                 <div class="mb-4">
                     <div class="d-block justify-content-between">
                         <div class="h-25 w-100 bg-placeholder mb-2 flex-1 mr-5"></div>
@@ -97,29 +100,15 @@
                 page_count : 10,
                 list :null,
                 mmses: null,
-                is_submit:false
+                is_submit:false,
+                minute : 0,
+                second : 0,
+                x :null
             }
-        },
-        mounted () {
-            axios
-                .get('/api/cerdas-cermat/question/free' , {
-                    params: {
-                        mmses: $('meta[name=usr-token]').attr('content'),
-                        page: this.page
-                    }
-                })
-                .then(response => {
-                    if(response.data.code === "202"){
-                        alert('Need Login')
-                    }
-                    this.is_loading = false;
-                    this.page +=1;
-                    this.list = response.data.data.question;
-                    this.mmses = response.data.data.mmses;
-                })
         },
         methods:{
             next(){
+                this.stop();
                 this.is_loading =true;
                 axios
                     .get('/api/cerdas-cermat/question/free' , {
@@ -139,12 +128,75 @@
                         $.each(response.data.data.question , function( key , value){
                             datas.push(value);
                         });
+                        this.start();
                     })
             },
             submit(){
                 this.is_submit = true;
+                this.stop();
                 $("#submit_free_session").submit();
+            },
+            start(){
+                const self = this;
+                let s = this.second;
+                let m = this.minute;
+                this.x = setInterval(function() {
+                    let sec = '00';
+                    let min = '00';
+                    s++;
+                    if(s<10){
+                        sec = '0'+s;
+                    }else{
+                        sec = s;
+                    }
+                    if(s === 60){
+                        s=0;
+                        m++;
+                        if(m < 10){
+                            min = '0'+m;
+                        }else{
+                            min = m;
+                        }
+                        $('.minute').html(min);
+                        if(self.page !== self.page_count){
+                            self.next();
+                        }else{
+                            self.submit();
+                        }
+                        sec = '00';
+                    }
+                    $('.second').html(sec);
+                    self.second = s;
+                    self.minute = m;
+                }, 1000);
+            },
+            stop(){
+                clearTimeout(this.x);
+            },
+            updateTime(s,m){
+                console.log(s);
+                this.second = s;
+                this.minute = m;
             }
+        },
+        mounted () {
+            axios
+                .get('/api/cerdas-cermat/question/free' , {
+                    params: {
+                        mmses: $('meta[name=usr-token]').attr('content'),
+                        page: this.page
+                    }
+                })
+                .then(response => {
+                    if(response.data.code === "202"){
+                        alert('Need Login')
+                    }
+                    this.is_loading = false;
+                    this.page +=1;
+                    this.list = response.data.data.question;
+                    this.mmses = response.data.data.mmses;
+                    this.start();
+                });
         }
     }
 

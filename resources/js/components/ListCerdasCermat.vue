@@ -66,17 +66,24 @@
                             <a class="btn end_session" href="javascript:void(0)">Selesai</a>
                         </div>
                         <div v-else-if="item.status === 'active' && !item.is_registered">
-                            <a v-on:click="register(item.session_code, item.registration_fee)" class="btn open" href="javascript:void(0)">Daftar</a>
+                            <a :id="item.session_code" v-on:click="register(item.session_code, item.registration_fee)" class="btn open" href="javascript:void(0)">
+                                <div class="spinner spinner-border spinner-border-sm hide" role="status">
+                                    <span class="sr-only">Loading...</span>
+                                </div>
+                                <div class="no-spinner">
+                                    Daftar
+                                </div>
+                            </a>
                         </div>
                         <div v-else-if="item.status === 'active' && item.is_registered">
                             <a class="btn start" v-on:click="start(item.session_code)" href="javascript:void(0)">Mulai</a>
                         </div>
                         <div v-else-if="item.status === 'waiting' && !item.is_registered">
-                            <a v-on:click="register(item.session_code, item.registration_fee)" class="btn open" href="javascript:void(0)">
-                                <div v-if="is_registering" class="spinner-border spinner-border-sm" role="status">
+                            <a :id="item.session_code" v-on:click="register(item.session_code, item.registration_fee)" class="btn open" href="javascript:void(0)">
+                                <div class="spinner spinner-border spinner-border-sm hide" role="status">
                                     <span class="sr-only">Loading...</span>
                                 </div>
-                                <div v-else="is_registering === false">
+                                <div class="no-spinner">
                                     Daftar
                                 </div>
                             </a>
@@ -138,42 +145,40 @@
                     ).set('labels', {cancel:'Batalkan', ok:'Mulai'});
             },
             register(code, point) {
-                if (!this.is_registering) {
-                    this.is_registering = true;
-                    alertify.confirm("Point yang dibutuhan untuk mengikuti event ini <b>" + point + "P</b>. Apakah kamu bersedia?")
-                        .setting(
-                            {
-                                'autoReset': false,
-                                'title': 'Pendaftaran',
-                                'closable': false,
-                                'onok': function () {
-                                    $(".btn.open").html('');
-                                    // axios
-                                    //     .post('/api/cerdas-cermat/register' , {
-                                    //         mmses: $('meta[name=usr-token]').attr('content'),
-                                    //         session_code : code
-                                    //     })
-                                    //     .then(response => {
-                                    //         let code = response.data.code;
-                                    //         if(code === "216"){
-                                    //             alertify.alert('Point Tidak Cukup').setting({'title':'Cerdas Cermat'});
-                                    //         }else if(code === '217'){
-                                    //             alertify.alert('Kamu Sudah Terdaftar. Mohon menunggu sesi ini dimulai').setting({'title':'Cerdas Cermat'});
-                                    //         }else if(code === '218'){
-                                    //             alertify.alert('Sesi ini sudah berakhir').setting({'title':'Cerdas Cermat'});
-                                    //         }else{
-                                    //             alertify.alert('Pendaftaran Berhasil').setting({'title':'Cerdas Cermat'});;
-                                    //             location.reload();
-                                    //         }
-                                    //     })
-                                },
-                                'oncancel':function () {
-                                    this.is_registering = false;
-                                    alert(this.is_registering);
-                                }
+                $("#"+code+" .spinner").show();
+                $("#"+code+" .no-spinner").hide();
+                alertify.confirm("Point yang dibutuhan untuk mengikuti event ini <b>" + point + "P</b>. Apakah kamu bersedia?")
+                    .setting(
+                        {
+                            'autoReset': false,
+                            'title': 'Pendaftaran',
+                            'closable': false,
+                            'onok': function () {
+                                axios
+                                    .post('/api/cerdas-cermat/register' , {
+                                        mmses: $('meta[name=usr-token]').attr('content'),
+                                        session_code : code
+                                    })
+                                    .then(response => {
+                                        let code = response.data.code;
+                                        if(code === "216"){
+                                            alertify.alert('Point Tidak Cukup').setting({'title':'Cerdas Cermat'});
+                                        }else if(code === '217'){
+                                            alertify.alert('Kamu Sudah Terdaftar. Mohon menunggu sesi ini dimulai').setting({'title':'Cerdas Cermat'});
+                                        }else if(code === '218'){
+                                            alertify.alert('Sesi ini sudah berakhir').setting({'title':'Cerdas Cermat'});
+                                        }else{
+                                            alertify.alert('Pendaftaran Berhasil').setting({'title':'Cerdas Cermat'});;
+                                            location.reload();
+                                        }
+                                    })
+                            },
+                            'oncancel':function () {
+                                $("#"+code+" .spinner").hide();
+                                $("#"+code+" .no-spinner").show();
                             }
-                        ).set('labels', {cancel: 'Batalkan', ok: 'Ya Daftar Sekarang'});
-                }
+                        }
+                    ).set('labels', {cancel: 'Batalkan', ok: 'Ya Daftar Sekarang'});
             }
         }
     }
