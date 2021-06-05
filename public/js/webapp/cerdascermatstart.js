@@ -3878,7 +3878,8 @@ __webpack_require__.r(__webpack_exports__);
       x: null,
       arr_question: null,
       timeout: 0,
-      progress: 0
+      progress: 0,
+      session: null
     };
   },
   methods: {
@@ -3905,6 +3906,7 @@ __webpack_require__.r(__webpack_exports__);
 
         _this.page += 1;
         _this.timeout = 0;
+        _this.progress = 0;
 
         _this.start();
       });
@@ -4003,6 +4005,7 @@ __webpack_require__.r(__webpack_exports__);
       _this2.list.push(response.data.data.question);
 
       _this2.mmses = response.data.data.mmses;
+      _this2.session = response.data.data.session.session_code;
       _this2.page += 1;
 
       _this2.start();
@@ -4693,6 +4696,11 @@ var render = function() {
             _c("input", {
               attrs: { type: "hidden", name: "mmses" },
               domProps: { value: _vm.mmses }
+            }),
+            _vm._v(" "),
+            _c("input", {
+              attrs: { type: "hidden", name: "session_code" },
+              domProps: { value: _vm.session }
             }),
             _vm._v(" "),
             _vm._l(_vm.list, function(item) {

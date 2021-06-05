@@ -66,7 +66,7 @@
                 <form id="submit_free_session" action="/submit">
                     <input type="hidden" id="duration" name="duration" value="0">
                     <input type="hidden" :value="mmses" name="mmses">
-                    <!--<div class="list-question" v-for="item in list" :id="item.id">-->
+                    <input type="hidden" :value="session" name="session_code">
                     <div class="list-question" v-for="item in list" :id="item.id">
                         <div class="question mb-4">
                             <p>Pertanyaan:</p>
@@ -112,7 +112,8 @@
                 x :null,
                 arr_question : null,
                 timeout : 0,
-                progress: 0
+                progress: 0,
+                session:null
             }
         },
         methods:{
@@ -136,6 +137,7 @@
                         this.list.push(response.data.data.question);
                         this.page +=1;
                         this.timeout =0;
+                        this.progress =0;
                         this.start();
                     })
             },
@@ -225,6 +227,7 @@
                     this.page_count = response.data.data.session.displayed_question;
                     this.list.push(response.data.data.question);
                     this.mmses = response.data.data.mmses;
+                    this.session = response.data.data.session.session_code;
                     this.page +=1;
                     this.start();
                 });
