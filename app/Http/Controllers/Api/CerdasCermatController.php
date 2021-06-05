@@ -6,9 +6,12 @@ use App\CCAnswer;
 use App\CCParticipant;
 use App\CCQuestion;
 use App\CCSession;
+use App\CCSessionQuestion;
+use App\Helpers\Utils;
 use App\Http\Resources\CCSessionResource;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Validator;
 
 class CerdasCermatController extends ApiController
@@ -34,13 +37,15 @@ class CerdasCermatController extends ApiController
      */
     public function index(Request $request){
         $uid = $this->user->uid;
-        $session = CCSession::where('row_status','=','active')
-            ->where('open_date', '>=', date('Y-m-d'))
-            ->withCount(['participant' => function ($q) use ($uid){
-                $q->where('uid' , $uid);
-            }])
-            ->with('prize')
-            ->get();
+        $session = Cache::remember('_list_session_'.$uid, 3600, function () use ($uid){
+            return CCSession::where('row_status','=','active')
+                ->where('open_date', '>=', date('Y-m-d'))
+                ->withCount(['participant' => function ($q) use ($uid){
+                    $q->where('uid' , $uid);
+                }])
+                ->with('prize')
+                ->get();
+        });
 
         $response['session'] = CCSessionResource::collection($session);
 
@@ -184,6 +189,8 @@ class CerdasCermatController extends ApiController
         CCParticipant::insert($data);
         $response['session'] = CCSessionResource::collection(array($session));
 
+        Cache::forget('_list_session_'.$user->uid);
+
         return $this->successResponse($response);
     }
 
@@ -196,6 +203,42 @@ class CerdasCermatController extends ApiController
         $data = [
             'mmses'=>$request->mmses,
             'question' => $question
+        ];
+
+        return $this->successResponse($data);
+    }
+
+    public function get_question(Request $request){
+        $uid = $this->user->uid;
+        $session = CCSession::where('row_status','=','active')
+            ->where('open_date', '>=', date('Y-m-d'))
+            ->where('session_code','=',$request->session_code)
+            ->first();
+
+        $key = '_list_question_'.$uid.$session->session_code;
+        $question  = Cache::get($key);
+        if(!$question){
+            $question = CCSessionQuestion::inRandomOrder()
+                ->with('question')
+                ->with('question.answer')
+                ->take($session->displayed_question)
+                ->where('cc_session_id','=',$session->id)
+                ->get();
+
+            Cache::put($key, $question);
+        }
+
+        $q = [];
+        foreach ($question as $item){
+            array_push($q, $item->question);
+        }
+
+        $data = [
+            'key'=>$key,
+            'mmses'=>$request->mmses,
+            'session' =>$session,
+//            'question' => $question[$request->page]
+            'question' => $q[$request->page]
         ];
 
         return $this->successResponse($data);
@@ -230,6 +273,45 @@ class CerdasCermatController extends ApiController
             'correct' => $score,
             'wrong' => 10 - $score
         ];
+
+        return $this->successResponse($data);
+    }
+
+    public function submit(Request $request){
+        $user = $this->user;
+
+        $validation = Validator::make($request->all(), [
+            'item' => 'required',
+            'session_code' => 'required'
+        ]);
+
+        if ($validation->fails()) {
+            return $this->errorResponse($validation->errors(),static::CODE_ERROR_VALIDATION);
+        }
+
+        $score =0;
+        foreach ($request->item as $item){
+            if(!isset($item['answer'])){
+                continue;
+            }
+            $answer = CCAnswer::where('cc_question_id','=',$item['question'])
+                ->where('id','=',$item['answer'])
+                ->first();
+
+            if($answer){
+                if($answer->is_correct_answer){
+                    $score+=1;
+                }
+            }
+        }
+
+        $data = [
+            'correct' => $score,
+            'wrong' => 10 - $score,
+            'duration' => $request->duration
+        ];
+
+        Cache::forget('_list_session_'.$user->uid);
 
         return $this->successResponse($data);
     }

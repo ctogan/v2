@@ -236,9 +236,26 @@ ul{
 }
 .stopwatch{
     padding:30px 0;
+    font-size: 1rem;
 }
 .stopwatch span{
     border: 1px solid #612aa3;
     padding: 5px 7px;
     border-radius: 2px;
+    background: #612aa3;
+    color: #fff;
+}
+.alertify .ajs-body .ajs-content{
+    padding: 16px 24px 16px 0px!important;
+}
+.progress-ccc{
+    margin:7px 0 25px 0;
+    background: #dadada;
+    border-radius: 5px;
+}
+.progress-ccc .status{
+    background: rgb(114,255,110);
+    background: linear-gradient(40deg, rgba(114,255,110,1) 0%, rgba(212,77,64,1) 70%);
+    height: 10px;
+    border-radius: 5px;
 }

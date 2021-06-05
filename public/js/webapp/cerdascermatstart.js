@@ -3858,18 +3858,27 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
       is_loading: true,
       page: 0,
       page_count: 10,
-      list: null,
+      list: [],
       mmses: null,
       is_submit: false,
       minute: 0,
       second: 0,
-      x: null
+      milisecond: 0,
+      x: null,
+      arr_question: null,
+      timeout: 0,
+      progress: 0
     };
   },
   methods: {
@@ -3878,10 +3887,11 @@ __webpack_require__.r(__webpack_exports__);
 
       this.stop();
       this.is_loading = true;
-      axios.get('/api/cerdas-cermat/question/free', {
+      axios.get('/api/cerdas-cermat/question', {
         params: {
           mmses: $('meta[name=usr-token]').attr('content'),
-          page: this.page
+          page: this.page,
+          session_code: $('input[name=session_code]').val()
         }
       }).then(function (response) {
         if (response.data.code === "202") {
@@ -3889,12 +3899,12 @@ __webpack_require__.r(__webpack_exports__);
         }
 
         _this.is_loading = false;
-        _this.page += 1;
-        var datas = _this.list;
         $('.list-question').addClass('hide');
-        $.each(response.data.data.question, function (key, value) {
-          datas.push(value);
-        });
+
+        _this.list.push(response.data.data.question);
+
+        _this.page += 1;
+        _this.timeout = 0;
 
         _this.start();
       });
@@ -3902,16 +3912,34 @@ __webpack_require__.r(__webpack_exports__);
     submit: function submit() {
       this.is_submit = true;
       this.stop();
+      $("#duration").val(this.minute + ':' + this.second);
       $("#submit_free_session").submit();
     },
     start: function start() {
       var self = this;
+      var ms = this.milisecond;
       var s = this.second;
       var m = this.minute;
+      var to = this.timeout;
+      var p = this.progress;
       this.x = setInterval(function () {
+        var msec = '00';
         var sec = '00';
         var min = '00';
-        s++;
+        ms++;
+
+        if (ms === 100) {
+          s++;
+          to++;
+          ms = 0;
+          p = p + 1.65;
+        }
+
+        if (ms < 10) {
+          msec = '0' + ms;
+        } else {
+          msec = ms;
+        }
 
         if (s < 10) {
           sec = '0' + s;
@@ -3930,36 +3958,38 @@ __webpack_require__.r(__webpack_exports__);
           }
 
           $('.minute').html(min);
-
-          if (self.page !== self.page_count) {
-            self.next();
-          } else {
-            self.submit();
-          }
-
           sec = '00';
         }
 
         $('.second').html(sec);
+        $('.milisecond').html(msec);
         self.second = s;
         self.minute = m;
-      }, 1000);
+        self.milisecond = ms;
+        self.timeout = to;
+        self.progress = p;
+
+        if (to === 60) {
+          if (self.page !== self.page_count) {
+            self.next();
+            self.progress = 0;
+          } else {
+            self.submit();
+          }
+        }
+      }, 10);
     },
     stop: function stop() {
       clearTimeout(this.x);
-    },
-    updateTime: function updateTime(s, m) {
-      console.log(s);
-      this.second = s;
-      this.minute = m;
     }
   },
   mounted: function mounted() {
     var _this2 = this;
 
-    axios.get('/api/cerdas-cermat/question/free', {
+    axios.get('/api/cerdas-cermat/question', {
       params: {
         mmses: $('meta[name=usr-token]').attr('content'),
+        session_code: $('input[name=session_code]').val(),
         page: this.page
       }
     }).then(function (response) {
@@ -3968,9 +3998,12 @@ __webpack_require__.r(__webpack_exports__);
       }
 
       _this2.is_loading = false;
-      _this2.page += 1;
-      _this2.list = response.data.data.question;
+      _this2.page_count = response.data.data.session.displayed_question;
+
+      _this2.list.push(response.data.data.question);
+
       _this2.mmses = response.data.data.mmses;
+      _this2.page += 1;
 
       _this2.start();
     });
@@ -3980,7 +4013,7 @@ $(document).ready(function () {
   $('#submit_free_session').on('submit', function (event) {
     event.preventDefault();
     $.ajax({
-      url: '/api/cerdas-cermat/free/submit',
+      url: '/api/cerdas-cermat/submit',
       method: "POST",
       async: true,
       data: new FormData(this),
@@ -3990,18 +4023,14 @@ $(document).ready(function () {
       success: function success(response) {
         if (response.code === 200) {
           $("#btn_loading").hide();
-          alertify.confirm('Selamat, kamu sudah menyelesaikan semua pertanyaan. <br/> Benar : ' + response.data.correct + '<br/>Salah : ' + response.data.wrong).setting({
+          alertify.alert('Selamat, kamu sudah menyelesaikan semua pertanyaan. <br/> Benar : ' + response.data.correct + '<br/>Salah : ' + response.data.wrong + '<br/> Durasi : ' + response.data.duration + ' <br/><br/><b>Pemenang akan diumumkan pada akhir sesi.</b>').setting({
             'title': 'Hasil Akhir',
             'closable': false,
             'onok': function onok() {
-              location.reload();
-            },
-            'oncancel': function oncancel() {
               window.location = '/app/cerdas-cermat';
             }
           }).set('labels', {
-            ok: 'Coba Lagi',
-            cancel: 'Tutup'
+            ok: 'Oke'
           });
         } else {
           alert('Mohon maaf, sedang terjadi kesalahan teknis.');
@@ -4616,10 +4645,23 @@ var render = function() {
                 "span",
                 { staticClass: "second", attrs: { "data-second": "0" } },
                 [_vm._v("0" + _vm._s(_vm.second))]
+              ),
+              _vm._v(" : "),
+              _c(
+                "span",
+                { staticClass: "milisecond", attrs: { "data-second": "0" } },
+                [_vm._v("0" + _vm._s(_vm.milisecond))]
               )
             ])
           ]
-        )
+        ),
+        _vm._v(" "),
+        _c("div", { staticClass: "progress-ccc" }, [
+          _c("div", {
+            staticClass: "status",
+            style: { width: _vm.progress + "%" }
+          })
+        ])
       ]),
       _vm._v(" "),
       _vm.is_loading
@@ -4639,6 +4681,15 @@ var render = function() {
           "form",
           { attrs: { id: "submit_free_session", action: "/submit" } },
           [
+            _c("input", {
+              attrs: {
+                type: "hidden",
+                id: "duration",
+                name: "duration",
+                value: "0"
+              }
+            }),
+            _vm._v(" "),
             _c("input", {
               attrs: { type: "hidden", name: "mmses" },
               domProps: { value: _vm.mmses }
