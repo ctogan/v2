@@ -237,7 +237,6 @@ class CerdasCermatController extends ApiController
             'key'=>$key,
             'mmses'=>$request->mmses,
             'session' =>$session,
-//            'question' => $question[$request->page]
             'question' => $q[$request->page]
         ];
 
@@ -289,6 +288,11 @@ class CerdasCermatController extends ApiController
             return $this->errorResponse($validation->errors(),static::CODE_ERROR_VALIDATION);
         }
 
+        $session = CCSession::where('row_status','=','active')
+            ->where('open_date', '>=', date('Y-m-d'))
+            ->where('session_code','=',$request->session_code)
+            ->first();
+
         $score =0;
         foreach ($request->item as $item){
             if(!isset($item['answer'])){
@@ -311,7 +315,8 @@ class CerdasCermatController extends ApiController
             'duration' => $request->duration
         ];
 
-        Cache::forget('_list_session_'.$user->uid);
+        $key = '_list_question_'.$user->uid.$session->session_code;
+        Cache::forget($key);
 
         return $this->successResponse($data);
     }
