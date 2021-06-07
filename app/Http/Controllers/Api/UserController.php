@@ -192,20 +192,20 @@ class UserController extends ApiController
 
             $ses = substr(md5(microtime()), 0, 20);
 
-//            $updateUser->gaid = $request->gaid;
-//            $updateUser->imei = $request->imei;
-//            $updateUser->anid = $request->anid;
-//            $updateUser->save();
-//
-//            $userTargetInfo->locale = $request->lc;
-//            $userTargetInfo->device_name = $request->dvc;
-//            $userTargetInfo->opcode = $request->op;
-//            $userTargetInfo->osver = $request->ov;
-//            $userTargetInfo->appver = $request->resw;
-//            $userTargetInfo->resw = $request->resh;
-//            $userTargetInfo->resh = $request->lat;
-//            $userTargetInfo->lat = $request->lng;
-//            $userTargetInfo->save();
+            $user->gaid = $request->gaid;
+            $user->imei = $request->imei;
+            $user->anid = $request->anid;
+            $user->save();
+
+            $userTargetInfo->locale = $request->lc;
+            $userTargetInfo->device_name = $request->dvc;
+            $userTargetInfo->opcode = $request->op;
+            $userTargetInfo->osver = $request->ov;
+            $userTargetInfo->appver = $request->resw;
+            $userTargetInfo->resw = $request->resh;
+            $userTargetInfo->resh = $request->lat;
+            $userTargetInfo->lat = $request->lng;
+            $userTargetInfo->save();
 
             $userTime->ses = $ses;
             $userTime->last_ip = ip2long($request->getClientIp());
