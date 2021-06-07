@@ -15,6 +15,6 @@ class UserApp extends Model
     public $timestamps = false;
 
     protected $fillable = [
-        'uid','sim','anid','imei', 'gaid','phone','phone_auth_tm','mtime','inv_code','user_type','country_code','email','full_name','first_name','last_name','otp', 'profile_img'
+        'uid','sim','anid','imei', 'gaid','phone','phone_auth_tm','mtime','inv_code','user_type','country_code','email','full_name','first_name','last_name','otp', 'profile_img', 'account_id'
     ];
 }

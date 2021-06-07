@@ -207,16 +207,16 @@ class UserController extends ApiController
                 'lat' => $request->lat,
                 'lng' => $request->lng
             ]);
-            $updateUserTime = UserTime::where('uid', $user->uid)->update([
-                'ses' => $ses,
-                'last_ip' => ip2long($request->getClientIp())
-            ]);
+
+            $userTime->ses = $ses;
+            $userTime->last_ip = ip2long($request->getClientIp());
+            $userTime->save();
 
             $data = [
                 'session' => [
                     'u'             => strval($user->uid),
                     's'             => strval($user->sim),
-                    'ses'           => strval($userTime->ses),
+                    'ses'           => strval($ses),
                     'registered'    => true,
                 ],
                 'info' => [
