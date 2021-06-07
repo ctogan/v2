@@ -228,7 +228,7 @@ class UserController extends ApiController
                     'lock_screen' => boolval($userConfig->lock_screen),
                     'allow_noti' => boolval($userConfig->allow_noti),
                     'invite_url' => 'http://inv.sctrk.site/',
-                    'opname' => strval(Operator::$list[$userTargetInfo->opcode]),
+                    'opname' => strval(Operator::nameByOpcode($userTargetInfo->opcode)),
                     'opcode' => strval($userTargetInfo->opcode),
                     'gender' => $userTargetInfo->gender ? $userTargetInfo->gender : 'U',
                     'birth' => strval($userTargetInfo->birth),
