@@ -52,7 +52,7 @@
                 <img src="https://scdn.ctree.id/f/210525/1621912843335_Dummy.webp" alt="">
             </div>
             <ul v-if="list !== null" class="session-list">
-                <li v-for="item in list.session">
+                <li v-for="(item,index) in list.session">
                     <div class="d-flex justify-content-between align-items-center">
                         <div class="session-name">{{item.title}}</div>
                         <div :data-countdown="item.countdown" :class="'timer ' + item.status">{{item.status === 'waiting' ? 'Start' : 'End'}}
@@ -64,7 +64,7 @@
                     <p class="reg-info">Registrasi Poin : <span class="orange">{{item.registration_fee}} P</span></p>
                     <div class="d-flex justify-content-between align-items-center">
                         <div>
-                            <a class="more" href="javascript:void(0)">Lihat Hadiah</a>
+                            <a v-on:click="showprize(index)" class="more" href="javascript:void(0)">Lihat Hadiah</a>
                         </div>
                         <div v-if="item.status === 'expired'">
                             <a class="btn end_session" href="javascript:void(0)">Selesai</a>
@@ -107,6 +107,35 @@
             </div>
         </div>
 
+        <div id="prize_modal" class="modal" tabindex="-1" role="dialog">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Daftar Hadiah</h5>
+                    </div>
+                    <div class="modal-body">
+                        <h4 class="mb-3">Ayo selesaikan soalnya dan ambil hadiah ini:</h4>
+                        <table v-if="prize" class="table table-striped w-100">
+                            <thead>
+                            <tr>
+                                <th class="text-center">Ranking</th>
+                                <td></td>
+                                <th>Hadiah</th>
+                            </tr>
+                            <tr v-for="item in prize">
+                                <td align="center">{{item.rank}}</td>
+                                <td><img :src="item.img" alt="" width="50"></td>
+                                <td>{{item.prize_name}}</td>
+                            </tr>
+                            </thead>
+                        </table>
+                    </div>
+                    <div class="modal-footer">
+                        <button v-on:click="close_modal()" type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 </template>
 
@@ -116,7 +145,8 @@
             return {
                 is_loading: true,
                 list : null,
-                is_registering :false
+                is_registering :false,
+                prize : []
             }
         },
         mounted () {
@@ -224,6 +254,14 @@
                         }
                     },1000);
                 });
+            },
+            showprize(index){
+                this.prize =  this.list.session[index].prize;
+                console.log(this.list.session[index].prize);
+                $('#prize_modal').modal('show');
+            },
+            close_modal(){
+                $('#prize_modal').modal('hide');
             }
         }
     }
