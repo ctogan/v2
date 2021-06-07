@@ -65,6 +65,11 @@
             <div>
                 <form id="submit_free_session" action="/submit">
                     <input type="hidden" id="duration" name="duration" value="0">
+                    <input type="hidden" id="minute" name="minute" value="0">
+                    <input type="hidden" id="second" name="second" value="0">
+                    <input type="hidden" id="milisecond" name="milisecond" value="0">
+                    <input type="hidden" id="question_id" name="question_id" value="0">
+                    <input type="hidden" id="answer_id" name="answer_id" value="0">
                     <input type="hidden" :value="mmses" name="mmses">
                     <input type="hidden" :value="session" name="session_code">
                     <div class="list-question" v-for="item in list" :id="item.id">
@@ -77,7 +82,7 @@
                         <div class="answer">
                             <ul>
                                 <li v-for="answer in item.answer">
-                                    <input :id="answer.id" :name="'item['+item.id+'][answer]'" type="radio" :value="answer.id"><label :for="answer.id">{{ answer.answer }}</label>
+                                    <input v-on:click="save_answer(answer.id)" :id="answer.id" :name="'item['+item.id+'][answer]'" type="radio" :value="answer.id"><label :for="answer.id">{{ answer.answer }}</label>
                                 </li>
                             </ul>
                         </div>
@@ -113,7 +118,9 @@
                 arr_question : null,
                 timeout : 0,
                 progress: 0,
-                session:null
+                session:null,
+                question_id :0,
+                answer_id : 0
             }
         },
         methods:{
@@ -126,25 +133,47 @@
                             mmses: $('meta[name=usr-token]').attr('content'),
                             page: this.page,
                             session_code : $('input[name=session_code]').val(),
+                            question_id : this.question_id,
+                            answer_id : this.answer_id,
+                            minute : this.minute,
+                            second : this.second,
+                            milisecond: this.milisecond,
                         }
                     })
                     .then(response => {
-                        if(response.data.code === "202"){
-                            alert('Need Login')
+                        if(response.data.code !== 200){
+                            alertify.alert(response.data.message).setting(
+                                {
+                                    'title':'Cerdas Cermat',
+                                    'closable' :false,
+                                    'onok': function(){
+                                        window.location = '/app/cerdas-cermat'
+                                    }
+                                });
                         }
                         this.is_loading = false;
                         $('.list-question').addClass('hide');
                         this.list.push(response.data.data.question);
+                        this.question_id = response.data.data.question.id;
                         this.page +=1;
-                        this.timeout =0;
-                        this.progress =0;
+                        this.timeout=0;
+                        this.progress=0;
+                        this.answer_id=0;
+
                         this.start();
                     })
             },
             submit(){
                 this.is_submit = true;
                 this.stop();
-                $("#duration").val(this.minute + ':' + this.second);
+                $("#duration").val(this.minute + ':' + this.second + ":" + this.milisecond);
+
+                $("#question_id").val(this.question_id);
+                $("#answer_id").val(this.answer_id);
+                $("#minute").val(this.minute);
+                $("#second").val(this.second);
+                $("#milisecond").val(this.milisecond);
+
                 $("#submit_free_session").submit();
             },
             start(){
@@ -161,10 +190,13 @@
                     ms++;
 
                     if(ms === 100){
+                        self.milisecond = ms;
                         s++;
                         to++;
                         ms = 0;
                         p = p + 1.65;
+                    }else{
+                        self.milisecond = ms;
                     }
 
                     if(ms<10){
@@ -193,7 +225,6 @@
                     $('.milisecond').html(msec);
                     self.second = s;
                     self.minute = m;
-                    self.milisecond = ms;
                     self.timeout = to;
                     self.progress = p;
                     if(to === 60){
@@ -208,11 +239,14 @@
             },
             stop(){
                 clearTimeout(this.x);
+            },
+            save_answer(id){
+                this.answer_id = id;
             }
         },
         mounted () {
             axios
-                .get('/api/cerdas-cermat/question' , {
+                .get('/api/cerdas-cermat/start',{
                     params: {
                         mmses: $('meta[name=usr-token]').attr('content'),
                         session_code : $('input[name=session_code]').val(),
@@ -220,17 +254,31 @@
                     }
                 })
                 .then(response => {
-                    if(response.data.code === "202"){
-                        alert('Need Login')
+                    if(response.data.code !== 200){
+                        alertify.alert(response.data.message).setting(
+                            {
+                                'title':'Cerdas Cermat',
+                                'closable' :false,
+                                'onok': function(){
+                                    window.location = '/app/cerdas-cermat'
+                                }
+                            });
                     }
-                    this.is_loading = false;
+
                     this.page_count = response.data.data.session.displayed_question;
-                    this.list.push(response.data.data.question);
                     this.mmses = response.data.data.mmses;
                     this.session = response.data.data.session.session_code;
-                    this.page +=1;
-                    this.start();
-                });
+                    this.page = response.data.data.page;
+                    this.minute = response.data.data.minute;
+                    this.second = response.data.data.second;
+                    this.milisecond = response.data.data.milisecond;
+                    $('.minute').html(this.minute);
+                    $('.second').html(this.second);
+                    $('.milisecond').html(this.milisecond);
+
+                    this.next();
+                })
+
         }
     }
 
@@ -262,7 +310,7 @@
                                 }
                             ).set('labels', {ok:'Oke'});
                     }else{
-                        alert('Mohon maaf, sedang terjadi kesalahan teknis.');
+                        alertify.alert('Mohon maaf, sedang terjadi kesalahan teknis.').setting({'title':'Cerdas Cermat'});
                         $(".btn-submit-answer").show();
                     }
                 }

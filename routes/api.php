@@ -105,6 +105,7 @@ Route::get('cerdas-cermat/question/free', 'Api\CerdasCermatController@free_quest
 Route::post('cerdas-cermat/free/submit', 'Api\CerdasCermatController@submit_free_trial');
 Route::post('cerdas-cermat/submit', 'Api\CerdasCermatController@submit');
 Route::get('cerdas-cermat/question', 'Api\CerdasCermatController@get_question');
+Route::get('cerdas-cermat/start', 'Api\CerdasCermatController@start');
 
 //Notification
 Route::get('/notification', 'Api\NotificationController@index');

@@ -200,6 +200,13 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
@@ -224,11 +231,14 @@ __webpack_require__.r(__webpack_exports__);
 
       _this.is_loading = false;
       _this.list = response.data.data;
-    });
+    }).then();
+  },
+  updated: function updated() {
+    this.countdown();
   },
   methods: {
-    waiting: function waiting() {
-      alertify.alert('Mohon menunggu, sesi ini belum dimulai.').setting({
+    waiting: function waiting(c, p, d) {
+      alertify.alert('Mohon menunggu, sesi ini akan dimulai pada <b>' + d + '</b>').setting({
         'title': 'Cerdas Cermat'
       });
     },
@@ -257,19 +267,16 @@ __webpack_require__.r(__webpack_exports__);
             mmses: $('meta[name=usr-token]').attr('content'),
             session_code: code
           }).then(function (response) {
-            var code = response.data.code;
+            var ercode = response.data.code;
 
-            if (code === "216") {
-              alertify.alert('Point Tidak Cukup').setting({
-                'title': 'Cerdas Cermat'
-              });
-            } else if (code === '217') {
-              alertify.alert('Kamu Sudah Terdaftar. Mohon menunggu sesi ini dimulai').setting({
-                'title': 'Cerdas Cermat'
-              });
-            } else if (code === '218') {
-              alertify.alert('Sesi ini sudah berakhir').setting({
-                'title': 'Cerdas Cermat'
+            if (ercode !== 200) {
+              alertify.alert(response.data.message).setting({
+                'title': 'Cerdas Cermat',
+                'closable': false,
+                'onok': function onok() {
+                  $("#" + code + " .spinner").hide();
+                  $("#" + code + " .no-spinner").show();
+                }
               });
             } else {
               alertify.alert('Pendaftaran Berhasil').setting({
@@ -287,6 +294,31 @@ __webpack_require__.r(__webpack_exports__);
       }).set('labels', {
         cancel: 'Batalkan',
         ok: 'Ya Daftar Sekarang'
+      });
+    },
+    countdown: function countdown() {
+      $('[data-countdown]').each(function () {
+        var deadline = new Date($(this).data('countdown')).getTime();
+        var datahours = $(this).children('[data-hours]');
+        var dataminutes = $(this).children('[data-minutes]');
+        var dataseconds = $(this).children('[data-seconds]');
+        var x = setInterval(function () {
+          var now = new Date().getTime();
+          var t = deadline - now;
+          var hours = Math.floor(t % (1000 * 60 * 60 * 24) / (1000 * 60 * 60));
+          var minutes = Math.floor(t % (1000 * 60 * 60) / (1000 * 60));
+          var seconds = Math.floor(t % (1000 * 60) / 1000);
+          datahours.html(hours < 10 ? '0' + hours : hours);
+          dataminutes.html(minutes < 10 ? '0' + minutes : minutes);
+          dataseconds.html(seconds < 10 ? '0' + seconds : seconds);
+
+          if (t <= 0) {
+            clearInterval(x);
+            datahours.html(0);
+            dataminutes.html(0);
+            dataseconds.html(0);
+          }
+        }, 1000);
       });
     }
   }
@@ -811,30 +843,52 @@ var render = function() {
                           _vm._v(_vm._s(item.title))
                         ]),
                         _vm._v(" "),
-                        _c("div", { class: "timer " + item.status }, [
-                          _vm._v(
-                            _vm._s(
-                              item.status === "waiting" ? "Start" : "End"
-                            ) + " "
-                          ),
-                          _c(
-                            "span",
-                            { attrs: { id: "hour" + item.session_code } },
-                            [_vm._v("00")]
-                          ),
-                          _vm._v(":"),
-                          _c(
-                            "span",
-                            { attrs: { id: "minute" + item.session_code } },
-                            [_vm._v("00")]
-                          ),
-                          _vm._v(":"),
-                          _c(
-                            "span",
-                            { attrs: { id: "second" + item.session_code } },
-                            [_vm._v("00")]
-                          )
-                        ])
+                        _c(
+                          "div",
+                          {
+                            class: "timer " + item.status,
+                            attrs: { "data-countdown": item.countdown }
+                          },
+                          [
+                            _vm._v(
+                              _vm._s(
+                                item.status === "waiting" ? "Start" : "End"
+                              ) + "\n                        "
+                            ),
+                            _c(
+                              "span",
+                              {
+                                attrs: {
+                                  "data-hours": "00",
+                                  id: "hour" + item.session_code
+                                }
+                              },
+                              [_vm._v("00")]
+                            ),
+                            _vm._v(":\n                        "),
+                            _c(
+                              "span",
+                              {
+                                attrs: {
+                                  "data-minutes": "00",
+                                  id: "minute" + item.session_code
+                                }
+                              },
+                              [_vm._v("00")]
+                            ),
+                            _vm._v(":\n                        "),
+                            _c(
+                              "span",
+                              {
+                                attrs: {
+                                  "data-seconds": "00",
+                                  id: "second" + item.session_code
+                                }
+                              },
+                              [_vm._v("00")]
+                            )
+                          ]
+                        )
                       ]
                     ),
                     _vm._v(" "),
@@ -855,6 +909,17 @@ var render = function() {
                         _vm._m(4, true),
                         _vm._v(" "),
                         item.status === "expired"
+                          ? _c("div", [
+                              _c(
+                                "a",
+                                {
+                                  staticClass: "btn end_session",
+                                  attrs: { href: "javascript:void(0)" }
+                                },
+                                [_vm._v("Selesai")]
+                              )
+                            ])
+                          : item.participant_status === "completed"
                           ? _c("div", [
                               _c(
                                 "a",
@@ -952,7 +1017,8 @@ var render = function() {
                                     click: function($event) {
                                       return _vm.waiting(
                                         item.session_code,
-                                        item.registration_fee
+                                        item.registration_fee,
+                                        item.start_date
                                       )
                                     }
                                   }

@@ -4562,7 +4562,11 @@ var render = function() {
             _vm._l(_vm.list, function(item) {
               return _c(
                 "div",
-                { staticClass: "list-question", attrs: { id: item.id } },
+                {
+                  staticClass: "list-question",
+                  staticStyle: { "margin-top": "50px" },
+                  attrs: { id: item.id }
+                },
                 [
                   _c("div", { staticClass: "question mb-4" }, [
                     _c("p", [_vm._v("Pertanyaan:")]),

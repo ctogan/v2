@@ -38,6 +38,9 @@ class Controller extends BaseController
     protected const ERROR_INSUFFICIENT_POINT = 'Point Tidak cukup';
     protected const ERROR_CC_ALREADY_REGISTERED = 'Sudah Pernah Mendaftar';
     protected const ERROR_CC_REGISTRATION_CLOSED = 'Pendaftaran Ditutup';
+    protected const ERROR_CC_NOT_REGISTERED = 'Kamu belum mendaftar';
+    protected const ERROR_CC_SESSION_ENDED = 'Sesi telah berakhir';
+    protected const ERROR_CC_WAITING_WINNER = 'Kamu sudah menyelesaikan sesi ini. Pegumuman pemenang dilakukan diakhir sesi';
     const ERROR_USER_NOT_FOUND = 'User Not Found';
     const ERROR_USER_OTP = 'Invalid OTP';
 
@@ -64,6 +67,9 @@ class Controller extends BaseController
     protected const ERROR_CODE_INSUFFICIENT = '216';
     protected const ERROR_CODE_CC_ALREADY_REGISTERED = '217';
     protected const ERROR_CODE_CC_REGISTRATION_CLOSED = '218';
+    protected const ERROR_CODE_CC_NOT_REGISTRERED = '219';
+    protected const ERROR_CODE_CC_SESSION_ENDED = '220';
+    protected const ERROR_CODE_CC_WAITING_WINNER = '221';
 
 
     // MESAAGE

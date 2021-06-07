@@ -23,11 +23,9 @@ class CerdasCermatController extends Controller
 
     public function start(Request $request){
         $session = CCSession::where('session_code','=', $request->code)->first();
-//        $question = CCSessionQuestion::where('cc_session_id','=',$session->id)->get();
 
         $data = [
             'session' => $session,
-//            'question' => $question,
         ];
 
         return view('webapp.cerdas-cermat.start', $data);

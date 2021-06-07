@@ -46,7 +46,7 @@ class NewsController extends ApiController
         $latest = null;
 
         if($page == 1){
-            $latest = Cache::tags('news')->remember('__latest_news_list'.$page,3600, function (){
+            $latest = Cache::remember('__latest_news_list'.$page,3600, function (){
                 return News::select('id','title','url_to_image','reward','news_code')
                     ->withCount('news_read')
                     ->where('row_status','=','active')
@@ -55,7 +55,7 @@ class NewsController extends ApiController
                     ->get();
             });
         }
-        $news = Cache::tags('news')->remember('__news_list5'.$page,3600, function (){
+        $news = Cache::remember('__news_list5'.$page,3600, function (){
             return News::select('id','title','url_to_image','reward','news_code')
                 ->withCount('news_read')
                 ->where('row_status','=','active')
@@ -111,7 +111,7 @@ class NewsController extends ApiController
         $code = $request->news_code;
         $uid = $user->uid;
 
-        $news = Cache::tags('news')->remember('__news_detail5'.$code, 3600, function () use ($code, $uid){
+        $news = Cache::remember('__news_detail5'.$code, 3600, function () use ($code, $uid){
             $objNews = News::where('news_code','=',$code)->first();
             if($objNews){
                 $objNewsRead = NewsRead::where('uid','=',$uid)->where('id_news','=',$objNews->id)->first();
@@ -127,7 +127,7 @@ class NewsController extends ApiController
             return $this->errorResponse(static::ERROR_NOT_FOUND,static::ERROR_CODE_NOT_FOUND);
         }
 
-        $recommendation = Cache::tags('news')->remember('__recommendation_news_list',3600, function (){
+        $recommendation = Cache::remember('__recommendation_news_list',3600, function (){
             return News::select('id','title','url_to_image','reward','news_code')
                 ->withCount('news_read')
                 ->where('row_status','=','active')
@@ -191,7 +191,7 @@ class NewsController extends ApiController
         }
 
         $news_code = $request->news_code;
-        $news = Cache::tags('news')->remember('__news_'.$news_code,3600, function () use ($news_code){
+        $news = Cache::remember('__news_'.$news_code,3600, function () use ($news_code){
             return News::where('row_status','=','active')
                 ->where('news_code','=',$news_code)
                 ->first();
@@ -203,7 +203,7 @@ class NewsController extends ApiController
 
         $news_id = $news->id;
         $uid = $user->uid;
-        $news_read = Cache::tags('news_point')->rememberForever('__news_point_'.$news_code.$user->uid, function () use ($news_id, $uid){
+        $news_read = Cache::rememberForever('__news_point_'.$news_code.$user->uid, function () use ($news_id, $uid){
             return NewsRead::where('id_news','=',$news_id)
                 ->where('uid','=',$uid)->first();
         });
