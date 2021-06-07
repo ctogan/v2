@@ -1,3 +1,6 @@
+<<<<<<< HEAD
+{}
+=======
 {
     "/js/app.js": "/js/app.js",
     "/css/app.css": "/css/app.css",
@@ -6,3 +9,4 @@
     "/js/webapp/cerdascermathistory.js": "/js/webapp/cerdascermathistory.js",
     "/js/webapp/cerdascermatstart.js": "/js/webapp/cerdascermatstart.js"
 }
+>>>>>>> 841cf3e5224bcef46cb379c6a536ee259bb3e078
