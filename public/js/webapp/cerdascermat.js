@@ -207,12 +207,42 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
       is_loading: true,
       list: null,
-      is_registering: false
+      is_registering: false,
+      prize: []
     };
   },
   mounted: function mounted() {
@@ -320,6 +350,14 @@ __webpack_require__.r(__webpack_exports__);
           }
         }, 1000);
       });
+    },
+    showprize: function showprize(index) {
+      this.prize = this.list.session[index].prize;
+      console.log(this.list.session[index].prize);
+      $('#prize_modal').modal('show');
+    },
+    close_modal: function close_modal() {
+      $('#prize_modal').modal('hide');
     }
   }
 });
@@ -830,7 +868,7 @@ var render = function() {
             ? _c(
                 "ul",
                 { staticClass: "session-list" },
-                _vm._l(_vm.list.session, function(item) {
+                _vm._l(_vm.list.session, function(item, index) {
                   return _c("li", [
                     _c(
                       "div",
@@ -906,7 +944,21 @@ var render = function() {
                           "d-flex justify-content-between align-items-center"
                       },
                       [
-                        _vm._m(4, true),
+                        _c("div", [
+                          _c(
+                            "a",
+                            {
+                              staticClass: "more",
+                              attrs: { href: "javascript:void(0)" },
+                              on: {
+                                click: function($event) {
+                                  return _vm.showprize(index)
+                                }
+                              }
+                            },
+                            [_vm._v("Lihat Hadiah")]
+                          )
+                        ]),
                         _vm._v(" "),
                         item.status === "expired"
                           ? _c("div", [
@@ -950,7 +1002,7 @@ var render = function() {
                                   }
                                 },
                                 [
-                                  _vm._m(5, true),
+                                  _vm._m(4, true),
                                   _vm._v(" "),
                                   _c("div", { staticClass: "no-spinner" }, [
                                     _vm._v(
@@ -996,7 +1048,7 @@ var render = function() {
                                   }
                                 },
                                 [
-                                  _vm._m(6, true),
+                                  _vm._m(5, true),
                                   _vm._v(" "),
                                   _c("div", { staticClass: "no-spinner" }, [
                                     _vm._v(
@@ -1035,9 +1087,78 @@ var render = function() {
               )
             : _vm._e(),
           _vm._v(" "),
-          _vm._m(7)
+          _vm._m(6)
         ])
-      : _vm._e()
+      : _vm._e(),
+    _vm._v(" "),
+    _c(
+      "div",
+      {
+        staticClass: "modal",
+        attrs: { id: "prize_modal", tabindex: "-1", role: "dialog" }
+      },
+      [
+        _c(
+          "div",
+          { staticClass: "modal-dialog", attrs: { role: "document" } },
+          [
+            _c("div", { staticClass: "modal-content" }, [
+              _vm._m(7),
+              _vm._v(" "),
+              _c("div", { staticClass: "modal-body" }, [
+                _c("h4", { staticClass: "mb-3" }, [
+                  _vm._v("Ayo selesaikan soalnya dan ambil hadiah ini:")
+                ]),
+                _vm._v(" "),
+                _vm.prize
+                  ? _c("table", { staticClass: "table table-striped w-100" }, [
+                      _c(
+                        "thead",
+                        [
+                          _vm._m(8),
+                          _vm._v(" "),
+                          _vm._l(_vm.prize, function(item) {
+                            return _c("tr", [
+                              _c("td", { attrs: { align: "center" } }, [
+                                _vm._v(_vm._s(item.rank))
+                              ]),
+                              _vm._v(" "),
+                              _c("td", [
+                                _c("img", {
+                                  attrs: { src: item.img, alt: "", width: "50" }
+                                })
+                              ]),
+                              _vm._v(" "),
+                              _c("td", [_vm._v(_vm._s(item.prize_name))])
+                            ])
+                          })
+                        ],
+                        2
+                      )
+                    ])
+                  : _vm._e()
+              ]),
+              _vm._v(" "),
+              _c("div", { staticClass: "modal-footer" }, [
+                _c(
+                  "button",
+                  {
+                    staticClass: "btn btn-secondary",
+                    attrs: { type: "button", "data-dismiss": "modal" },
+                    on: {
+                      click: function($event) {
+                        return _vm.close_modal()
+                      }
+                    }
+                  },
+                  [_vm._v("Close")]
+                )
+              ])
+            ])
+          ]
+        )
+      ]
+    )
   ])
 }
 var staticRenderFns = [
@@ -1130,16 +1251,6 @@ var staticRenderFns = [
     var _vm = this
     var _h = _vm.$createElement
     var _c = _vm._self._c || _h
-    return _c("div", [
-      _c("a", { staticClass: "more", attrs: { href: "javascript:void(0)" } }, [
-        _vm._v("Lihat Hadiah")
-      ])
-    ])
-  },
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
     return _c(
       "div",
       {
@@ -1170,6 +1281,26 @@ var staticRenderFns = [
       _c("a", { attrs: { href: "/app/cerdas-cermat/free" } }, [
         _vm._v("Coba Secara GRATIS")
       ])
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("div", { staticClass: "modal-header" }, [
+      _c("h5", { staticClass: "modal-title" }, [_vm._v("Daftar Hadiah")])
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("tr", [
+      _c("th", { staticClass: "text-center" }, [_vm._v("Ranking")]),
+      _vm._v(" "),
+      _c("td"),
+      _vm._v(" "),
+      _c("th", [_vm._v("Hadiah")])
     ])
   }
 ]
