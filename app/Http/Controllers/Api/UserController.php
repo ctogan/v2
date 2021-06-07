@@ -72,7 +72,7 @@ class UserController extends ApiController
             $updateUserTargetInfo = UserTargetInfo::where('uid', $user->uid)->update([
                 'locale' => $request->lc,
                 'device_name' => $request->dvc,
-                'opcode' => $request->op,
+                'opcode' => $request->opcode,
                 'osver' => $request->ov,
                 'appver' => $request->av,
                 'resw' => $request->resw,
@@ -157,6 +157,7 @@ class UserController extends ApiController
         $validation = Validator::make($request->all(), [
             'enc' => 'required',
             'ov' => 'required',
+            'opcode' => 'required',
             'av' => 'required',
             'lc' => 'required',
             'phone_number' => 'required',
@@ -199,7 +200,7 @@ class UserController extends ApiController
 
             $userTargetInfo->locale = $request->lc;
             $userTargetInfo->device_name = $request->dvc;
-            $userTargetInfo->opcode = $request->op;
+            $userTargetInfo->opcode = $request->opcode;
             $userTargetInfo->osver = $request->ov;
             $userTargetInfo->appver = $request->resw;
             $userTargetInfo->resw = $request->resh;
@@ -257,7 +258,119 @@ class UserController extends ApiController
      *   summary="register",
      *   tags={"auth"},
      *     @OA\Parameter(
+     *          name="anid",
+     *          required=true,
+     *          in="query",
+     *          @OA\Schema(
+     *              type="string"
+     *          )
+     *     ),
+     *     @OA\Parameter(
+     *          name="imei",
+     *          required=true,
+     *          in="query",
+     *          @OA\Schema(
+     *              type="string"
+     *          )
+     *     ),
+     *     @OA\Parameter(
+     *          name="gaid",
+     *          required=true,
+     *          in="query",
+     *          @OA\Schema(
+     *              type="string"
+     *          )
+     *     ),
+     *     @OA\Parameter(
+     *          name="give_name",
+     *          required=true,
+     *          in="query",
+     *          @OA\Schema(
+     *              type="string"
+     *          )
+     *     ),
+     *     @OA\Parameter(
+     *          name="family_name",
+     *          required=true,
+     *          in="query",
+     *          @OA\Schema(
+     *              type="string"
+     *          )
+     *     ),
+     *     @OA\Parameter(
+     *          name="display_name",
+     *          required=true,
+     *          in="query",
+     *          @OA\Schema(
+     *              type="string"
+     *          )
+     *     ),
+     *     @OA\Parameter(
      *          name="email",
+     *          required=true,
+     *          in="query",
+     *          @OA\Schema(
+     *              type="string"
+     *          )
+     *     ),
+     *     @OA\Parameter(
+     *          name="id",
+     *          required=true,
+     *          in="query",
+     *          @OA\Schema(
+     *              type="string"
+     *          )
+     *     ),
+     *     @OA\Parameter(
+     *          name="opcode",
+     *          required=true,
+     *          in="query",
+     *          @OA\Schema(
+     *              type="string"
+     *          )
+     *     ),
+     *     @OA\Parameter(
+     *          name="ov",
+     *          required=true,
+     *          in="query",
+     *          @OA\Schema(
+     *              type="string"
+     *          )
+     *     ),
+     *     @OA\Parameter(
+     *          name="av",
+     *          required=true,
+     *          in="query",
+     *          @OA\Schema(
+     *              type="string"
+     *          )
+     *     ),
+     *     @OA\Parameter(
+     *          name="resw",
+     *          required=true,
+     *          in="query",
+     *          @OA\Schema(
+     *              type="string"
+     *          )
+     *     ),
+     *     @OA\Parameter(
+     *          name="resh",
+     *          required=true,
+     *          in="query",
+     *          @OA\Schema(
+     *              type="string"
+     *          )
+     *     ),
+     *     @OA\Parameter(
+     *          name="lat",
+     *          required=true,
+     *          in="query",
+     *          @OA\Schema(
+     *              type="string"
+     *          )
+     *     ),
+     *     @OA\Parameter(
+     *          name="lng",
      *          required=true,
      *          in="query",
      *          @OA\Schema(
@@ -340,7 +453,7 @@ class UserController extends ApiController
                     'uid' => $uid,
                     'tm_target_changed' => date("Y-m-d H:i:s"),
                     'locale' => 'id',
-                    'opcode' => $request->op,
+                    'opcode' => $request->opcode,
                     'osver' => $request->ov,
                     'appver' => $request->av,
                     'resw' => $request->resw,
