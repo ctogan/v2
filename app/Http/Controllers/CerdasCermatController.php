@@ -319,7 +319,6 @@ class CerdasCermatController extends Controller
             return json_encode(['status'=> false, 'message'=> $this->single_message($e->getMessage())]);
         }
 
-        $this->forget_cache_tag('__question');
         return json_encode(['status'=> true, 'message'=> "Success"]);
     }
 
@@ -403,7 +402,6 @@ class CerdasCermatController extends Controller
             return json_encode(['status'=> false, 'message'=> $this->single_message($e->getMessage())]);
         }
 
-        $this->forget_cache_tag('__question');
         return json_encode(['status'=> true, 'message'=> "Success"]);
     }
 
@@ -492,4 +490,5 @@ class CerdasCermatController extends Controller
 
         return $this->data_table($query);
     }
+
 }
