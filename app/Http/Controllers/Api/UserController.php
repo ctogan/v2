@@ -191,22 +191,21 @@ class UserController extends ApiController
             $userTargetInfo = UserTargetInfo::where('uid', $user->uid)->first();
 
             $ses = substr(md5(microtime()), 0, 20);
-            $updateUser = UserApp::where('uid', $user->uid)->update([
-                'gaid' => $request->gaid,
-                'imei' => $request->imei,
-                'anid' => $request->anid,
-            ]);
-            $updateUserTargetInfo = UserTargetInfo::where('uid', $user->uid)->update([
-                'locale' => $request->lc,
-                'device_name' => $request->dvc,
-                'opcode' => $request->op,
-                'osver' => $request->ov,
-                'appver' => $request->av,
-                'resw' => $request->resw,
-                'resh' => $request->resh,
-                'lat' => $request->lat,
-                'lng' => $request->lng
-            ]);
+
+//            $updateUser->gaid = $request->gaid;
+//            $updateUser->imei = $request->imei;
+//            $updateUser->anid = $request->anid;
+//            $updateUser->save();
+//
+//            $userTargetInfo->locale = $request->lc;
+//            $userTargetInfo->device_name = $request->dvc;
+//            $userTargetInfo->opcode = $request->op;
+//            $userTargetInfo->osver = $request->ov;
+//            $userTargetInfo->appver = $request->resw;
+//            $userTargetInfo->resw = $request->resh;
+//            $userTargetInfo->resh = $request->lat;
+//            $userTargetInfo->lat = $request->lng;
+//            $userTargetInfo->save();
 
             $userTime->ses = $ses;
             $userTime->last_ip = ip2long($request->getClientIp());
