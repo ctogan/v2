@@ -430,14 +430,27 @@ class CerdasCermatController extends ApiController
     }
 
     public function history(Request $request){
-        $user = $this->user;
-        $session = CCParticipant::where('uid','=',$user->uid)
-            ->with('session')
-            ->with('session.prize')
-            ->orderBy('id','desc')
-            ->take(10)
+        $uid = $this->user->uid;
+//        $session = CCParticipant::where('uid','=',$user->uid)
+//            ->with('session')
+//            ->with('session.prize')
+//            ->orderBy('id','desc')
+//            ->take(10)
+//            ->get();
+
+        $session = CCSession::where('cc_session.row_status','=','active')
+            ->join('cc_participant','cc_participant.cc_session_id','=','cc_session.id')
+            ->where('open_date', '>=', date('Y-m-d'))
+            ->with(['participant' => function ($q) use ($uid){
+                $q->where('uid' , $uid);
+            }])
+            ->with('prize')
+            ->where('cc_participant.uid','=',$uid)
+            ->select('cc_session.*')
             ->get();
 
-        return $this->successResponse($session);
+        $response['session'] = CCSessionResource::collection($session);
+
+        return $this->successResponse($response);
     }
 }

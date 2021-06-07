@@ -48,16 +48,16 @@
         <div v-if="!is_loading">
             <h3 class="mb-3">Daftar Cerdas Cermat yang kamu ikuti</h3>
             <ul  class="session-list">
-                <li v-for="(item,index) in list">
+                <li v-for="(item,index) in list.session">
                     <div class="d-flex justify-content-between align-items-center">
-                        <div class="session-name">{{item.session.title}}</div>
+                        <div class="session-name">{{item.title}}</div>
                         <!--<div :data-countdown="item.countdown" :class="'timer ' + item.status">{{item.status === 'waiting' ? 'Start' : 'End'}}-->
                             <!--<span data-hours="00" :id="'hour'+item.session_code">00</span>:-->
                             <!--<span data-minutes="00" :id="'minute'+item.session_code">00</span>:-->
                             <!--<span data-seconds="00" :id="'second'+item.session_code">00</span>-->
                         <!--</div>-->
                     </div>
-                    <p class="reg-info">Registrasi Poin : <span class="orange">{{item.session.registration_fee}} P</span></p>
+                    <p class="reg-info">Registrasi Poin : <span class="orange">{{item.registration_fee}} P</span></p>
                     <div class="d-flex justify-content-between align-items-center">
                         <div>
                             <a v-on:click="showprize(index)" class="more" href="javascript:void(0)">Lihat Hadiah</a>
@@ -95,15 +95,11 @@
                             <!--<a v-on:click="waiting(item.session_code, item.registration_fee, item.start_date)" class="btn open" href="javascript:void(0)">Mulai</a>-->
                         <!--</div>-->
                         <div>
-                            <a v-on:click="waiting(item.session_code, item.registration_fee, item.start_date)" class="btn open" href="javascript:void(0)">Result</a>
+                            <a v-on:click="waiting(item.session_code, item.registration_fee, item.start_date)" class="btn open" href="javascript:void(0)">Lihat Hasil</a>
                         </div>
                     </div>
                 </li>
             </ul>
-
-            <div class="btn-footer">
-                <a href="/app/cerdas-cermat/free">Coba Secara GRATIS</a>
-            </div>
         </div>
 
         <div id="prize_modal" class="modal" tabindex="-1" role="dialog">
@@ -113,7 +109,7 @@
                         <h5 class="modal-title">Daftar Hadiah</h5>
                     </div>
                     <div class="modal-body">
-                        <h4 class="mb-3">Ayo selesaikan soalnya dan ambil hadiah ini:</h4>
+                        <h4 class="mb-3">Hadiah dari sesi ini adalah :</h4>
                         <table v-if="prize" class="table table-striped w-100">
                             <thead>
                             <tr>
@@ -163,97 +159,10 @@
                     this.list = response.data.data;
                 })
         },
-        updated(){
-            this.countdown()
-        },
         methods:{
-            waiting(c, p, d){
-                alertify.alert('Mohon menunggu, sesi ini akan dimulai pada <b>'+ d +'</b>').setting({'title':'Cerdas Cermat'});
-            },
-            start(code){
-                alertify.confirm('Kamu sudah siap? Waktu akan dimulai setelah memilih <b>Mulai</b>.')
-                    .setting(
-                        {
-                            'autoReset' :false,
-                            'title':'Mulai Cerdas Cermat',
-                            'closable' :false,
-                            'onok': function(){
-                                window.location = '/app/cerdas-cermat/start/'+code;
-                            }
-                        }
-                    ).set('labels', {cancel:'Batalkan', ok:'Mulai'});
-            },
-            register(code, point) {
-                $("#"+code+" .spinner").show();
-                $("#"+code+" .no-spinner").hide();
-                alertify.confirm("Point yang dibutuhan untuk mengikuti event ini <b>" + point + "P</b>. Apakah kamu bersedia?")
-                    .setting(
-                        {
-                            'autoReset': false,
-                            'title': 'Pendaftaran',
-                            'closable': false,
-                            'onok': function () {
-                                axios
-                                    .post('/api/cerdas-cermat/register' , {
-                                        mmses: $('meta[name=usr-token]').attr('content'),
-                                        session_code : code
-                                    })
-                                    .then(response => {
-                                        let ercode = response.data.code;
-                                        if(ercode !== 200){
-                                            alertify.alert(response.data.message).setting(
-                                                {
-                                                    'title':'Cerdas Cermat',
-                                                    'closable' :false,
-                                                    'onok': function(){
-                                                        $("#"+code+" .spinner").hide();
-                                                        $("#"+code+" .no-spinner").show();
-                                                    }
-                                                });
-                                        } else{
-                                            alertify.alert('Pendaftaran Berhasil').setting({'title':'Cerdas Cermat'});;
-                                            location.reload();
-                                        }
-                                    })
-                            },
-                            'oncancel':function () {
-                                $("#"+code+" .spinner").hide();
-                                $("#"+code+" .no-spinner").show();
-                            }
-                        }
-                    ).set('labels', {cancel: 'Batalkan', ok: 'Ya Daftar Sekarang'});
-            },
-            countdown(){
-                $('[data-countdown]').each(function () {
-                    var deadline =  new Date($(this).data('countdown')).getTime();
-
-                    var datahours = $(this).children('[data-hours]');
-                    var dataminutes = $(this).children('[data-minutes]');
-                    var dataseconds = $(this).children('[data-seconds]');
-
-                    var x = setInterval(function () {
-                        var now = new Date().getTime();
-                        var t = deadline - now;
-
-                        var hours = Math.floor(t%(1000*60*60*24) / (1000*60*60));
-                        var minutes = Math.floor(t%(1000*60*60) / (1000*60));
-                        var seconds = Math.floor(t%(1000*60) / (1000));
-
-                        datahours.html(hours < 10 ? '0'+hours:hours);
-                        dataminutes.html(minutes < 10 ? '0'+minutes:minutes);
-                        dataseconds.html(seconds < 10 ? '0'+seconds:seconds);
-
-                        if(t <= 0){
-                            clearInterval(x);
-                            datahours.html(0);
-                            dataminutes.html(0);
-                            dataseconds.html(0);
-                        }
-                    },1000);
-                });
-            },
             showprize(index){
-                this.prize =  this.list[index].session.prize;
+                this.prize =  this.list.session[index].prize;
+                console.log(this.prize);
                 $('#prize_modal').modal('show');
             },
             close_modal(){
