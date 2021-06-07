@@ -428,4 +428,16 @@ class CerdasCermatController extends ApiController
 
         return $this->successResponse($data);
     }
+
+    public function history(Request $request){
+        $user = $this->user;
+        $session = CCParticipant::where('uid','=',$user->uid)
+            ->with('session')
+            ->with('session.prize')
+            ->orderBy('id','desc')
+            ->take(10)
+            ->get();
+
+        return $this->successResponse($session);
+    }
 }
