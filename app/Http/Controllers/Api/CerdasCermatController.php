@@ -4,11 +4,14 @@ namespace App\Http\Controllers\Api;
 
 use App\CCAnswer;
 use App\CCParticipant;
+use App\CCParticipantDetail;
 use App\CCQuestion;
 use App\CCSession;
+use App\CCSessionQuestion;
 use App\Http\Resources\CCSessionResource;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Validator;
 
 class CerdasCermatController extends ApiController
@@ -34,9 +37,10 @@ class CerdasCermatController extends ApiController
      */
     public function index(Request $request){
         $uid = $this->user->uid;
+
         $session = CCSession::where('row_status','=','active')
             ->where('open_date', '>=', date('Y-m-d'))
-            ->withCount(['participant' => function ($q) use ($uid){
+            ->with(['participant' => function ($q) use ($uid){
                 $q->where('uid' , $uid);
             }])
             ->with('prize')
@@ -161,8 +165,8 @@ class CerdasCermatController extends ApiController
             return $this->errorResponse(static::ERROR_CC_ALREADY_REGISTERED,static::ERROR_CODE_CC_ALREADY_REGISTERED);
         }
 
-        $point = $user->total_use - $user->total_earn;
-        if($session->point > $point){
+        $point = $user->total_earn - $user->total_use;
+        if($session->registration_fee > $point){
             return $this->errorResponse(static::ERROR_INSUFFICIENT_POINT,static::ERROR_CODE_INSUFFICIENT);
         }
 
@@ -183,6 +187,8 @@ class CerdasCermatController extends ApiController
 
         CCParticipant::insert($data);
         $response['session'] = CCSessionResource::collection(array($session));
+
+        Cache::forget('_list_session_'.$user->uid);
 
         return $this->successResponse($response);
     }
@@ -230,6 +236,195 @@ class CerdasCermatController extends ApiController
             'correct' => $score,
             'wrong' => 10 - $score
         ];
+
+        return $this->successResponse($data);
+    }
+
+    public function start(Request $request){
+        $user = $this->user;
+        $today = Carbon::now();
+        $validation = Validator::make($request->all(), [
+            'session_code' => 'required'
+        ]);
+
+        if ($validation->fails()) {
+            return $this->errorResponse($validation->errors(),static::CODE_ERROR_VALIDATION);
+        }
+
+        $session = CCSession::where('session_code','=',$request->session_code)->first();
+        if(!$session){
+            return $this->errorResponse(static::ERROR_NOT_FOUND,static::ERROR_CODE_NOT_FOUND);
+        }
+
+        $participant = CCParticipant::where('cc_session_id','=',$session->id)->where('uid','=',$user->uid)->first();
+        if(!$participant){
+            return $this->errorResponse(static::ERROR_CC_NOT_REGISTERED,static::ERROR_CODE_CC_NOT_REGISTRERED);
+        }
+
+        if($participant->row_status == 'completed'){
+            return $this->errorResponse(static::ERROR_CC_WAITING_WINNER,static::ERROR_CODE_CC_WAITING_WINNER);
+        }
+
+        $start = Carbon::parse(date_format(date_create($session->open_date .' '. $session->time_end),"Y-m-d H:i"));
+        if($today->gte($start)){
+            return $this->errorResponse(static::ERROR_CC_SESSION_ENDED, static::ERROR_CODE_CC_SESSION_ENDED);
+        }
+
+        $minute = 0;
+        $second = 0;
+        $milisecond =0;
+        $page =0;
+        if($participant->row_status == 'pending'){
+            $participant->time_start = date('Y-m-d h:m:s');
+            $participant->row_status = 'active';
+            $participant->save();
+        }else{
+            $detail = CCParticipantDetail::where('cc_participant_id','=',$participant->id)->count();
+            $page = $detail+1;
+            $duration = $participant->duration;
+            if($duration != null){
+                $arr = explode(':', $duration);
+                $minute = (int)$arr[0];
+                $second = (int)$arr[1];
+                $milisecond = (int)$arr[2];
+            }
+        }
+
+        $data = [
+            'mmses'=>$request->mmses,
+            'session' =>$session,
+            'page' => $page,
+            'minute' => $minute,
+            'second' => $second,
+            'milisecond' => $milisecond
+        ];
+
+        return $this->successResponse($data);
+    }
+
+    public function get_question(Request $request){
+        $uid = $this->user->uid;
+        $session = CCSession::where('row_status','=','active')
+            ->where('open_date', '>=', date('Y-m-d'))
+            ->where('session_code','=',$request->session_code)
+            ->first();
+
+        $key = '_list_question_'.$uid.$session->session_code;
+        $question  = Cache::get($key);
+        if(!$question){
+            $question = CCSessionQuestion::inRandomOrder()
+                ->with('question')
+                ->with('question.answer')
+                ->take($session->displayed_question)
+                ->where('cc_session_id','=',$session->id)
+                ->get();
+
+            Cache::put($key, $question);
+        }
+
+        $q = [];
+        foreach ($question as $item){
+            array_push($q, $item->question);
+        }
+
+        if($request->question_id > 0){
+            $participant = CCParticipant::where('cc_session_id','=',$session->id)->where('uid','=',$uid)->first();
+            $answer_id = 0;
+            $score = 0;
+            if($request->answer_id > 0){
+                $answer = CCAnswer::where('cc_question_id','=', $request->question_id)
+                    ->where('id','=', $request->answer_id)
+                    ->first();
+
+                if($answer){
+                    $answer_id = $answer->id;
+                    if($answer->is_correct_answer){
+                        $score=1;
+                    }
+                }
+            }
+
+            $data = [
+                'cc_participant_id' =>$participant->id,
+                'question_id' => $request->question_id,
+                'answer_id' => $answer_id,
+                'score' => $score,
+                'answer_date' => date('Y-m-d h:m:s')
+            ];
+
+            CCParticipantDetail::insert($data);
+            $participant->score = $participant->score + $score;
+            $participant->time_end = date('Y-m-d h:m:s');
+            $participant->duration = $request->minute .':'.$request->second .':' .$request->milisecond;
+
+            $participant->save();
+        }
+
+        $data = [
+            'key'=>$key,
+            'mmses'=>$request->mmses,
+            'session' =>$session,
+            'question' => $q[$request->page]
+        ];
+
+        return $this->successResponse($data);
+    }
+
+    public function submit(Request $request){
+        $uid = $this->user->uid;
+
+        $validation = Validator::make($request->all(), [
+            'session_code' => 'required'
+        ]);
+
+        if ($validation->fails()) {
+            return $this->errorResponse($validation->errors(),static::CODE_ERROR_VALIDATION);
+        }
+
+        $session = CCSession::where('row_status','=','active')
+            ->where('open_date', '>=', date('Y-m-d'))
+            ->where('session_code','=',$request->session_code)
+            ->first();
+
+        $participant = CCParticipant::where('cc_session_id','=',$session->id)->where('uid','=',$uid)->first();
+        $answer_id = 0;
+        $score = 0;
+        if($request->answer_id > 0){
+            $answer = CCAnswer::where('cc_question_id','=', $request->question_id)
+                ->where('id','=', $request->answer_id)
+                ->first();
+
+            if($answer){
+                $answer_id = $answer->id;
+                if($answer->is_correct_answer){
+                    $score=1;
+                }
+            }
+        }
+
+        $data = [
+            'cc_participant_id' =>$participant->id,
+            'question_id' => $request->question_id,
+            'answer_id' => $answer_id,
+            'score' => $score,
+            'answer_date' => date('Y-m-d h:m:s')
+        ];
+
+        CCParticipantDetail::insert($data);
+        $participant->score = $participant->score + $score;
+        $participant->time_end = date('Y-m-d h:m:s');
+        $participant->duration = $request->minute .':'.$request->second .':' .$request->milisecond;
+        $participant->row_status = 'completed';
+        $participant->save();
+
+        $data = [
+            'correct' => $participant->score,
+            'wrong' => $session->displayed_question - $participant->score,
+            'duration' => $request->duration
+        ];
+
+        $key = '_list_question_'.$uid.$session->session_code;
+        Cache::forget($key);
 
         return $this->successResponse($data);
     }

@@ -3855,71 +3855,206 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
       is_loading: true,
       page: 0,
       page_count: 10,
-      list: null,
+      list: [],
       mmses: null,
-      is_submit: false
+      is_submit: false,
+      minute: 0,
+      second: 0,
+      milisecond: 0,
+      x: null,
+      arr_question: null,
+      timeout: 0,
+      progress: 0,
+      session: null,
+      question_id: 0,
+      answer_id: 0
     };
-  },
-  mounted: function mounted() {
-    var _this = this;
-
-    axios.get('/api/cerdas-cermat/question/free', {
-      params: {
-        mmses: $('meta[name=usr-token]').attr('content'),
-        page: this.page
-      }
-    }).then(function (response) {
-      if (response.data.code === "202") {
-        alert('Need Login');
-      }
-
-      _this.is_loading = false;
-      _this.page += 1;
-      _this.list = response.data.data.question;
-      _this.mmses = response.data.data.mmses;
-    });
   },
   methods: {
     next: function next() {
-      var _this2 = this;
+      var _this = this;
 
+      this.stop();
       this.is_loading = true;
-      axios.get('/api/cerdas-cermat/question/free', {
+      axios.get('/api/cerdas-cermat/question', {
         params: {
           mmses: $('meta[name=usr-token]').attr('content'),
-          page: this.page
+          page: this.page,
+          session_code: $('input[name=session_code]').val(),
+          question_id: this.question_id,
+          answer_id: this.answer_id,
+          minute: this.minute,
+          second: this.second,
+          milisecond: this.milisecond
         }
       }).then(function (response) {
-        if (response.data.code === "202") {
-          alert('Need Login');
+        if (response.data.code !== 200) {
+          alertify.alert(response.data.message).setting({
+            'title': 'Cerdas Cermat',
+            'closable': false,
+            'onok': function onok() {
+              window.location = '/app/cerdas-cermat';
+            }
+          });
         }
 
-        _this2.is_loading = false;
-        _this2.page += 1;
-        var datas = _this2.list;
+        _this.is_loading = false;
         $('.list-question').addClass('hide');
-        $.each(response.data.data.question, function (key, value) {
-          datas.push(value);
-        });
+
+        _this.list.push(response.data.data.question);
+
+        _this.question_id = response.data.data.question.id;
+        _this.page += 1;
+        _this.timeout = 0;
+        _this.progress = 0;
+        _this.answer_id = 0;
+
+        _this.start();
       });
     },
     submit: function submit() {
       this.is_submit = true;
+      this.stop();
+      $("#duration").val(this.minute + ':' + this.second + ":" + this.milisecond);
+      $("#question_id").val(this.question_id);
+      $("#answer_id").val(this.answer_id);
+      $("#minute").val(this.minute);
+      $("#second").val(this.second);
+      $("#milisecond").val(this.milisecond);
       $("#submit_free_session").submit();
+    },
+    start: function start() {
+      var self = this;
+      var ms = this.milisecond;
+      var s = this.second;
+      var m = this.minute;
+      var to = this.timeout;
+      var p = this.progress;
+      this.x = setInterval(function () {
+        var msec = '00';
+        var sec = '00';
+        var min = '00';
+        ms++;
+
+        if (ms === 100) {
+          self.milisecond = ms;
+          s++;
+          to++;
+          ms = 0;
+          p = p + 1.65;
+        } else {
+          self.milisecond = ms;
+        }
+
+        if (ms < 10) {
+          msec = '0' + ms;
+        } else {
+          msec = ms;
+        }
+
+        if (s < 10) {
+          sec = '0' + s;
+        } else {
+          sec = s;
+        }
+
+        if (s === 60) {
+          s = 0;
+          m++;
+
+          if (m < 10) {
+            min = '0' + m;
+          } else {
+            min = m;
+          }
+
+          $('.minute').html(min);
+          sec = '00';
+        }
+
+        $('.second').html(sec);
+        $('.milisecond').html(msec);
+        self.second = s;
+        self.minute = m;
+        self.timeout = to;
+        self.progress = p;
+
+        if (to === 60) {
+          if (self.page !== self.page_count) {
+            self.next();
+            self.progress = 0;
+          } else {
+            self.submit();
+          }
+        }
+      }, 10);
+    },
+    stop: function stop() {
+      clearTimeout(this.x);
+    },
+    save_answer: function save_answer(id) {
+      this.answer_id = id;
     }
+  },
+  mounted: function mounted() {
+    var _this2 = this;
+
+    axios.get('/api/cerdas-cermat/start', {
+      params: {
+        mmses: $('meta[name=usr-token]').attr('content'),
+        session_code: $('input[name=session_code]').val(),
+        page: this.page
+      }
+    }).then(function (response) {
+      if (response.data.code !== 200) {
+        alertify.alert(response.data.message).setting({
+          'title': 'Cerdas Cermat',
+          'closable': false,
+          'onok': function onok() {
+            window.location = '/app/cerdas-cermat';
+          }
+        });
+      }
+
+      _this2.page_count = response.data.data.session.displayed_question;
+      _this2.mmses = response.data.data.mmses;
+      _this2.session = response.data.data.session.session_code;
+      _this2.page = response.data.data.page;
+      _this2.minute = response.data.data.minute;
+      _this2.second = response.data.data.second;
+      _this2.milisecond = response.data.data.milisecond;
+      $('.minute').html(_this2.minute);
+      $('.second').html(_this2.second);
+      $('.milisecond').html(_this2.milisecond);
+
+      _this2.next();
+    });
   }
 });
 $(document).ready(function () {
   $('#submit_free_session').on('submit', function (event) {
     event.preventDefault();
     $.ajax({
-      url: '/api/cerdas-cermat/free/submit',
+      url: '/api/cerdas-cermat/submit',
       method: "POST",
       async: true,
       data: new FormData(this),
@@ -3929,21 +4064,19 @@ $(document).ready(function () {
       success: function success(response) {
         if (response.code === 200) {
           $("#btn_loading").hide();
-          alertify.confirm('Selamat, kamu sudah menyelesaikan semua pertanyaan. <br/> Benar : ' + response.data.correct + '<br/>Salah : ' + response.data.wrong).setting({
+          alertify.alert('Selamat, kamu sudah menyelesaikan semua pertanyaan. <br/> Benar : ' + response.data.correct + '<br/>Salah : ' + response.data.wrong + '<br/> Durasi : ' + response.data.duration + ' <br/><br/><b>Pemenang akan diumumkan pada akhir sesi.</b>').setting({
             'title': 'Hasil Akhir',
             'closable': false,
             'onok': function onok() {
-              location.reload();
-            },
-            'oncancel': function oncancel() {
               window.location = '/app/cerdas-cermat';
             }
           }).set('labels', {
-            ok: 'Coba Lagi',
-            cancel: 'Tutup'
+            ok: 'Oke'
           });
         } else {
-          alert('Mohon maaf, sedang terjadi kesalahan teknis.');
+          alertify.alert('Mohon maaf, sedang terjadi kesalahan teknis.').setting({
+            'title': 'Cerdas Cermat'
+          });
           $(".btn-submit-answer").show();
         }
       }
@@ -4533,30 +4666,57 @@ var render = function() {
             ])
           }),
           0
-        )
+        ),
+        _vm._v(" "),
+        _c(
+          "div",
+          {
+            staticClass:
+              "stopwatch d-flex justify-content-between align-items-center"
+          },
+          [
+            _c("div", [_vm._v("Waktu Anda")]),
+            _vm._v(" "),
+            _c("div", [
+              _c(
+                "span",
+                { staticClass: "minute", attrs: { "data-minute": "0" } },
+                [_vm._v("00")]
+              ),
+              _vm._v(" : "),
+              _c(
+                "span",
+                { staticClass: "second", attrs: { "data-second": "0" } },
+                [_vm._v("0" + _vm._s(_vm.second))]
+              ),
+              _vm._v(" : "),
+              _c(
+                "span",
+                { staticClass: "milisecond", attrs: { "data-second": "0" } },
+                [_vm._v("0" + _vm._s(_vm.milisecond))]
+              )
+            ])
+          ]
+        ),
+        _vm._v(" "),
+        _c("div", { staticClass: "progress-ccc" }, [
+          _c("div", {
+            staticClass: "status",
+            style: { width: _vm.progress + "%" }
+          })
+        ])
       ]),
       _vm._v(" "),
       _vm.is_loading
-        ? _c(
-            "div",
-            {
-              staticStyle: {
-                position: "fixed",
-                width: "83%",
-                background: "#fff",
-                height: "100vh"
-              }
-            },
-            [
-              _vm._m(0),
-              _vm._v(" "),
-              _vm._m(1),
-              _vm._v(" "),
-              _vm._m(2),
-              _vm._v(" "),
-              _vm._m(3)
-            ]
-          )
+        ? _c("div", { staticClass: "ph-loading" }, [
+            _vm._m(0),
+            _vm._v(" "),
+            _vm._m(1),
+            _vm._v(" "),
+            _vm._m(2),
+            _vm._v(" "),
+            _vm._m(3)
+          ])
         : _vm._e(),
       _vm._v(" "),
       _c("div", [
@@ -4565,8 +4725,67 @@ var render = function() {
           { attrs: { id: "submit_free_session", action: "/submit" } },
           [
             _c("input", {
+              attrs: {
+                type: "hidden",
+                id: "duration",
+                name: "duration",
+                value: "0"
+              }
+            }),
+            _vm._v(" "),
+            _c("input", {
+              attrs: {
+                type: "hidden",
+                id: "minute",
+                name: "minute",
+                value: "0"
+              }
+            }),
+            _vm._v(" "),
+            _c("input", {
+              attrs: {
+                type: "hidden",
+                id: "second",
+                name: "second",
+                value: "0"
+              }
+            }),
+            _vm._v(" "),
+            _c("input", {
+              attrs: {
+                type: "hidden",
+                id: "milisecond",
+                name: "milisecond",
+                value: "0"
+              }
+            }),
+            _vm._v(" "),
+            _c("input", {
+              attrs: {
+                type: "hidden",
+                id: "question_id",
+                name: "question_id",
+                value: "0"
+              }
+            }),
+            _vm._v(" "),
+            _c("input", {
+              attrs: {
+                type: "hidden",
+                id: "answer_id",
+                name: "answer_id",
+                value: "0"
+              }
+            }),
+            _vm._v(" "),
+            _c("input", {
               attrs: { type: "hidden", name: "mmses" },
               domProps: { value: _vm.mmses }
+            }),
+            _vm._v(" "),
+            _c("input", {
+              attrs: { type: "hidden", name: "session_code" },
+              domProps: { value: _vm.session }
             }),
             _vm._v(" "),
             _vm._l(_vm.list, function(item) {
@@ -4609,7 +4828,12 @@ var render = function() {
                               name: "item[" + item.id + "][answer]",
                               type: "radio"
                             },
-                            domProps: { value: answer.id }
+                            domProps: { value: answer.id },
+                            on: {
+                              click: function($event) {
+                                return _vm.save_answer(answer.id)
+                              }
+                            }
                           }),
                           _c("label", { attrs: { for: answer.id } }, [
                             _vm._v(_vm._s(answer.answer))

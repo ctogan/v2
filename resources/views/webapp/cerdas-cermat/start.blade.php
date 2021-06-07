@@ -4,6 +4,7 @@
 @endsection
 
 @section('content')
+    <input type="hidden" name="session_code" value="{{$session->session_code}}">
     <div id="cerdas-cermat"></div>
 @endsection
 

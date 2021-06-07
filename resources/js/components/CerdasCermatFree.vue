@@ -59,7 +59,7 @@
             <div>
                 <form id="submit_free_session" action="/submit">
                     <input type="hidden" :value="mmses" name="mmses">
-                    <div class="list-question" v-for="item in list" :id="item.id">
+                    <div class="list-question" v-for="item in list" :id="item.id" style="margin-top: 50px;">
                         <div class="question mb-4">
                             <p>Pertanyaan:</p>
                             <p>{{ item.question }}</p>

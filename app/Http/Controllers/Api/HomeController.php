@@ -172,7 +172,7 @@ class HomeController extends ApiController
             return $dynamic_section;
         });
 
-        $news = Cache::tags('news')->remember('__news_list_home1',3600, function (){
+        $news = Cache::remember('__news_list_home1',3600, function (){
             return News::select('id','news_code','title','url_to_image','reward')
                 ->withCount('news_read')
                 ->orderBy('id','DESC')

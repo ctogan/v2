@@ -1,5 +1,7 @@
 const mix = require('laravel-mix');
-
+module.exports = {
+    mode: "production"
+}
 /*
  |--------------------------------------------------------------------------
  | Mix Asset Management

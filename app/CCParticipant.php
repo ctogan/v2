@@ -11,7 +11,7 @@ class CCParticipant extends Model
     public $timestamps = false;
 
     protected $fillable = [
-        'row_status','cc_session_id','uid','last_point','cc_register_date','app_register_date','time_start','time_end','score'
+        'row_status','cc_session_id','uid','last_point','cc_register_date','app_register_date','time_start','time_end','score','duration'
     ];
 
     public function session(){

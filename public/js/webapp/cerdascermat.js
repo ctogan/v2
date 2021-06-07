@@ -186,11 +186,63 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
       is_loading: true,
-      list: null
+      list: null,
+      is_registering: false,
+      prize: []
     };
   },
   mounted: function mounted() {
@@ -202,16 +254,23 @@ __webpack_require__.r(__webpack_exports__);
       }
     }).then(function (response) {
       if (response.data.code === "202") {
-        alert('Need Login');
+        alertify.alert('Need Login').setting({
+          'title': 'Cerdas Cermat'
+        });
       }
 
       _this.is_loading = false;
       _this.list = response.data.data;
-    });
+    }).then();
+  },
+  updated: function updated() {
+    this.countdown();
   },
   methods: {
-    waiting: function waiting() {
-      alert('Mohon menunggu, sesi ini belum dimulai');
+    waiting: function waiting(c, p, d) {
+      alertify.alert('Mohon menunggu, sesi ini akan dimulai pada <b>' + d + '</b>').setting({
+        'title': 'Cerdas Cermat'
+      });
     },
     start: function start(code) {
       alertify.confirm('Kamu sudah siap? Waktu akan dimulai setelah memilih <b>Mulai</b>.').setting({
@@ -227,22 +286,78 @@ __webpack_require__.r(__webpack_exports__);
       });
     },
     register: function register(code, point) {
-      if (confirm("Point yang dibutuhan untuk mengikuti event ini " + point + "p. Apakah kamu bersedia?")) {
-        axios.post('/api/cerdas-cermat/register', {
-          mmses: $('meta[name=usr-token]').attr('content'),
-          session_code: code
-        }).then(function (response) {
-          var code = response.data.code;
+      $("#" + code + " .spinner").show();
+      $("#" + code + " .no-spinner").hide();
+      alertify.confirm("Point yang dibutuhan untuk mengikuti event ini <b>" + point + "P</b>. Apakah kamu bersedia?").setting({
+        'autoReset': false,
+        'title': 'Pendaftaran',
+        'closable': false,
+        'onok': function onok() {
+          axios.post('/api/cerdas-cermat/register', {
+            mmses: $('meta[name=usr-token]').attr('content'),
+            session_code: code
+          }).then(function (response) {
+            var ercode = response.data.code;
 
-          if (code === "216") {
-            alert('Point Tidak Cukup');
-          } else if (code === '217') {
-            alert('Kamu Sudah Terdaftar. Mohon menunggu sesi ini dimulai');
-          } else if (code === '218') {
-            alert('Sesi ini sudah berakhir');
+            if (ercode !== 200) {
+              alertify.alert(response.data.message).setting({
+                'title': 'Cerdas Cermat',
+                'closable': false,
+                'onok': function onok() {
+                  $("#" + code + " .spinner").hide();
+                  $("#" + code + " .no-spinner").show();
+                }
+              });
+            } else {
+              alertify.alert('Pendaftaran Berhasil').setting({
+                'title': 'Cerdas Cermat'
+              });
+              ;
+              location.reload();
+            }
+          });
+        },
+        'oncancel': function oncancel() {
+          $("#" + code + " .spinner").hide();
+          $("#" + code + " .no-spinner").show();
+        }
+      }).set('labels', {
+        cancel: 'Batalkan',
+        ok: 'Ya Daftar Sekarang'
+      });
+    },
+    countdown: function countdown() {
+      $('[data-countdown]').each(function () {
+        var deadline = new Date($(this).data('countdown')).getTime();
+        var datahours = $(this).children('[data-hours]');
+        var dataminutes = $(this).children('[data-minutes]');
+        var dataseconds = $(this).children('[data-seconds]');
+        var x = setInterval(function () {
+          var now = new Date().getTime();
+          var t = deadline - now;
+          var hours = Math.floor(t % (1000 * 60 * 60 * 24) / (1000 * 60 * 60));
+          var minutes = Math.floor(t % (1000 * 60 * 60) / (1000 * 60));
+          var seconds = Math.floor(t % (1000 * 60) / 1000);
+          datahours.html(hours < 10 ? '0' + hours : hours);
+          dataminutes.html(minutes < 10 ? '0' + minutes : minutes);
+          dataseconds.html(seconds < 10 ? '0' + seconds : seconds);
+
+          if (t <= 0) {
+            clearInterval(x);
+            datahours.html(0);
+            dataminutes.html(0);
+            dataseconds.html(0);
           }
-        });
-      }
+        }, 1000);
+      });
+    },
+    showprize: function showprize(index) {
+      this.prize = this.list.session[index].prize;
+      console.log(this.list.session[index].prize);
+      $('#prize_modal').modal('show');
+    },
+    close_modal: function close_modal() {
+      $('#prize_modal').modal('hide');
     }
   }
 });
@@ -753,7 +868,7 @@ var render = function() {
             ? _c(
                 "ul",
                 { staticClass: "session-list" },
-                _vm._l(_vm.list.session, function(item) {
+                _vm._l(_vm.list.session, function(item, index) {
                   return _c("li", [
                     _c(
                       "div",
@@ -766,30 +881,52 @@ var render = function() {
                           _vm._v(_vm._s(item.title))
                         ]),
                         _vm._v(" "),
-                        _c("div", { class: "timer " + item.status }, [
-                          _vm._v(
-                            _vm._s(
-                              item.status === "waiting" ? "Start" : "End"
-                            ) + " "
-                          ),
-                          _c(
-                            "span",
-                            { attrs: { id: "hour" + item.session_code } },
-                            [_vm._v("00")]
-                          ),
-                          _vm._v(":"),
-                          _c(
-                            "span",
-                            { attrs: { id: "minute" + item.session_code } },
-                            [_vm._v("00")]
-                          ),
-                          _vm._v(":"),
-                          _c(
-                            "span",
-                            { attrs: { id: "second" + item.session_code } },
-                            [_vm._v("00")]
-                          )
-                        ])
+                        _c(
+                          "div",
+                          {
+                            class: "timer " + item.status,
+                            attrs: { "data-countdown": item.countdown }
+                          },
+                          [
+                            _vm._v(
+                              _vm._s(
+                                item.status === "waiting" ? "Start" : "End"
+                              ) + "\n                        "
+                            ),
+                            _c(
+                              "span",
+                              {
+                                attrs: {
+                                  "data-hours": "00",
+                                  id: "hour" + item.session_code
+                                }
+                              },
+                              [_vm._v("00")]
+                            ),
+                            _vm._v(":\n                        "),
+                            _c(
+                              "span",
+                              {
+                                attrs: {
+                                  "data-minutes": "00",
+                                  id: "minute" + item.session_code
+                                }
+                              },
+                              [_vm._v("00")]
+                            ),
+                            _vm._v(":\n                        "),
+                            _c(
+                              "span",
+                              {
+                                attrs: {
+                                  "data-seconds": "00",
+                                  id: "second" + item.session_code
+                                }
+                              },
+                              [_vm._v("00")]
+                            )
+                          ]
+                        )
                       ]
                     ),
                     _vm._v(" "),
@@ -807,9 +944,34 @@ var render = function() {
                           "d-flex justify-content-between align-items-center"
                       },
                       [
-                        _vm._m(4, true),
+                        _c("div", [
+                          _c(
+                            "a",
+                            {
+                              staticClass: "more",
+                              attrs: { href: "javascript:void(0)" },
+                              on: {
+                                click: function($event) {
+                                  return _vm.showprize(index)
+                                }
+                              }
+                            },
+                            [_vm._v("Lihat Hadiah")]
+                          )
+                        ]),
                         _vm._v(" "),
                         item.status === "expired"
+                          ? _c("div", [
+                              _c(
+                                "a",
+                                {
+                                  staticClass: "btn end_session",
+                                  attrs: { href: "javascript:void(0)" }
+                                },
+                                [_vm._v("Selesai")]
+                              )
+                            ])
+                          : item.participant_status === "completed"
                           ? _c("div", [
                               _c(
                                 "a",
@@ -826,7 +988,10 @@ var render = function() {
                                 "a",
                                 {
                                   staticClass: "btn open",
-                                  attrs: { href: "javascript:void(0)" },
+                                  attrs: {
+                                    id: item.session_code,
+                                    href: "javascript:void(0)"
+                                  },
                                   on: {
                                     click: function($event) {
                                       return _vm.register(
@@ -836,7 +1001,15 @@ var render = function() {
                                     }
                                   }
                                 },
-                                [_vm._v("Daftar")]
+                                [
+                                  _vm._m(4, true),
+                                  _vm._v(" "),
+                                  _c("div", { staticClass: "no-spinner" }, [
+                                    _vm._v(
+                                      "\n                                Daftar\n                            "
+                                    )
+                                  ])
+                                ]
                               )
                             ])
                           : item.status === "active" && item.is_registered
@@ -860,24 +1033,11 @@ var render = function() {
                               _c(
                                 "a",
                                 {
-                                  staticClass: "btn start",
-                                  attrs: { href: "javascript:void(0)" },
-                                  on: {
-                                    click: function($event) {
-                                      return _vm.waiting(item.session_code)
-                                    }
-                                  }
-                                },
-                                [_vm._v("Mulai")]
-                              )
-                            ])
-                          : item.status === "waiting" && item.is_registered
-                          ? _c("div", [
-                              _c(
-                                "a",
-                                {
-                                  staticClass: "btn start",
-                                  attrs: { href: "javascript:void(0)" },
+                                  staticClass: "btn open",
+                                  attrs: {
+                                    id: item.session_code,
+                                    href: "javascript:void(0)"
+                                  },
                                   on: {
                                     click: function($event) {
                                       return _vm.register(
@@ -887,7 +1047,35 @@ var render = function() {
                                     }
                                   }
                                 },
-                                [_vm._v("Daftar")]
+                                [
+                                  _vm._m(5, true),
+                                  _vm._v(" "),
+                                  _c("div", { staticClass: "no-spinner" }, [
+                                    _vm._v(
+                                      "\n                                Daftar\n                            "
+                                    )
+                                  ])
+                                ]
+                              )
+                            ])
+                          : item.status === "waiting" && item.is_registered
+                          ? _c("div", [
+                              _c(
+                                "a",
+                                {
+                                  staticClass: "btn open",
+                                  attrs: { href: "javascript:void(0)" },
+                                  on: {
+                                    click: function($event) {
+                                      return _vm.waiting(
+                                        item.session_code,
+                                        item.registration_fee,
+                                        item.start_date
+                                      )
+                                    }
+                                  }
+                                },
+                                [_vm._v("Mulai")]
                               )
                             ])
                           : _vm._e()
@@ -899,9 +1087,78 @@ var render = function() {
               )
             : _vm._e(),
           _vm._v(" "),
-          _vm._m(5)
+          _vm._m(6)
         ])
-      : _vm._e()
+      : _vm._e(),
+    _vm._v(" "),
+    _c(
+      "div",
+      {
+        staticClass: "modal",
+        attrs: { id: "prize_modal", tabindex: "-1", role: "dialog" }
+      },
+      [
+        _c(
+          "div",
+          { staticClass: "modal-dialog", attrs: { role: "document" } },
+          [
+            _c("div", { staticClass: "modal-content" }, [
+              _vm._m(7),
+              _vm._v(" "),
+              _c("div", { staticClass: "modal-body" }, [
+                _c("h4", { staticClass: "mb-3" }, [
+                  _vm._v("Ayo selesaikan soalnya dan ambil hadiah ini:")
+                ]),
+                _vm._v(" "),
+                _vm.prize
+                  ? _c("table", { staticClass: "table table-striped w-100" }, [
+                      _c(
+                        "thead",
+                        [
+                          _vm._m(8),
+                          _vm._v(" "),
+                          _vm._l(_vm.prize, function(item) {
+                            return _c("tr", [
+                              _c("td", { attrs: { align: "center" } }, [
+                                _vm._v(_vm._s(item.rank))
+                              ]),
+                              _vm._v(" "),
+                              _c("td", [
+                                _c("img", {
+                                  attrs: { src: item.img, alt: "", width: "50" }
+                                })
+                              ]),
+                              _vm._v(" "),
+                              _c("td", [_vm._v(_vm._s(item.prize_name))])
+                            ])
+                          })
+                        ],
+                        2
+                      )
+                    ])
+                  : _vm._e()
+              ]),
+              _vm._v(" "),
+              _c("div", { staticClass: "modal-footer" }, [
+                _c(
+                  "button",
+                  {
+                    staticClass: "btn btn-secondary",
+                    attrs: { type: "button", "data-dismiss": "modal" },
+                    on: {
+                      click: function($event) {
+                        return _vm.close_modal()
+                      }
+                    }
+                  },
+                  [_vm._v("Close")]
+                )
+              ])
+            ])
+          ]
+        )
+      ]
+    )
   ])
 }
 var staticRenderFns = [
@@ -994,11 +1251,27 @@ var staticRenderFns = [
     var _vm = this
     var _h = _vm.$createElement
     var _c = _vm._self._c || _h
-    return _c("div", [
-      _c("a", { staticClass: "more", attrs: { href: "javascript:void(0)" } }, [
-        _vm._v("Lihat Hadiah")
-      ])
-    ])
+    return _c(
+      "div",
+      {
+        staticClass: "spinner spinner-border spinner-border-sm hide",
+        attrs: { role: "status" }
+      },
+      [_c("span", { staticClass: "sr-only" }, [_vm._v("Loading...")])]
+    )
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c(
+      "div",
+      {
+        staticClass: "spinner spinner-border spinner-border-sm hide",
+        attrs: { role: "status" }
+      },
+      [_c("span", { staticClass: "sr-only" }, [_vm._v("Loading...")])]
+    )
   },
   function() {
     var _vm = this
@@ -1008,6 +1281,26 @@ var staticRenderFns = [
       _c("a", { attrs: { href: "/app/cerdas-cermat/free" } }, [
         _vm._v("Coba Secara GRATIS")
       ])
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("div", { staticClass: "modal-header" }, [
+      _c("h5", { staticClass: "modal-title" }, [_vm._v("Daftar Hadiah")])
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("tr", [
+      _c("th", { staticClass: "text-center" }, [_vm._v("Ranking")]),
+      _vm._v(" "),
+      _c("td"),
+      _vm._v(" "),
+      _c("th", [_vm._v("Hadiah")])
     ])
   }
 ]

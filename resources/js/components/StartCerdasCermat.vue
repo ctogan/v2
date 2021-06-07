@@ -6,9 +6,15 @@
                 <ul>
                     <li v-for="n in page_count" :class="n === page ? 'active' : ''">{{ n }}</li>
                 </ul>
+                <div class="stopwatch d-flex justify-content-between align-items-center">
+                    <div>Waktu Anda</div>
+                    <div><span data-minute="0" class="minute">00</span> : <span data-second="0" class="second">0{{second}}</span> : <span data-second="0" class="milisecond">0{{milisecond}}</span></div>
+                </div>
+                <div class="progress-ccc">
+                    <div class="status" :style="{'width':progress+'%'}"></div>
+                </div>
             </div>
-
-            <div v-if="is_loading" style="position: fixed;width: 83%;background: #fff;height: 100vh;">
+            <div v-if="is_loading" class="ph-loading">
                 <div class="mb-4">
                     <div class="d-block justify-content-between">
                         <div class="h-25 w-100 bg-placeholder mb-2 flex-1 mr-5"></div>
@@ -58,7 +64,14 @@
 
             <div>
                 <form id="submit_free_session" action="/submit">
+                    <input type="hidden" id="duration" name="duration" value="0">
+                    <input type="hidden" id="minute" name="minute" value="0">
+                    <input type="hidden" id="second" name="second" value="0">
+                    <input type="hidden" id="milisecond" name="milisecond" value="0">
+                    <input type="hidden" id="question_id" name="question_id" value="0">
+                    <input type="hidden" id="answer_id" name="answer_id" value="0">
                     <input type="hidden" :value="mmses" name="mmses">
+                    <input type="hidden" :value="session" name="session_code">
                     <div class="list-question" v-for="item in list" :id="item.id">
                         <div class="question mb-4">
                             <p>Pertanyaan:</p>
@@ -69,7 +82,7 @@
                         <div class="answer">
                             <ul>
                                 <li v-for="answer in item.answer">
-                                    <input :id="answer.id" :name="'item['+item.id+'][answer]'" type="radio" :value="answer.id"><label :for="answer.id">{{ answer.answer }}</label>
+                                    <input v-on:click="save_answer(answer.id)" :id="answer.id" :name="'item['+item.id+'][answer]'" type="radio" :value="answer.id"><label :for="answer.id">{{ answer.answer }}</label>
                                 </li>
                             </ul>
                         </div>
@@ -95,56 +108,177 @@
                 is_loading: true,
                 page : 0,
                 page_count : 10,
-                list :null,
+                list :[],
                 mmses: null,
-                is_submit:false
+                is_submit:false,
+                minute : 0,
+                second : 0,
+                milisecond: 0,
+                x :null,
+                arr_question : null,
+                timeout : 0,
+                progress: 0,
+                session:null,
+                question_id :0,
+                answer_id : 0
             }
-        },
-        mounted () {
-            axios
-                .get('/api/cerdas-cermat/question/free' , {
-                    params: {
-                        mmses: $('meta[name=usr-token]').attr('content'),
-                        page: this.page
-                    }
-                })
-                .then(response => {
-                    if(response.data.code === "202"){
-                        alert('Need Login')
-                    }
-                    this.is_loading = false;
-                    this.page +=1;
-                    this.list = response.data.data.question;
-                    this.mmses = response.data.data.mmses;
-                })
         },
         methods:{
             next(){
+                this.stop();
                 this.is_loading =true;
                 axios
-                    .get('/api/cerdas-cermat/question/free' , {
+                    .get('/api/cerdas-cermat/question' , {
                         params: {
                             mmses: $('meta[name=usr-token]').attr('content'),
-                            page: this.page
+                            page: this.page,
+                            session_code : $('input[name=session_code]').val(),
+                            question_id : this.question_id,
+                            answer_id : this.answer_id,
+                            minute : this.minute,
+                            second : this.second,
+                            milisecond: this.milisecond,
                         }
                     })
                     .then(response => {
-                        if(response.data.code === "202"){
-                            alert('Need Login')
+                        if(response.data.code !== 200){
+                            alertify.alert(response.data.message).setting(
+                                {
+                                    'title':'Cerdas Cermat',
+                                    'closable' :false,
+                                    'onok': function(){
+                                        window.location = '/app/cerdas-cermat'
+                                    }
+                                });
                         }
                         this.is_loading = false;
-                        this.page +=1;
-                        var datas = this.list;
                         $('.list-question').addClass('hide');
-                        $.each(response.data.data.question , function( key , value){
-                            datas.push(value);
-                        });
+                        this.list.push(response.data.data.question);
+                        this.question_id = response.data.data.question.id;
+                        this.page +=1;
+                        this.timeout=0;
+                        this.progress=0;
+                        this.answer_id=0;
+
+                        this.start();
                     })
             },
             submit(){
                 this.is_submit = true;
+                this.stop();
+                $("#duration").val(this.minute + ':' + this.second + ":" + this.milisecond);
+
+                $("#question_id").val(this.question_id);
+                $("#answer_id").val(this.answer_id);
+                $("#minute").val(this.minute);
+                $("#second").val(this.second);
+                $("#milisecond").val(this.milisecond);
+
                 $("#submit_free_session").submit();
+            },
+            start(){
+                const self = this;
+                let ms = this.milisecond;
+                let s = this.second;
+                let m = this.minute;
+                let to = this.timeout;
+                let p = this.progress;
+                this.x = setInterval(function() {
+                    let msec = '00';
+                    let sec = '00';
+                    let min = '00';
+                    ms++;
+
+                    if(ms === 100){
+                        self.milisecond = ms;
+                        s++;
+                        to++;
+                        ms = 0;
+                        p = p + 1.65;
+                    }else{
+                        self.milisecond = ms;
+                    }
+
+                    if(ms<10){
+                        msec = '0'+ms;
+                    }else{
+                        msec = ms;
+                    }
+
+                    if(s<10){
+                        sec = '0'+s;
+                    }else{
+                        sec = s;
+                    }
+                    if(s === 60){
+                        s=0;
+                        m++;
+                        if(m < 10){
+                            min = '0'+m;
+                        }else{
+                            min = m;
+                        }
+                        $('.minute').html(min);
+                        sec = '00';
+                    }
+                    $('.second').html(sec);
+                    $('.milisecond').html(msec);
+                    self.second = s;
+                    self.minute = m;
+                    self.timeout = to;
+                    self.progress = p;
+                    if(to === 60){
+                        if(self.page !== self.page_count){
+                            self.next();
+                            self.progress = 0;
+                        }else{
+                            self.submit();
+                        }
+                    }
+                }, 10);
+            },
+            stop(){
+                clearTimeout(this.x);
+            },
+            save_answer(id){
+                this.answer_id = id;
             }
+        },
+        mounted () {
+            axios
+                .get('/api/cerdas-cermat/start',{
+                    params: {
+                        mmses: $('meta[name=usr-token]').attr('content'),
+                        session_code : $('input[name=session_code]').val(),
+                        page: this.page
+                    }
+                })
+                .then(response => {
+                    if(response.data.code !== 200){
+                        alertify.alert(response.data.message).setting(
+                            {
+                                'title':'Cerdas Cermat',
+                                'closable' :false,
+                                'onok': function(){
+                                    window.location = '/app/cerdas-cermat'
+                                }
+                            });
+                    }
+
+                    this.page_count = response.data.data.session.displayed_question;
+                    this.mmses = response.data.data.mmses;
+                    this.session = response.data.data.session.session_code;
+                    this.page = response.data.data.page;
+                    this.minute = response.data.data.minute;
+                    this.second = response.data.data.second;
+                    this.milisecond = response.data.data.milisecond;
+                    $('.minute').html(this.minute);
+                    $('.second').html(this.second);
+                    $('.milisecond').html(this.milisecond);
+
+                    this.next();
+                })
+
         }
     }
 
@@ -152,7 +286,7 @@
         $('#submit_free_session').on('submit', function(event){
             event.preventDefault();
             $.ajax({
-                url:'/api/cerdas-cermat/free/submit',
+                url:'/api/cerdas-cermat/submit',
                 method:"POST",
                 async:true,
                 data : new FormData(this),
@@ -163,21 +297,20 @@
                 {
                     if(response.code === 200) {
                         $("#btn_loading").hide();
-                        alertify.confirm('Selamat, kamu sudah menyelesaikan semua pertanyaan. <br/> Benar : '+ response.data.correct + '<br/>Salah : '+ response.data.wrong)
+                        alertify.alert('Selamat, kamu sudah menyelesaikan semua pertanyaan. <br/> Benar : '+ response.data.correct + '<br/>Salah : '+ response.data.wrong + '<br/> Durasi : ' + response.data.duration +
+                            ' <br/><br/><b>Pemenang akan diumumkan pada akhir sesi.</b>'
+                        )
                             .setting(
                                 {
                                     'title':'Hasil Akhir',
                                     'closable' :false,
                                     'onok': function(){
-                                        location.reload();
-                                    },
-                                    'oncancel': function(){
                                         window.location = '/app/cerdas-cermat'
                                     }
                                 }
-                            ).set('labels', {ok:'Coba Lagi', cancel:'Tutup'});
+                            ).set('labels', {ok:'Oke'});
                     }else{
-                        alert('Mohon maaf, sedang terjadi kesalahan teknis.');
+                        alertify.alert('Mohon maaf, sedang terjadi kesalahan teknis.').setting({'title':'Cerdas Cermat'});
                         $(".btn-submit-answer").show();
                     }
                 }
