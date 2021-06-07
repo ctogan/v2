@@ -9,6 +9,9 @@ class UserConfig extends Model
     protected $connection = 'users';
     protected $table = 'user_config';
 
+    protected $primaryKey = 'uid';
+    protected $keyType = 'int';
+
     public $timestamps = false;
 
     protected $fillable = [

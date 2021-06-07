@@ -65,7 +65,7 @@ class User {
         }
 
         $mm = Utils::decrypt(preg_replace('/ /', '+', $request->mmses));
-
+        
         if (!$mm) {
             return static::session_error(static::USER_SESSION_NO_MMSES);
         }

@@ -9,6 +9,9 @@ class UserTime extends Model
     protected $connection = 'users';
     protected $table = 'user_time';
 
+    protected $primaryKey = 'uid';
+    protected $keyType = 'int';
+
     public $timestamps = false;
 
     protected $fillable = [

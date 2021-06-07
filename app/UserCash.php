@@ -9,6 +9,9 @@ class UserCash extends Model
     protected $connection = 'users';
     protected $table = 'user_cash3';
 
+    protected $primaryKey = 'uid';
+    protected $keyType = 'int';
+
     public $timestamps = false;
 
     protected $fillable = [

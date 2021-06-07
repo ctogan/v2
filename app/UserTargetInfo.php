@@ -9,6 +9,9 @@ class UserTargetInfo extends Model
     protected $connection = 'users';
     protected $table = 'user_target_info';
 
+    protected $primaryKey = 'uid';
+    protected $keyType = 'int';
+
     public $timestamps = false;
 
     protected $fillable = [
