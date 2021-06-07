@@ -3,5 +3,6 @@
     "/css/app.css": "/css/app.css",
     "/js/webapp/cerdascermat.js": "/js/webapp/cerdascermat.js",
     "/js/webapp/cerdascermatfree.js": "/js/webapp/cerdascermatfree.js",
+    "/js/webapp/cerdascermathistory.js": "/js/webapp/cerdascermathistory.js",
     "/js/webapp/cerdascermatstart.js": "/js/webapp/cerdascermatstart.js"
 }

@@ -41,6 +41,17 @@ class CerdasCermatController extends Controller
             'page' => 1,
             'question' => $question
         ];
+
         return view('webapp.cerdas-cermat.free', $data);
+    }
+
+    public function history(Request $request){
+        $mmses = $this->session($request);
+
+        $data = [
+            'mmses' => $mmses
+        ];
+
+        return view('webapp.cerdas-cermat.history', $data);
     }
 }

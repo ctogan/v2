@@ -188,3 +188,4 @@ Route::get('/admin/notification/{id}', 'NotificationController@detail');
 Route::get('/app/cerdas-cermat', 'Webapp\CerdasCermatController@index');
 Route::get('/app/cerdas-cermat/start/{code}', 'Webapp\CerdasCermatController@start');
 Route::get('/app/cerdas-cermat/free', 'Webapp\CerdasCermatController@free_trial');
+Route::get('/app/cerdas-cermat/history', 'Webapp\CerdasCermatController@history');
