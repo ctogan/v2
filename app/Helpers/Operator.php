@@ -380,6 +380,27 @@ class Operator {
         return $prefix;
     }
 
+    public static function getNameByOpcode($opcode) {
+        $list = [
+            '51001' => 'Indosat',
+            '51021' => 'Indosat',
+            '51003' => 'StarOne',
+            '51007' => 'Flexi',
+            '51008' => 'Axis',
+            '51009' => 'SmartFren',
+            '51028' => 'SmartFren',
+            '51010' => 'Telkomsel',
+            '51020' => 'Telkomsel',
+            '51011' => 'XL',
+            '51027' => 'Ceria',
+            '51089' => 'Tri',
+            '51099' => 'Esia',
+        ];
+        $name = $list[$opcode];
+
+        return $name ? $name : null;
+    }
+
     //@throws Exception
     public static function Validation($sim_no, $op_code) {
         if (!static::SIMVerify($sim_no, $op_code)) {
