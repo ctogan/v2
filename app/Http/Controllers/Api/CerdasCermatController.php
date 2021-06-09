@@ -12,6 +12,7 @@ use App\Http\Resources\CCSessionResource;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 
 class CerdasCermatController extends ApiController
@@ -431,16 +432,9 @@ class CerdasCermatController extends ApiController
 
     public function history(Request $request){
         $uid = $this->user->uid;
-//        $session = CCParticipant::where('uid','=',$user->uid)
-//            ->with('session')
-//            ->with('session.prize')
-//            ->orderBy('id','desc')
-//            ->take(10)
-//            ->get();
 
         $session = CCSession::where('cc_session.row_status','=','active')
             ->join('cc_participant','cc_participant.cc_session_id','=','cc_session.id')
-            ->where('open_date', '>=', date('Y-m-d'))
             ->with(['participant' => function ($q) use ($uid){
                 $q->where('uid' , $uid);
             }])
@@ -450,6 +444,49 @@ class CerdasCermatController extends ApiController
             ->get();
 
         $response['session'] = CCSessionResource::collection($session);
+
+        return $this->successResponse($response);
+    }
+
+    public function result(Request $request){
+        $uid = $this->user->uid;
+
+        $validation = Validator::make($request->all(), [
+            'session_code' => 'required'
+        ]);
+
+        if ($validation->fails()) {
+            return $this->errorResponse($validation->errors(),static::CODE_ERROR_VALIDATION);
+        }
+
+        $session = CCSession::where('row_status','=','active')
+            ->where('session_code','=',$request->session_code)
+            ->first();
+
+        $query = "WITH rank as (
+              select uid, score, duration,
+              RANK () OVER (
+                    ORDER BY score DESC , duration ASC, last_point desc , cc_register_date DESC
+                ) rank
+              from cc_participant where row_status='completed' and cc_session_id=".$session->id."
+            )
+            select * from rank ";
+
+        $result = DB::connection('game_center')->select($query);
+        $myrank = DB::connection('game_center')->select($query . ' where uid=' .$uid);
+
+        $rank = 0;
+        if($myrank){
+            foreach ($myrank as $my){
+                $rank =$my->rank;
+            }
+        }
+
+        $response =[
+            'result' => $result,
+            'uid' => $uid,
+            'rank' => $rank
+        ];
 
         return $this->successResponse($response);
     }
