@@ -3901,13 +3901,65 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
       is_loading: true,
       list: [],
       is_registering: false,
-      prize: []
+      prize: [],
+      result: [],
+      uid: 0,
+      rank: 0,
+      status: false,
+      loading_prize: true
     };
   },
   mounted: function mounted() {
@@ -3931,11 +3983,33 @@ __webpack_require__.r(__webpack_exports__);
   methods: {
     showprize: function showprize(index) {
       this.prize = this.list.session[index].prize;
-      console.log(this.prize);
       $('#prize_modal').modal('show');
     },
+    showresult: function showresult(index, session_code, status) {
+      var _this2 = this;
+
+      $('#ccc_result_modal').modal('show');
+      axios.get('/api/cerdas-cermat/result', {
+        params: {
+          mmses: $('meta[name=usr-token]').attr('content'),
+          session_code: session_code
+        }
+      }).then(function (response) {
+        if (response.data.code === "202") {
+          alertify.alert('Need Login').setting({
+            'title': 'Cerdas Cermat'
+          });
+        }
+
+        _this2.loading_prize = false;
+        _this2.result = response.data.data.result;
+        _this2.uid = response.data.data.uid;
+        _this2.rank = response.data.data.rank;
+        _this2.status = status === "expired" ? true : false;
+      });
+    },
     close_modal: function close_modal() {
-      $('#prize_modal').modal('hide');
+      $('.modal').modal('hide');
     }
   }
 });
@@ -4576,10 +4650,10 @@ var render = function() {
                           attrs: { href: "javascript:void(0)" },
                           on: {
                             click: function($event) {
-                              return _vm.waiting(
+                              return _vm.showresult(
+                                index,
                                 item.session_code,
-                                item.registration_fee,
-                                item.start_date
+                                item.status
                               )
                             }
                           }
@@ -4608,19 +4682,13 @@ var render = function() {
           { staticClass: "modal-dialog", attrs: { role: "document" } },
           [
             _c("div", { staticClass: "modal-content" }, [
-              _vm._m(3),
-              _vm._v(" "),
               _c("div", { staticClass: "modal-body" }, [
-                _c("h4", { staticClass: "mb-3" }, [
-                  _vm._v("Hadiah dari sesi ini adalah :")
-                ]),
-                _vm._v(" "),
                 _vm.prize
                   ? _c("table", { staticClass: "table table-striped w-100" }, [
                       _c(
                         "thead",
                         [
-                          _vm._m(4),
+                          _vm._m(3),
                           _vm._v(" "),
                           _vm._l(_vm.prize, function(item) {
                             return _c("tr", [
@@ -4640,6 +4708,112 @@ var render = function() {
                         ],
                         2
                       )
+                    ])
+                  : _vm._e()
+              ]),
+              _vm._v(" "),
+              _c("div", { staticClass: "modal-footer" }, [
+                _c(
+                  "button",
+                  {
+                    staticClass: "btn btn-secondary",
+                    attrs: { type: "button", "data-dismiss": "modal" },
+                    on: {
+                      click: function($event) {
+                        return _vm.close_modal()
+                      }
+                    }
+                  },
+                  [_vm._v("Close")]
+                )
+              ])
+            ])
+          ]
+        )
+      ]
+    ),
+    _vm._v(" "),
+    _c(
+      "div",
+      {
+        staticClass: "modal",
+        attrs: { id: "ccc_result_modal", tabindex: "-1", role: "dialog" }
+      },
+      [
+        _c(
+          "div",
+          { staticClass: "modal-dialog", attrs: { role: "document" } },
+          [
+            _c("div", { staticClass: "modal-content" }, [
+              _c("div", { staticClass: "modal-body" }, [
+                _c("p", [_vm._v("Daftar Pemenang")]),
+                _vm._v(" "),
+                _vm.loading_prize ? _c("div", [_vm._m(4)]) : _vm._e(),
+                _vm._v(" "),
+                !_vm.loading_prize
+                  ? _c("div", [
+                      _vm.result
+                        ? _c(
+                            "table",
+                            {
+                              staticClass:
+                                "table table-sm table-striped w-100 responsive"
+                            },
+                            [
+                              _vm._m(5),
+                              _vm._v(" "),
+                              _c(
+                                "tbody",
+                                _vm._l(_vm.result, function(item) {
+                                  return _c(
+                                    "tr",
+                                    {
+                                      class:
+                                        item.uid === _vm.uid
+                                          ? "my-position"
+                                          : ""
+                                    },
+                                    [
+                                      _c("td", { attrs: { align: "center" } }, [
+                                        _vm._v(_vm._s(item.rank))
+                                      ]),
+                                      _vm._v(" "),
+                                      _c("td", [_vm._v(_vm._s(item.uid))]),
+                                      _vm._v(" "),
+                                      _c("td", { attrs: { align: "center" } }, [
+                                        _vm._v(_vm._s(item.score))
+                                      ]),
+                                      _vm._v(" "),
+                                      _c("td", { attrs: { align: "right" } }, [
+                                        _vm._v(_vm._s(item.duration))
+                                      ]),
+                                      _vm._v(" "),
+                                      _c("td", { attrs: { align: "center" } }, [
+                                        _vm.status && item.uid === _vm.uid
+                                          ? _c(
+                                              "button",
+                                              {
+                                                staticClass:
+                                                  "btn-sm btn-outline-primary",
+                                                attrs: { type: "button" },
+                                                on: {
+                                                  click: function($event) {
+                                                    return _vm.redeem_prize()
+                                                  }
+                                                }
+                                              },
+                                              [_vm._v("Ambil")]
+                                            )
+                                          : _vm._e()
+                                      ])
+                                    ]
+                                  )
+                                }),
+                                0
+                              )
+                            ]
+                          )
+                        : _vm._e()
                     ])
                   : _vm._e()
               ]),
@@ -4743,20 +4917,54 @@ var staticRenderFns = [
     var _vm = this
     var _h = _vm.$createElement
     var _c = _vm._self._c || _h
-    return _c("div", { staticClass: "modal-header" }, [
-      _c("h5", { staticClass: "modal-title" }, [_vm._v("Daftar Hadiah")])
+    return _c("tr", [
+      _c("th", { staticClass: "text-center" }, [_vm._v("Ranking")]),
+      _vm._v(" "),
+      _c("th"),
+      _vm._v(" "),
+      _c("th", [_vm._v("Hadiah")])
     ])
   },
   function() {
     var _vm = this
     var _h = _vm.$createElement
     var _c = _vm._self._c || _h
-    return _c("tr", [
-      _c("th", { staticClass: "text-center" }, [_vm._v("Ranking")]),
+    return _c("div", { staticClass: "mb-4" }, [
+      _c("div", { staticClass: "d-flex justify-content-between" }, [
+        _c("div", { staticClass: "h-25 w-50 bg-placeholder mb-2 flex-1 mr-5" }),
+        _vm._v(" "),
+        _c("div", { staticClass: "h-25 w-10 bg-placeholder mb-2 mr-1" }),
+        _vm._v(" "),
+        _c("div", { staticClass: "h-25 w-10 bg-placeholder mb-2 mr-1" }),
+        _vm._v(" "),
+        _c("div", { staticClass: "h-25 w-10 bg-placeholder mb-2" })
+      ]),
       _vm._v(" "),
-      _c("td"),
+      _c("div", { staticClass: "h-10 w-50 bg-placeholder mb-3" }),
       _vm._v(" "),
-      _c("th", [_vm._v("Hadiah")])
+      _c("div", { staticClass: "d-flex justify-content-between" }, [
+        _c("div", { staticClass: "h-25 w-25 bg-placeholder mb-3" }),
+        _vm._v(" "),
+        _c("div", { staticClass: "h-25 w-25 bg-placeholder mb-3" })
+      ])
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("thead", [
+      _c("tr", [
+        _c("th", { staticClass: "text-center" }, [_vm._v("Ranking")]),
+        _vm._v(" "),
+        _c("th", [_vm._v("Name")]),
+        _vm._v(" "),
+        _c("th", { staticClass: "text-center" }, [_vm._v("Score")]),
+        _vm._v(" "),
+        _c("th", { staticClass: "text-right" }, [_vm._v("Waktu")]),
+        _vm._v(" "),
+        _c("th", { staticClass: "text-center" }, [_vm._v("Hadiah")])
+      ])
     ])
   }
 ]
