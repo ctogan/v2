@@ -402,7 +402,7 @@ class UserController extends ApiController
             try {
 
                 $createUser = UserApp::create([
-                    'uid' => $uid,
+                    'uid' => (int) $uid,
                     'sim' => $request->anid,
                     'anid' => $request->anid,
                     'imei' => $request->imei,
@@ -415,7 +415,7 @@ class UserController extends ApiController
                 ]);
 
                 $createUserConfig = UserConfig::create([
-                    'uid' => $uid,
+                    'uid' => (int) $uid,
                     'auto_buying' => false,
                     'lock_screen' => false,
                     'allow_noti' => true,
@@ -426,7 +426,7 @@ class UserController extends ApiController
                 ]);
 
                 $createUserCash = UserCash::create([
-                    'uid' => $uid,
+                    'uid' => (int) $uid,
                     'total_earn' => 0,
                     'total_use' => 0,
                     'last_earn' => null,
@@ -439,7 +439,7 @@ class UserController extends ApiController
 
                 $ses = substr(md5(microtime()), 0, 20);
                 $createUserTime = UserTime::create([
-                    'uid' => $uid,
+                    'uid' => (int) $uid,
                     'register' => date("Y-m-d H:i:s"),
                     'changed' => date("Y-m-d H:i:s"),
                     'login' => date("Y-m-d H:i:s"),
@@ -450,7 +450,7 @@ class UserController extends ApiController
                 ]);
 
                 $createUserTargetInfo = UserTargetInfo::create([
-                    'uid' => $uid,
+                    'uid' => (int) $uid,
                     'tm_target_changed' => date("Y-m-d H:i:s"),
                     'locale' => 'id',
                     'opcode' => $request->opcode,
@@ -493,7 +493,7 @@ class UserController extends ApiController
                 'lock_screen' => boolval($createUserConfig->lock_screen),
                 'allow_noti' => boolval($createUserConfig->allow_noti),
                 'invite_url' => 'http://inv.sctrk.site/',
-                'opname' => strval(Operator::getNameByOpcode($createUserTargetInfo->opcode)),
+                'opname' => strval(Operator::getNameByOpcode(strval($createUserTargetInfo->opcode))),
                 'opcode' => strval($createUserTargetInfo->opcode),
                 'gender' => $createUserTargetInfo->gender ? $createUserTargetInfo->gender : 'U',
                 'birth' => strval($createUserTargetInfo->birth),
