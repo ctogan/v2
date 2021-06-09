@@ -69,6 +69,7 @@ return array(
     'App\\Http\\Controllers\\ProvinceController' => $baseDir . '/app/Http/Controllers/ProvinceController.php',
     'App\\Http\\Controllers\\UserAdminController' => $baseDir . '/app/Http/Controllers/UserAdminController.php',
     'App\\Http\\Controllers\\Webapp\\CerdasCermatController' => $baseDir . '/app/Http/Controllers/Webapp/CerdasCermatController.php',
+    'App\\Http\\Controllers\\Webapp\\FlashEventController' => $baseDir . '/app/Http/Controllers/Webapp/FlashEventController.php',
     'App\\Http\\Kernel' => $baseDir . '/app/Http/Kernel.php',
     'App\\Http\\Middleware\\Authenticate' => $baseDir . '/app/Http/Middleware/Authenticate.php',
     'App\\Http\\Middleware\\CheckForMaintenanceMode' => $baseDir . '/app/Http/Middleware/CheckForMaintenanceMode.php',
