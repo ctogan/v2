@@ -165,7 +165,7 @@
                                     <td align="center">{{item.score}}</td>
                                     <td align="right">{{item.duration}}</td>
                                     <td align="center">
-                                        <button v-if="status && item.uid === uid" v-on:click="redeem_prize()" type="button" class="btn-sm btn-outline-primary">Ambil</button>
+                                        <button v-if="status && item.uid === uid" v-on:click="redeem_prize()" type="button" class="btn-sm btn-redeem">Ambil</button>
                                     </td>
                                 </tr>
                                 </tbody>

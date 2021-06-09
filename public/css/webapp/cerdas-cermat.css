@@ -260,9 +260,14 @@ ul{
     border-radius: 5px;
 }
 .my-position{
-    background: #673ab7;
+    background: #673ab7!important;
     color: #fff;
 }
 table{
     font-size:0.9rem;
+}
+.btn-redeem{
+    background: #683ab6;
+    border: 1px solid #fff;
+    color: #fff;
 }

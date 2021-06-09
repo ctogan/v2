@@ -4796,7 +4796,7 @@ var render = function() {
                                               "button",
                                               {
                                                 staticClass:
-                                                  "btn-sm btn-outline-primary",
+                                                  "btn-sm btn-redeem",
                                                 attrs: { type: "button" },
                                                 on: {
                                                   click: function($event) {
