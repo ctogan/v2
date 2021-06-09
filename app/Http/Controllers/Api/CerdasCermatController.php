@@ -415,9 +415,9 @@ class CerdasCermatController extends ApiController
         $participant->score = $participant->score + $score;
         $participant->time_end = date('Y-m-d h:m:s');
         $participant->duration = $request->minute .':'.$request->second .':' .$request->milisecond;
-        $participant->minute = $request->minute;
-        $participant->second = $request->second;
-        $participant->milisecond = $request->milisecond;
+        $participant->minutes = $request->minute;
+        $participant->seconds = $request->second;
+        $participant->miliseconds = $request->milisecond;
         $participant->row_status = 'completed';
         $participant->save();
 
