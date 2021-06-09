@@ -259,3 +259,10 @@ ul{
     height: 10px;
     border-radius: 5px;
 }
+.my-position{
+    background: #673ab7;
+    color: #fff;
+}
+table{
+    font-size:0.9rem;
+}
