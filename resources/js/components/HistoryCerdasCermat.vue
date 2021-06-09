@@ -218,6 +218,8 @@
             },
             showresult(index, session_code, status){
                 $('#ccc_result_modal').modal('show');
+                this.result = [];
+                this.loading_prize = true;
                 axios
                     .get('/api/cerdas-cermat/result' , {
                         params: {

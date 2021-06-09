@@ -415,6 +415,9 @@ class CerdasCermatController extends ApiController
         $participant->score = $participant->score + $score;
         $participant->time_end = date('Y-m-d h:m:s');
         $participant->duration = $request->minute .':'.$request->second .':' .$request->milisecond;
+        $participant->minute = $request->minute;
+        $participant->second = $request->second;
+        $participant->milisecond = $request->milisecond;
         $participant->row_status = 'completed';
         $participant->save();
 
@@ -466,7 +469,7 @@ class CerdasCermatController extends ApiController
         $query = "WITH rank as (
               select uid, score, duration,
               RANK () OVER (
-                    ORDER BY score DESC , duration ASC, last_point desc , cc_register_date DESC
+                    ORDER BY score DESC , minutes ASC, seconds ASC, miliseconds asc, last_point desc , cc_register_date DESC
                 ) rank
               from cc_participant where row_status='completed' and cc_session_id=".$session->id."
             )

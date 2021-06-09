@@ -3989,6 +3989,8 @@ __webpack_require__.r(__webpack_exports__);
       var _this2 = this;
 
       $('#ccc_result_modal').modal('show');
+      this.result = [];
+      this.loading_prize = true;
       axios.get('/api/cerdas-cermat/result', {
         params: {
           mmses: $('meta[name=usr-token]').attr('content'),
