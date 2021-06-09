@@ -99,7 +99,7 @@ class NewsController extends Controller
             }
         }
 
-        $this->forget_cache_tag('news');
+        self::flush_cache();
 
         return json_encode(['status'=> true, 'message'=> "Success"]);
     }
@@ -161,7 +161,7 @@ class NewsController extends Controller
             }
         }
 
-        $this->forget_cache_tag('news');
+        self::flush_cache();
 
         return json_encode(['status'=> true, 'message'=> "Success"]);
     }
@@ -188,7 +188,7 @@ class NewsController extends Controller
             return json_encode(['status'=> false, 'message'=> $this->single_message('Error!')]);
         }
 
-        $this->forget_cache_tag('news');
+        self::flush_cache();
 
         return json_encode(['status'=> true, 'message'=> "Success"]);
     }
@@ -197,5 +197,13 @@ class NewsController extends Controller
         $query = News::where('row_status','!=','deleted');
 
         return DataTables::of($query->get())->addIndexColumn()->make(true);
+    }
+
+    public function flush_cache(){
+        $this->forget_cache('__latest_news_list');
+        $this->forget_cache('__news_list5');
+        $this->forget_cache('__news_detail5');
+        $this->forget_cache('__recommendation_news_list');
+        $this->forget_cache('__news_list_home1');
     }
 }
