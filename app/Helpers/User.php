@@ -149,4 +149,8 @@ class User {
         }
         return true;
     }
+
+    public static function use_cash(){
+
+    }
 }
