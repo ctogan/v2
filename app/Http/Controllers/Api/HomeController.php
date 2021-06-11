@@ -65,11 +65,11 @@ class HomeController extends ApiController
         $user = $this->user;
         $today = Carbon::now();
 
-        $banner = Cache::rememberForever('__banner_section',function (){
+        $banner = Cache::remember('__banner_section',3600, function (){
             return Banner::where('row_status','=','active')->get();
         });
 
-        $category = Cache::rememberForever('__categories_section',function (){
+        $category = Cache::remember('__categories_section',3600, function (){
             return Category::where('row_status','=','active')->get();
         });
 
