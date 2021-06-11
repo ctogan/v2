@@ -412,7 +412,7 @@ class UserController extends ApiController
 
                 $createUser = UserApp::create([
                     'uid' => (int) $uid,
-                    'sim' => $request->anid,
+                    'sim' => $request->account_id,
                     'anid' => $request->anid,
                     'imei' => $request->imei,
                     'gaid' => $request->gaid,
@@ -489,7 +489,7 @@ class UserController extends ApiController
         $data = [
             'session' => [
                 'u'             => strval($uid),
-                's'             => strval($request->anid),
+                's'             => strval($request->account_id),
                 'ses'           => strval($ses),
                 'registered'    => true,
             ],
