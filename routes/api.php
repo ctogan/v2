@@ -127,3 +127,7 @@ Route::post('/user/auth/request-otp', 'Api\UserController@request_otp');
 Route::post('/user/auth/login/email', 'Api\UserController@login_email');
 Route::post('/user/auth/login/phone', 'Api\UserController@login_phone');
 Route::post('/user/auth/register', 'Api\UserController@register');
+
+// HISTORY POINT AND VOUCHER
+Route::get('/point-history', 'Api\UserController@point_history');
+Route::get('/voucher-history', 'Api\UserController@voucher_history');

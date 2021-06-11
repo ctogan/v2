@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Helpers\Operator;
 use App\Helpers\Utils;
 use App\Http\Controllers\Controller;
+use App\Point;
 use App\UserApp;
 use App\UserCash;
 use App\UserConfig;
@@ -14,6 +15,7 @@ use Aws\RAM\Exception\RAMException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
+
 
 class UserController extends ApiController
 {
@@ -667,6 +669,71 @@ class UserController extends ApiController
         ];
 
         return $this->successResponse($data);
+    }
+
+    /**
+     * @OA\Get(
+     *   path="/api/point-history",
+     *   summary="list of point",
+     *   tags={"point history"},
+     *     @OA\Parameter(
+     *          name="mmses",
+     *          required=true,
+     *          in="query",
+     *          @OA\Schema(
+     *              type="string"
+     *          )
+     *     ),
+     *     @OA\Parameter(
+     *          name="page",
+     *          required=true,
+     *          in="query",
+     *          @OA\Schema(
+     *              type="integer"
+     *          )
+     *     ),
+     *   @OA\Response(
+     *     response=200,
+     *     description="A list of notifications"
+     *   )
+     * )
+     */
+    public function point_history(Request $request){
+        $user = $this->user;
+        $uid = $user->uid;
+        $point = Point::select('user_earning_detail.txt as title','user_earning_data.*')
+        ->leftJoin('user_earning_detail' , 'user_earning_data.detail' ,'user_earning_detail.id')
+        ->where('user_earning_data.uid' , $uid)
+        ->where('user_earning_data.tm' , '>' , date('Y-m-d', strtotime('today - 30 days')))
+        ->orderBy('user_earning_data.seq' , 'DESC')
+        ->limit(50)->get();
+        if(!$point){
+            return $this->successResponse([]);
+        }
+        $data = [];
+        foreach($point as $item){
+            $date = date('Y-m-d' , strtotime($item->tm));
+            if($item->title == '' || $item->title == null){
+                $item['title'] = 'Kamu dapat Poin';
+            }
+            $data[$date][] = $item;
+        }
+
+        
+        // $notification = Notification::
+        //     with(['detail'=>function($q) use($uid){
+        //         return $q->where('uid','=', $uid);
+        //     }])->paginate();
+
+        // $response = [
+        //     'notification' => NotificationResource::collection($notification)
+        // ];
+
+         return $this->successResponse($data);
+    }
+
+    public function voucher_history(){
+        
     }
 
 }
