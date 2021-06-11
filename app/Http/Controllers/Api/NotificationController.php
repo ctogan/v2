@@ -44,7 +44,7 @@ class NotificationController extends ApiController
         $notification = Notification::
             with(['detail'=>function($q) use($uid){
                 return $q->where('uid','=', $uid);
-            }])->paginate();
+            }])->orderBy('id','desc')->paginate();
 
         $response = [
             'notification' => NotificationResource::collection($notification)
