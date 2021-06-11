@@ -51,7 +51,7 @@ class Push {
         $id_notification = Notification::create($notification)->id;
         if($id_notification){
             $data = array(
-                'to' => "/topics/ALL",
+                'to' => "/topics/REVAMP_CASHTREE",
                 'notification' => array(
                     "title"=> $notification['title'],
                     "body" =>$notification['body'],
