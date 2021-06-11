@@ -24,7 +24,8 @@ class NotificationResource extends JsonResource
             'deeplink' => $this->deeplink,
             'body' => $this->body,
             'img'=> $this->img,
-            'is_read'=>$is_read
+            'is_read'=>$is_read,
+            'tm'=>$this->created_at
         ];
     }
 }
