@@ -25,7 +25,7 @@ class NotificationResource extends JsonResource
             'body' => $this->body,
             'img'=> $this->img,
             'is_read'=>$is_read,
-            'tm'=>$this->created_at
+            'tm'=> date_format($this->created_at,'Y-m-d H:i:s')
         ];
     }
 }
