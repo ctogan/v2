@@ -14,6 +14,7 @@ use Aws\RAM\Exception\RAMException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
+use OpenApi\Util;
 
 class UserController extends ApiController
 {
@@ -485,35 +486,35 @@ class UserController extends ApiController
         //Prepare login Here
         $data = [
             'session' => [
-                'u'             => strval($createUser->uid),
-                's'             => strval($createUser->sim),
+                'u'             => strval($uid),
+                's'             => strval($request->anid),
                 'ses'           => strval($ses),
                 'registered'    => true,
             ],
             'info' => [
-                'u' => intval($createUser->uid),
-                'id' => strval($createUser->uid),
-                'inv_code' => strval($createUser->inv_code),
-                'reg_tm' => strtotime($createUserTime->register),
-                'ph' => strval($createUser->phone),
-                'lock_screen' => boolval($createUserConfig->lock_screen),
-                'allow_noti' => boolval($createUserConfig->allow_noti),
+                'u' => intval($uid),
+                'id' => strval($uid),
+                'inv_code' => strval(Utils::generateInvCode()),
+                'reg_tm' => date("Y-m-d H:i:s"),
+                'ph' => null,
+                'lock_screen' => false,
+                'allow_noti' => true,
                 'invite_url' => 'http://inv.sctrk.site/',
 //                'opname' => strval(Operator::getNameByOpcode(strval($createUserTargetInfo->opcode))),
                 'opname' => 'Indosat',
-                'opcode' => strval($createUserTargetInfo->opcode),
-                'gender' => $createUserTargetInfo->gender ? $createUserTargetInfo->gender : 'U',
-                'birth' => strval($createUserTargetInfo->birth),
-                'email' => $createUser->email,
-                'full_name' => $createUser->full_name,
-                'first_name' => $createUser->first_name,
-                'last_name' => $createUser->last_name,
-                'profile_img' => $createUser->profile_img
+                'opcode' => $request->opcode,
+                'gender' => null,
+                'birth' => null,
+                'email' => $request->email,
+                'full_name' => $request->display_name,
+                'first_name' => $request->give_name,
+                'last_name' => $request->family_name,
+                'profile_img' => $request->profile_img
             ],
             'cash_status' => [
-                'total' => intval($createUserCash->cash),
-                'earn_today' => intval($createUserCash->today_earn),
-                'last_transaction' => strval($createUserCash->last_earn)
+                'total' => 0,
+                'earn_today' => 0,
+                'last_transaction' => 0
             ]
         ];
 
