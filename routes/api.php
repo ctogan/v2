@@ -131,3 +131,6 @@ Route::post('/user/auth/register', 'Api\UserController@register');
 // HISTORY POINT AND VOUCHER
 Route::get('/point-history', 'Api\UserController@point_history');
 Route::get('/voucher-history', 'Api\UserController@voucher_history');
+
+
+Route::get('/invite-history', 'Api\UserController@invite');

@@ -772,13 +772,29 @@
                         "schema": {
                             "type": "string"
                         }
-                    },
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "A list of notifications"
+                    }
+                }
+            }
+        },
+        "/api/invite-history": {
+            "get": {
+                "tags": [
+                    "point history"
+                ],
+                "summary": "list of point",
+                "operationId": "App\\Http\\Controllers\\Api\\UserController::invite",
+                "parameters": [
                     {
-                        "name": "page",
+                        "name": "mmses",
                         "in": "query",
                         "required": true,
                         "schema": {
-                            "type": "integer"
+                            "type": "string"
                         }
                     }
                 ],

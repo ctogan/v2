@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Helpers\AWSHelper as HelpersAWSHelper;
 use App\Helpers\Operator;
 use App\Helpers\Utils;
 use App\Http\Controllers\Controller;
@@ -12,10 +13,12 @@ use App\UserConfig;
 use App\UserTargetInfo;
 use App\UserTime;
 use Aws\RAM\Exception\RAMException;
+use AWSHelper;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 use OpenApi\Util;
+use Illuminate\Support\Facades\Http;
 
 
 class UserController extends ApiController
@@ -691,14 +694,6 @@ class UserController extends ApiController
      *              type="string"
      *          )
      *     ),
-     *     @OA\Parameter(
-     *          name="page",
-     *          required=true,
-     *          in="query",
-     *          @OA\Schema(
-     *              type="integer"
-     *          )
-     *     ),
      *   @OA\Response(
      *     response=200,
      *     description="A list of notifications"
@@ -748,9 +743,81 @@ class UserController extends ApiController
 
          return $this->successResponse($d);
     }
-
+    
     public function voucher_history(){
+        $user = $this->user;
+        $uid = $user->uid;
+        $point = Point::select('user_earning_detail.txt as title','user_earning_data.*')
+        ->leftJoin('user_earning_detail' , 'user_earning_data.detail' ,'user_earning_detail.id')
+        ->where('user_earning_data.uid' , $uid)
+        ->where('user_earning_data.tm' , '>' , date('Y-m-d', strtotime('today - 30 days')))
+        ->orderBy('user_earning_data.seq' , 'DESC')
+        ->limit(50)->get();
+        if(!$point){
+            return $this->successResponse([]);
+        }
+        $data = [];
+        foreach($point as $item){
+            $date = date('Y-m-d' , strtotime($item->tm));
+            if($item->title == '' || $item->title == null){
+                $item['title'] = 'Kamu dapat Poin';
+            }
+            $data[$date][] = $item;
+        }
+        $d=[];
+        foreach($data as $k=>$v){
+            $d[] = array(
+                'date' => $k,
+                'detail' => $data[$k]
+            );
+
+        }
+        return $this->successResponse($d);
         
+    }
+    /**
+     * @OA\Get(
+     *   path="/api/invite-history",
+     *   summary="list of point",
+     *   tags={"point history"},
+     *     @OA\Parameter(
+     *          name="mmses",
+     *          required=true,
+     *          in="query",
+     *          @OA\Schema(
+     *              type="string"
+     *          )
+     *     ),
+     *   @OA\Response(
+     *     response=200,
+     *     description="A list of notifications"
+     *   )
+     * )
+     */
+    public function invite(Request $request){
+        $response = Http::post('https://api.ctree.id/api2/user/cash/all.json', [
+            'mmses' => $request->mmses,
+        ]);
+        $datas = [];
+        $data = Utils::result_http_request($response->body() , 'list');
+        if(count($data) > 0){
+            foreach($data as $v){
+                $date = trim($v['t']);
+                if($v['tt'] == '' || $v['tt'] == null){
+                    $v['title'] = 'Kamu dapat Poin';
+                }
+                $datas[$date][] = $v;
+            }   
+            $d=[];
+            foreach($datas as $k=>$v){
+                $d[] = array(
+                    'date' => $k,
+                    'detail' => $datas[$k]
+                );
+
+            }
+            return $this->successResponse($d);
+        }
     }
 
 }
