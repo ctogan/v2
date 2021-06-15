@@ -16,6 +16,6 @@ class CCAnswer extends Model
     ];
 
     public function question(){
-        return $this->belongsTo(CCQuestion::class,'cc_question_id');
+            return $this->belongsTo(CCQuestion::class,'cc_question_id');
     }
 }
