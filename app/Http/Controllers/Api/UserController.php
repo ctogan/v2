@@ -215,7 +215,7 @@ class UserController extends ApiController
             $userTargetInfo->lat = $request->lng;
             $userTargetInfo->save();
 
-            $userTime->ses = $ses;
+//            $userTime->ses = $ses;
             $userTime->last_ip = ip2long($request->getClientIp());
             $userTime->save();
 
@@ -223,7 +223,7 @@ class UserController extends ApiController
                 'session' => [
                     'u'             => strval($user->uid),
                     's'             => strval($user->sim),
-                    'ses'           => strval($ses),
+                    'ses'           => strval($userTime->ses),
                     'registered'    => true,
                 ],
                 'info' => [

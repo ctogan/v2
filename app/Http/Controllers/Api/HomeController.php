@@ -62,6 +62,10 @@ class HomeController extends ApiController
      * )
      */
     public function index(Request $request){
+//        print_r(Utils::decrypt(preg_replace('/ /', '+', "wsHLS0auVanL+kf94DUOwp6nDrL5ueqiScCG4vW3ZjPXEpdj27mMCMAxROfyMV/eytfeWDQSGlexjzTenv17Bw==")));
+//        print_r(Utils::decrypt("b0zdh6FdPHvtrchGCEisr9Fe5BCK60ttHotcWQ9JUJqO%2FXni61MkP9HLPE2tjXluJJNTBMs0otaRpB%2BqLwqd8w%3D%3D"));
+//        die();
+
         $user = $this->user;
         $today = Carbon::now();
 
