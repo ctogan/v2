@@ -391,7 +391,7 @@
                     "biodata"
                 ],
                 "summary": "get user biodata",
-                "operationId": "App\\Http\\Controllers\\API\\PersonalInformationController::get",
+                "operationId": "App\\Http\\Controllers\\Api\\PersonalInformationController::get",
                 "parameters": [
                     {
                         "name": "mmses",
@@ -415,7 +415,7 @@
                     "biodata"
                 ],
                 "summary": "get master biodata",
-                "operationId": "App\\Http\\Controllers\\API\\PersonalInformationController::get_master",
+                "operationId": "App\\Http\\Controllers\\Api\\PersonalInformationController::get_master",
                 "parameters": [
                     {
                         "name": "mmses",
@@ -437,6 +437,46 @@
                 "responses": {
                     "200": {
                         "description": "get master biodata list"
+                    }
+                }
+            }
+        },
+        "/api/personal/biodata/update": {
+            "post": {
+                "tags": [
+                    "biodata"
+                ],
+                "summary": "update personal biodata",
+                "operationId": "App\\Http\\Controllers\\Api\\PersonalInformationController::update",
+                "parameters": [
+                    {
+                        "name": "mmses",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "code",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "value",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "update personal information successfully"
                     }
                 }
             }

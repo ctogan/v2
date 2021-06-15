@@ -132,6 +132,7 @@ Route::post('/user/auth/register', 'Api\UserController@register');
 //personal information
 Route::get('/get/personal/information', 'Api\PersonalInformationController@get');
 Route::get('/get/master/biodata', 'Api\PersonalInformationController@get_master');
+Route::post('/personal/biodata/update', 'Api\PersonalInformationController@update');
 
 // HISTORY POINT AND VOUCHER
 Route::get('/point-history', 'Api\UserController@point_history');

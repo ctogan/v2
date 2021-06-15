@@ -8,6 +8,7 @@ class PersonalInformation extends Model
 {
     protected $connection = 'users';
     protected $table = 'user_bio_entry';
+    public $timestamps = false;
 
     protected $fillable = [
        'uid','code','value','register','got_rwd'
