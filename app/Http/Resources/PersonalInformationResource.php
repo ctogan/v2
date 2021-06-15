@@ -16,6 +16,7 @@ class PersonalInformationResource extends JsonResource
     {
         return [
             'uid'=>$this->uid,
+            'code_id'=>$this->code ? $this->code : '',
             'code'=>$this->code_name ? $this->code_name : '',
             'value'=>$this->value_name ? $this->value_name : ''
         ];
