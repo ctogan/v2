@@ -183,7 +183,7 @@ return [
         Barryvdh\DomPDF\ServiceProvider::class,
         App\Providers\CodeServiceProvider::class,
         App\Providers\UserServiceProvider::class,
-        BaoPham\DynamoDb\DynamoDbServiceProvider::class,
+       // BaoPham\DynamoDb\DynamoDbServiceProvider::class,
     ],
 
     /*
