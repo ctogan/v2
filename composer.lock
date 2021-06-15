@@ -2881,9 +2881,15 @@
                 "psr-6"
             ],
             "support": {
+<<<<<<< HEAD
                 "source": "https://github.com/php-fig/cache/tree/3.0.0"
             },
             "time": "2021-02-03T23:26:27+00:00"
+=======
+                "source": "https://github.com/php-fig/cache/tree/master"
+            },
+            "time": "2016-08-06T20:24:11+00:00"
+>>>>>>> 02f02dc46cdc674f2d476e63aa3e4b71ec4f0c31
         },
         {
             "name": "psr/container",
@@ -6891,7 +6897,11 @@
             ],
             "support": {
                 "issues": "https://github.com/fzaninotto/Faker/issues",
+<<<<<<< HEAD
                 "source": "https://github.com/fzaninotto/Faker/tree/master"
+=======
+                "source": "https://github.com/fzaninotto/Faker/tree/v1.9.2"
+>>>>>>> 02f02dc46cdc674f2d476e63aa3e4b71ec4f0c31
             },
             "abandoned": true,
             "time": "2020-12-11T09:59:14+00:00"

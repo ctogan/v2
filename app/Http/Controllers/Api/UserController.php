@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Helpers\Operator;
 use App\Helpers\Utils;
 use App\Http\Controllers\Controller;
+use App\Point;
 use App\UserApp;
 use App\UserCash;
 use App\UserConfig;
@@ -14,6 +15,8 @@ use Aws\RAM\Exception\RAMException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
+use OpenApi\Util;
+
 
 class UserController extends ApiController
 {
@@ -393,6 +396,7 @@ class UserController extends ApiController
         }
 
         $user = UserApp::where('email', '=', $request->email)->first();
+        $ses = substr(md5(microtime()), 0, 20);
 
         if (!$user) {
             //Register logic
@@ -400,10 +404,15 @@ class UserController extends ApiController
             $uid = UserApp::selectRaw($query)->value('uid');
             DB::beginTransaction();
             try {
+                if (count($request->profile_img) > 1) {
+                    $profile_img = $request->profile_img;
+                } else {
+                    $profile_img = null;
+                }
 
                 $createUser = UserApp::create([
                     'uid' => (int) $uid,
-                    'sim' => $request->anid,
+                    'sim' => $request->account_id,
                     'anid' => $request->anid,
                     'imei' => $request->imei,
                     'gaid' => $request->gaid,
@@ -411,7 +420,8 @@ class UserController extends ApiController
                     'last_name' => $request->family_name,
                     'full_name' => $request->display_name,
                     'email' => $request->email,
-                    'account_id' => $request->id
+                    'account_id' => $request->id,
+                    'profile_img' => $profile_img
                 ]);
 
                 $createUserConfig = UserConfig::create([
@@ -437,7 +447,6 @@ class UserController extends ApiController
                     'inv_cash_total' => 0
                 ]);
 
-                $ses = substr(md5(microtime()), 0, 20);
                 $createUserTime = UserTime::create([
                     'uid' => (int) $uid,
                     'register' => date("Y-m-d H:i:s"),
@@ -479,35 +488,35 @@ class UserController extends ApiController
         //Prepare login Here
         $data = [
             'session' => [
-                'u'             => strval($createUser->uid),
-                's'             => strval($createUser->sim),
+                'u'             => strval($uid),
+                's'             => strval($request->account_id),
                 'ses'           => strval($ses),
                 'registered'    => true,
             ],
             'info' => [
-                'u' => intval($createUser->uid),
-                'id' => strval($createUser->uid),
-                'inv_code' => strval($createUser->inv_code),
-                'reg_tm' => strtotime($createUserTime->register),
-                'ph' => strval($createUser->phone),
-                'lock_screen' => boolval($createUserConfig->lock_screen),
-                'allow_noti' => boolval($createUserConfig->allow_noti),
+                'u' => intval($uid),
+                'id' => strval($uid),
+                'inv_code' => strval(Utils::generateInvCode()),
+                'reg_tm' => date("Y-m-d H:i:s"),
+                'ph' => null,
+                'lock_screen' => false,
+                'allow_noti' => true,
                 'invite_url' => 'http://inv.sctrk.site/',
 //                'opname' => strval(Operator::getNameByOpcode(strval($createUserTargetInfo->opcode))),
                 'opname' => 'Indosat',
-                'opcode' => strval($createUserTargetInfo->opcode),
-                'gender' => $createUserTargetInfo->gender ? $createUserTargetInfo->gender : 'U',
-                'birth' => strval($createUserTargetInfo->birth),
-                'email' => $createUser->email,
-                'full_name' => $createUser->full_name,
-                'first_name' => $createUser->first_name,
-                'last_name' => $createUser->last_name,
-                'profile_img' => $createUser->profile_img
+                'opcode' => $request->opcode,
+                'gender' => null,
+                'birth' => null,
+                'email' => $request->email,
+                'full_name' => $request->display_name,
+                'first_name' => $request->give_name,
+                'last_name' => $request->family_name,
+                'profile_img' => $request->profile_img
             ],
             'cash_status' => [
-                'total' => intval($createUserCash->cash),
-                'earn_today' => intval($createUserCash->today_earn),
-                'last_transaction' => strval($createUserCash->last_earn)
+                'total' => 0,
+                'earn_today' => 0,
+                'last_transaction' => 0
             ]
         ];
 
@@ -667,6 +676,81 @@ class UserController extends ApiController
         ];
 
         return $this->successResponse($data);
+    }
+
+    /**
+     * @OA\Get(
+     *   path="/api/point-history",
+     *   summary="list of point",
+     *   tags={"point history"},
+     *     @OA\Parameter(
+     *          name="mmses",
+     *          required=true,
+     *          in="query",
+     *          @OA\Schema(
+     *              type="string"
+     *          )
+     *     ),
+     *     @OA\Parameter(
+     *          name="page",
+     *          required=true,
+     *          in="query",
+     *          @OA\Schema(
+     *              type="integer"
+     *          )
+     *     ),
+     *   @OA\Response(
+     *     response=200,
+     *     description="A list of notifications"
+     *   )
+     * )
+     */
+    public function point_history(Request $request){
+        $user = $this->user;
+        $uid = $user->uid;
+        $point = Point::select('user_earning_detail.txt as title','user_earning_data.*')
+        ->leftJoin('user_earning_detail' , 'user_earning_data.detail' ,'user_earning_detail.id')
+        ->where('user_earning_data.uid' , $uid)
+        ->where('user_earning_data.tm' , '>' , date('Y-m-d', strtotime('today - 30 days')))
+        ->orderBy('user_earning_data.seq' , 'DESC')
+        ->limit(50)->get();
+        if(!$point){
+            return $this->successResponse([]);
+        }
+        $data = [];
+        foreach($point as $item){
+            $date = date('Y-m-d' , strtotime($item->tm));
+            if($item->title == '' || $item->title == null){
+                $item['title'] = 'Kamu dapat Poin';
+            }
+            $data[$date][] = $item;
+        }
+        $d=[];
+        foreach($data as $k=>$v){
+            $d[] = array(
+                'date' => $k,
+                'detail' => $data[$k]
+            );
+
+        }
+
+    
+
+        
+        // $notification = Notification::
+        //     with(['detail'=>function($q) use($uid){
+        //         return $q->where('uid','=', $uid);
+        //     }])->paginate();
+
+        // $response = [
+        //     'notification' => NotificationResource::collection($notification)
+        // ];
+
+         return $this->successResponse($d);
+    }
+
+    public function voucher_history(){
+        
     }
 
 }

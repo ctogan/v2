@@ -812,6 +812,38 @@
                     }
                 }
             }
+        },
+        "/api/point-history": {
+            "get": {
+                "tags": [
+                    "point history"
+                ],
+                "summary": "list of point",
+                "operationId": "App\\Http\\Controllers\\Api\\UserController::point_history",
+                "parameters": [
+                    {
+                        "name": "mmses",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "A list of notifications"
+                    }
+                }
+            }
         }
     },
     "security": [

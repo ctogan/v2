@@ -17,6 +17,7 @@ class UnfinishedResource extends JsonResource
         return [
             'adid' => $this->adid,
             'img_icon' => 'https://adcdn.ctree.id/'.$this->img_icon,
+            'point_reward' => $this->display_reward
         ];
     }
 }
