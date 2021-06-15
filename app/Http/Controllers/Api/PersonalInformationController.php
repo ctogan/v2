@@ -5,6 +5,8 @@ namespace App\Http\Controllers\Api;
 use App\BioEntryCode;
 use App\BioEntryValue;
 use App\CCSession;
+use App\Helpers\Code;
+use App\Helpers\User;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\PersonalInformationResource;
 use App\PersonalInformation;
@@ -38,11 +40,12 @@ class PersonalInformationController extends ApiController
 
         $uid = $this->user->uid;
 
-        $biodata = DB::connection('users')->select('select user_bio_entry.uid,user_bio_entry.code,bio_entry_code.code_name,user_bio_entry.value,bio_entry_value.value_name from user_bio_entry
-            left join bio_entry_code ON bio_entry_code.code = user_bio_entry.code
-            left join bio_entry_value ON bio_entry_value.value = user_bio_entry.value
-            where user_bio_entry.uid = '.$uid.' and bio_entry_value.bio_entry_code_id = user_bio_entry.code
-        ');
+        $biodata = DB::connection('users')->select('
+            select b.uid,a.code,a.code_name , c.value_name from bio_entry_code as a
+            LEFT JOIN user_bio_entry as b on b.code = a.code AND b.uid = '.$uid.'
+            LEFT JOIN bio_entry_value as c on c.value = b.value AND c.bio_entry_code_id = b.code ORDER BY a.code ASC;
+            ');
+
 
         $response =[
             'personal_information'=> PersonalInformationResource::collection($biodata),
@@ -130,27 +133,42 @@ class PersonalInformationController extends ApiController
 
     public function update(Request $request){
 
-        $uid = $this->user->uid;
-        try{
-            PersonalInformation::where([
-                ['uid',$uid],
-                ['code',$request->code]
-            ])->update
-            ([
-                "value" => $request->value,
-            ]);
 
-            DB::commit();
-        }
-        catch (Exception $e) {
-            DB::rollback();
+        $user = $this->user;
+        $uid = $user->uid;
+        $check_user = PersonalInformation::where('uid',$uid)->where('code',$request->code)->first();
+
+        if($check_user){
+            try{
+                PersonalInformation::where([
+                    ['uid',$uid],
+                    ['code',$request->code]
+                ])->update
+                ([
+                    "value" => $request->value,
+                ]);
+
+                DB::commit();
+            }
+            catch (Exception $e) {
+                DB::rollback();
+            }
+        }else{
+            $data = [
+                'uid'=>$uid,
+                'code'=> $request->code,
+                'value' => $request->value,
+                'register' =>  date('Y-m-d h:m:s'),
+                'got_rwd' => date('Y-m-d h:m:s'),
+            ];
+            PersonalInformation::insert($data);
+
+            User::earn_point($user, Code::CODE_BONUS,'100' ,'biodata reward'."..." );
         }
 
-        $biodata = DB::connection('users')->select('select user_bio_entry.uid,user_bio_entry.code,bio_entry_code.code_name,user_bio_entry.value,bio_entry_value.value_name from user_bio_entry
-            left join bio_entry_code ON bio_entry_code.code = user_bio_entry.code
-            left join bio_entry_value ON bio_entry_value.value = user_bio_entry.value
-            where user_bio_entry.uid = '.$uid.' and bio_entry_value.bio_entry_code_id = user_bio_entry.code
-        ');
+        $biodata = DB::connection('users')->select('select b.uid,a.code,a.code_name , c.value_name from bio_entry_code as a
+            LEFT JOIN user_bio_entry as b on b.code = a.code AND b.uid = '.$uid.'
+            LEFT JOIN bio_entry_value as c on c.value = b.value AND c.bio_entry_code_id = b.code ORDER BY a.code ASC;');
 
         $response =[
             'personal_information'=> PersonalInformationResource::collection($biodata),
