@@ -725,6 +725,16 @@ class UserController extends ApiController
             }
             $data[$date][] = $item;
         }
+        $d=[];
+        foreach($data as $k=>$v){
+            $d[] = array(
+                'date' => $k,
+                'detail' => $data[$k]
+            );
+
+        }
+
+    
 
         
         // $notification = Notification::
@@ -736,7 +746,7 @@ class UserController extends ApiController
         //     'notification' => NotificationResource::collection($notification)
         // ];
 
-         return $this->successResponse($data);
+         return $this->successResponse($d);
     }
 
     public function voucher_history(){
