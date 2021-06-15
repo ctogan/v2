@@ -30,6 +30,7 @@ class Controller extends BaseController
     protected const TRANSACTION_ERROR_GENERAL = "Terjadi kesalahan saat proses";
     protected const OUT_OF_STOCK = "Voucher out of stock";
     protected const USER_EMAIL_EXIST = "Email sudah pernah di daftar";
+    protected const PHONE_EMAIL_NOT_SYNC = "Nomor telepon dan email tidak sesuai";
     protected const ERROR_PIN = 'Pin Salah';
     protected const SUCCESS_PIN = 'Pin Sukses';
     protected const ERROR_PIN_DESC = 'Pin Salah';
