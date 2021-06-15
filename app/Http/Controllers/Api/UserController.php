@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers\Api;
 
-use App\Helpers\AWSHelper as HelpersAWSHelper;
 use App\Helpers\Operator;
 use App\Helpers\Utils;
 use App\Http\Controllers\Controller;
