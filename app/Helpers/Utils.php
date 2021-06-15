@@ -70,4 +70,30 @@ class Utils {
         }
         return $randomString;
     }
+
+    public static function result_http_request($str , $key) {
+        if(!static::tryJson($str)) return [];
+        $data = json_decode($str , true);
+        if(count($data) > 0){
+            if(array_key_exists('result' , $data)){
+                if(array_key_exists('list' , $data['result'])){
+                    return $data['result'][$key];
+                }
+            }
+        }
+        return [];
+    }
+
+    static function tryJson($str){
+        $str = trim($str);
+        if (is_string($str) && ((substr($str, 0, 1) == '{' && substr($str, -1, 1) == '}') || (substr($str, 0, 1) == '[' && substr($str, -1, 1) == ']'))) {
+			//json
+			$obj = json_decode($str, true);
+			if ($obj) {
+				return true;
+			}
+		}
+		return false;
+    }
+
 }
