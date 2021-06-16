@@ -5,15 +5,20 @@ namespace App\Http\Controllers\Api;
 use App\Helpers\Operator;
 use App\Helpers\Utils;
 use App\Http\Controllers\Controller;
+use App\Point;
 use App\UserApp;
 use App\UserCash;
 use App\UserConfig;
 use App\UserTargetInfo;
 use App\UserTime;
 use Aws\RAM\Exception\RAMException;
+use AWSHelper;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
+use OpenApi\Util;
+use Illuminate\Support\Facades\Http;
+
 
 class UserController extends ApiController
 {
@@ -183,6 +188,10 @@ class UserController extends ApiController
 
                 if ($connectEmail <= 0) {
                     return $this->errorResponse($validation->errors(),static::TRANSACTION_ERROR_GENERAL);
+                }
+            } else {
+                if ($user->email != $request->email) {
+                    return $this->errorResponse($validation->errors(),static::PHONE_EMAIL_NOT_SYNC);
                 }
             }
 
@@ -409,7 +418,7 @@ class UserController extends ApiController
 
                 $createUser = UserApp::create([
                     'uid' => (int) $uid,
-                    'sim' => $request->anid,
+                    'sim' => $request->account_id,
                     'anid' => $request->anid,
                     'imei' => $request->imei,
                     'gaid' => $request->gaid,
@@ -485,35 +494,35 @@ class UserController extends ApiController
         //Prepare login Here
         $data = [
             'session' => [
-                'u'             => strval($createUser->uid),
-                's'             => strval($createUser->sim),
+                'u'             => strval($uid),
+                's'             => strval($request->account_id),
                 'ses'           => strval($ses),
                 'registered'    => true,
             ],
             'info' => [
-                'u' => intval($createUser->uid),
-                'id' => strval($createUser->uid),
-                'inv_code' => strval($createUser->inv_code),
-                'reg_tm' => strtotime($createUserTime->register),
-                'ph' => strval($createUser->phone),
-                'lock_screen' => boolval($createUserConfig->lock_screen),
-                'allow_noti' => boolval($createUserConfig->allow_noti),
+                'u' => intval($uid),
+                'id' => strval($uid),
+                'inv_code' => strval(Utils::generateInvCode()),
+                'reg_tm' => date("Y-m-d H:i:s"),
+                'ph' => null,
+                'lock_screen' => false,
+                'allow_noti' => true,
                 'invite_url' => 'http://inv.sctrk.site/',
 //                'opname' => strval(Operator::getNameByOpcode(strval($createUserTargetInfo->opcode))),
                 'opname' => 'Indosat',
-                'opcode' => strval($createUserTargetInfo->opcode),
-                'gender' => $createUserTargetInfo->gender ? $createUserTargetInfo->gender : 'U',
-                'birth' => strval($createUserTargetInfo->birth),
-                'email' => $createUser->email,
-                'full_name' => $createUser->full_name,
-                'first_name' => $createUser->first_name,
-                'last_name' => $createUser->last_name,
-                'profile_img' => $createUser->profile_img
+                'opcode' => $request->opcode,
+                'gender' => null,
+                'birth' => null,
+                'email' => $request->email,
+                'full_name' => $request->display_name,
+                'first_name' => $request->give_name,
+                'last_name' => $request->family_name,
+                'profile_img' => $request->profile_img
             ],
             'cash_status' => [
-                'total' => intval($createUserCash->cash),
-                'earn_today' => intval($createUserCash->today_earn),
-                'last_transaction' => strval($createUserCash->last_earn)
+                'total' => 0,
+                'earn_today' => 0,
+                'last_transaction' => 0
             ]
         ];
 
@@ -673,6 +682,145 @@ class UserController extends ApiController
         ];
 
         return $this->successResponse($data);
+    }
+
+    /**
+     * @OA\Get(
+     *   path="/api/point-history",
+     *   summary="list of point",
+     *   tags={"point history"},
+     *     @OA\Parameter(
+     *          name="mmses",
+     *          required=true,
+     *          in="query",
+     *          @OA\Schema(
+     *              type="string"
+     *          )
+     *     ),
+     *   @OA\Response(
+     *     response=200,
+     *     description="A list of notifications"
+     *   )
+     * )
+     */
+    public function point_history(Request $request){
+        $user = $this->user;
+        $uid = $user->uid;
+        $point = Point::select('user_earning_detail.txt as title','user_earning_data.*')
+        ->leftJoin('user_earning_detail' , 'user_earning_data.detail' ,'user_earning_detail.id')
+        ->where('user_earning_data.uid' , $uid)
+        ->where('user_earning_data.tm' , '>' , date('Y-m-d', strtotime('today - 30 days')))
+        ->orderBy('user_earning_data.seq' , 'DESC')
+        ->limit(50)->get();
+        if(!$point){
+            return $this->successResponse([]);
+        }
+        $data = [];
+        foreach($point as $item){
+            $date = date('Y-m-d' , strtotime($item->tm));
+            if($item->title == '' || $item->title == null){
+                $item['title'] = 'Kamu dapat Poin';
+            }
+            $data[$date][] = $item;
+        }
+        $d=[];
+        foreach($data as $k=>$v){
+            $d[] = array(
+                'date' => $k,
+                'detail' => $data[$k]
+            );
+
+        }
+
+
+
+
+        // $notification = Notification::
+        //     with(['detail'=>function($q) use($uid){
+        //         return $q->where('uid','=', $uid);
+        //     }])->paginate();
+
+        // $response = [
+        //     'notification' => NotificationResource::collection($notification)
+        // ];
+
+         return $this->successResponse($d);
+    }
+
+    public function voucher_history(){
+        $user = $this->user;
+        $uid = $user->uid;
+        $point = Point::select('user_earning_detail.txt as title','user_earning_data.*')
+        ->leftJoin('user_earning_detail' , 'user_earning_data.detail' ,'user_earning_detail.id')
+        ->where('user_earning_data.uid' , $uid)
+        ->where('user_earning_data.tm' , '>' , date('Y-m-d', strtotime('today - 30 days')))
+        ->orderBy('user_earning_data.seq' , 'DESC')
+        ->limit(50)->get();
+        if(!$point){
+            return $this->successResponse([]);
+        }
+        $data = [];
+        foreach($point as $item){
+            $date = date('Y-m-d' , strtotime($item->tm));
+            if($item->title == '' || $item->title == null){
+                $item['title'] = 'Kamu dapat Poin';
+            }
+            $data[$date][] = $item;
+        }
+        $d=[];
+        foreach($data as $k=>$v){
+            $d[] = array(
+                'date' => $k,
+                'detail' => $data[$k]
+            );
+
+        }
+        return $this->successResponse($d);
+
+    }
+    /**
+     * @OA\Get(
+     *   path="/api/invite-history",
+     *   summary="list of point",
+     *   tags={"point history"},
+     *     @OA\Parameter(
+     *          name="mmses",
+     *          required=true,
+     *          in="query",
+     *          @OA\Schema(
+     *              type="string"
+     *          )
+     *     ),
+     *   @OA\Response(
+     *     response=200,
+     *     description="A list of notifications"
+     *   )
+     * )
+     */
+    public function invite(Request $request){
+        $response = Http::post('https://api.ctree.id/api2/user/cash/all.json', [
+            'mmses' => $request->mmses,
+        ]);
+        $datas = [];
+        $data = Utils::result_http_request($response->body() , 'list');
+        if(count($data) > 0){
+            foreach($data as $v){
+                $date = trim($v['t']);
+                if($v['tt'] == '' || $v['tt'] == null){
+                    $v['title'] = 'Kamu dapat Poin';
+                }
+                $datas[$date][] = $v;
+            }
+            $d=[];
+            foreach($datas as $k=>$v){
+                $d[] = array(
+                    'date' => $k,
+                    'detail' => $datas[$k]
+                );
+
+            }
+            return $this->successResponse($d);
+        }
     }
 
 }

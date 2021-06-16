@@ -162,6 +162,7 @@ return [
         Illuminate\Validation\ValidationServiceProvider::class,
         Illuminate\View\ViewServiceProvider::class,
         Maatwebsite\Excel\ExcelServiceProvider::class,
+        //Aws\Laravel\AwsServiceProvider::class,
 
         /*
          * Package Service Providers...
@@ -183,6 +184,7 @@ return [
         App\Providers\CodeServiceProvider::class,
         App\Providers\UserServiceProvider::class,
         App\Providers\PulsaServiceProvider::class,
+       // BaoPham\DynamoDb\DynamoDbServiceProvider::class,
     ],
 
     /*
@@ -243,6 +245,7 @@ return [
         'Code' => App\Helpers\Code::class,
         'Operator' => App\Helpers\Operator::class,
         'Pulsa' => App\Helpers\Pulsa::class,
+        'AWS' => Aws\Laravel\AwsFacade::class,
     ],
 
 ];

@@ -449,6 +449,102 @@
                 }
             }
         },
+        "/api/get/personal/information": {
+            "get": {
+                "tags": [
+                    "biodata"
+                ],
+                "summary": "get user biodata",
+                "operationId": "App\\Http\\Controllers\\Api\\PersonalInformationController::get",
+                "parameters": [
+                    {
+                        "name": "mmses",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "get biodata per user"
+                    }
+                }
+            }
+        },
+        "/api/get/master/biodata": {
+            "get": {
+                "tags": [
+                    "biodata"
+                ],
+                "summary": "get master biodata",
+                "operationId": "App\\Http\\Controllers\\Api\\PersonalInformationController::get_master",
+                "parameters": [
+                    {
+                        "name": "mmses",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "code",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "get master biodata list"
+                    }
+                }
+            }
+        },
+        "/api/personal/biodata/update": {
+            "post": {
+                "tags": [
+                    "biodata"
+                ],
+                "summary": "update personal biodata",
+                "operationId": "App\\Http\\Controllers\\Api\\PersonalInformationController::update",
+                "parameters": [
+                    {
+                        "name": "mmses",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "code",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "value",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "update personal information successfully"
+                    }
+                }
+            }
+        },
         "/api/search/recommendation": {
             "get": {
                 "tags": [
@@ -817,6 +913,54 @@
                     },
                     "219": {
                         "description": "user not found"
+                    }
+                }
+            }
+        },
+        "/api/point-history": {
+            "get": {
+                "tags": [
+                    "point history"
+                ],
+                "summary": "list of point",
+                "operationId": "App\\Http\\Controllers\\Api\\UserController::point_history",
+                "parameters": [
+                    {
+                        "name": "mmses",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "A list of notifications"
+                    }
+                }
+            }
+        },
+        "/api/invite-history": {
+            "get": {
+                "tags": [
+                    "point history"
+                ],
+                "summary": "list of point",
+                "operationId": "App\\Http\\Controllers\\Api\\UserController::invite",
+                "parameters": [
+                    {
+                        "name": "mmses",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "A list of notifications"
                     }
                 }
             }
