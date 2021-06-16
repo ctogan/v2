@@ -182,6 +182,7 @@ return [
         Barryvdh\DomPDF\ServiceProvider::class,
         App\Providers\CodeServiceProvider::class,
         App\Providers\UserServiceProvider::class,
+        App\Providers\PulsaServiceProvider::class,
     ],
 
     /*
@@ -241,6 +242,7 @@ return [
         'PDF' => Barryvdh\DomPDF\Facade::class,
         'Code' => App\Helpers\Code::class,
         'Operator' => App\Helpers\Operator::class,
+        'Pulsa' => App\Helpers\Pulsa::class,
     ],
 
 ];

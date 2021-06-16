@@ -8,6 +8,8 @@ use App\CCParticipantDetail;
 use App\CCQuestion;
 use App\CCSession;
 use App\CCSessionQuestion;
+use App\Helpers\Code;
+use App\Helpers\User;
 use App\Http\Resources\CCSessionResource;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -190,6 +192,8 @@ class CerdasCermatController extends ApiController
         $response['session'] = CCSessionResource::collection(array($session));
 
         Cache::forget('_list_session_'.$user->uid);
+
+        User::use_cash($user,Code::USING_PAY_CCC, $session->registration_fee);
 
         return $this->successResponse($response);
     }

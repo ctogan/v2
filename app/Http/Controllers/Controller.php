@@ -43,6 +43,8 @@ class Controller extends BaseController
     protected const ERROR_CC_WAITING_WINNER = 'Kamu sudah menyelesaikan sesi ini. Pegumuman pemenang dilakukan diakhir sesi';
     const ERROR_USER_NOT_FOUND = 'User Not Found';
     const ERROR_USER_OTP = 'Invalid OTP';
+    const ERROR_FLASH_EVENT_EXPIRED = 'Event ini sudah berakhir atau belum dimulai';
+    const ERROR_FLASH_EVENT_OUT_OF_STOCK = 'Mohon maaf, stock telah habis.';
 
     // TRANSACTION
     protected const CODE_ERROR_ORDER_NUMBER_NOT_FOUND = '401';
@@ -70,6 +72,8 @@ class Controller extends BaseController
     protected const ERROR_CODE_CC_NOT_REGISTRERED = '219';
     protected const ERROR_CODE_CC_SESSION_ENDED = '220';
     protected const ERROR_CODE_CC_WAITING_WINNER = '221';
+    const ERROR_CODE_FLASH_EVENT_EXPIRED = '222';
+    const ERROR_CODE_FLASH_EVENT_OUT_OF_STOCK = '223';
 
 
     // MESAAGE

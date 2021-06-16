@@ -150,7 +150,54 @@ class User {
         return true;
     }
 
-    public static function use_cash(){
+    public static function use_cash($user, $code, $cash, $detail = null, $uniq = null, $force = false){
+        $user_cash = UserCash::where("uid",'=',$user->uid)->first();
+        if (!self::can_earn_cash($user)) {
+            return false;
+        }
 
+        $today = date('Y-m-d');
+
+        if (!self::can_earn_cash($user)) {
+            return false;
+        }
+
+        $cash = abs($cash);
+        $last_cash = $user->total_earn - $user->total_use;
+        if (!$force && $user_cash < $cash) {
+            //throw Err::INTERNAL(gt('Cash is not enough'));
+            return false;
+        }
+
+        $earning = [
+            'uid' => $user->uid,
+            'code' => $code,
+            'cash' => $cash,
+            'before_free_cash' => 0,
+            'before_work_cash' => $last_cash,
+            'after_free_cash' => 0,
+            'after_work_cash' => $last_cash + $cash,
+            'detail' => $detail,
+            'uniq' => $uniq
+        ];
+
+        if (!Earning::insert($earning)) {
+            return false;
+        }
+
+        $user_cash->total_use += $cash;
+        if ($today != $user_cash->last_earn) {
+            $user_cash->today_earn = 0;
+            if (substr($today, 0, 7) != substr($user_cash->last_earn, 0, 7)) {
+                $user_cash->month_earn = 0;
+            }
+            $user_cash->last_earn = $today;
+        }
+
+        if (!$user_cash->save()){
+            return false;
+        }
+
+        return true;
     }
 }

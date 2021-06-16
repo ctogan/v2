@@ -158,6 +158,70 @@
                 }
             }
         },
+        "/api/flash-event/detail/product": {
+            "get": {
+                "tags": [
+                    "flash-event"
+                ],
+                "summary": "get product by flash event detail code",
+                "operationId": "App\\Http\\Controllers\\Api\\FlashEventController::get_flash_event_product",
+                "parameters": [
+                    {
+                        "name": "mmses",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "flash_detail_code",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Product details"
+                    }
+                }
+            }
+        },
+        "/api/flash-event/detail/product/buy": {
+            "post": {
+                "tags": [
+                    "flash-event"
+                ],
+                "summary": "buy the product by flash event detail code",
+                "operationId": "App\\Http\\Controllers\\Api\\FlashEventController::buy_product",
+                "parameters": [
+                    {
+                        "name": "mmses",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "flash_detail_code",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Transaction success"
+                    }
+                }
+            }
+        },
         "/api/home": {
             "get": {
                 "tags": [

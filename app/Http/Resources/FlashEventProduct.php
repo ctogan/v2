@@ -4,7 +4,7 @@ namespace App\Http\Resources;
 
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class FlashEventDetailResource extends JsonResource
+class FlashEventProduct extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -20,7 +20,6 @@ class FlashEventDetailResource extends JsonResource
             'product_name' => $this->product->product_name,
             'product_img' => $this->product->img,
             'point' => $this->point,
-            'stock' => $this->stock,
             'cap' => $this->cap
         ];
     }
