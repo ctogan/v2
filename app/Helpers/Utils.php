@@ -96,4 +96,7 @@ class Utils {
 		return false;
     }
 
+    public static function db_earning($uid){
+        return 'earning_'.$uid%2;
+    }
 }

@@ -245,7 +245,7 @@ return [
         'Code' => App\Helpers\Code::class,
         'Operator' => App\Helpers\Operator::class,
         'Pulsa' => App\Helpers\Pulsa::class,
-        'AWS' => Aws\Laravel\AwsFacade::class,
+        //'AWS' => Aws\Laravel\AwsFacade::class,
     ],
 
 ];

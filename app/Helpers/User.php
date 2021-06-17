@@ -8,7 +8,6 @@ use App\UserTime;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
-use phpDocumentor\Reflection\Types\Self_;
 
 class User {
 
@@ -121,7 +120,7 @@ class User {
             'uniq' => $uniq
         ];
 
-        if (!Earning::insert($earning)) {
+        if (!Earning::on(Utils::db_earning($user->uid))->insert($earning)) {
             return false;
         }
 
@@ -164,7 +163,7 @@ class User {
 
         $cash = abs($cash);
         $last_cash = $user->total_earn - $user->total_use;
-        if (!$force && $user_cash < $cash) {
+        if (!$force && $last_cash < $cash) {
             //throw Err::INTERNAL(gt('Cash is not enough'));
             return false;
         }
@@ -172,16 +171,16 @@ class User {
         $earning = [
             'uid' => $user->uid,
             'code' => $code,
-            'cash' => $cash,
+            'cash' => -$cash,
             'before_free_cash' => 0,
             'before_work_cash' => $last_cash,
             'after_free_cash' => 0,
-            'after_work_cash' => $last_cash + $cash,
+            'after_work_cash' => $last_cash - $cash,
             'detail' => $detail,
             'uniq' => $uniq
         ];
 
-        if (!Earning::insert($earning)) {
+        if (!Earning::on(Utils::db_earning($user->uid))->insert($earning)) {
             return false;
         }
 

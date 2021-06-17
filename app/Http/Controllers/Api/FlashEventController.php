@@ -144,8 +144,12 @@ class FlashEventController extends ApiController
             return $this->errorResponse(static::ERROR_NOT_FOUND,static::CODE_ERROR_VALIDATION);
         }
 
-        if(count(self::map_flash_event($product->flash_event->event_code)) == 0){
+        if(count(self::map_flash_event($product->$product->event_code)) == 0){
             return $this->errorResponse(static::ERROR_FLASH_EVENT_EXPIRED,static::ERROR_CODE_FLASH_EVENT_EXPIRED);
+        }
+
+        if (!$user->phone) {
+            return $this->errorResponse(static::ERROR_NEED_PHONE,static::ERROR_CODE_PHONE_NUMBER);
         }
 
         $stock = PulsaBuy::where('flash_detail_code','=',$request->flash_detail_code)->count();
@@ -154,9 +158,23 @@ class FlashEventController extends ApiController
             return $this->errorResponse(static::ERROR_FLASH_EVENT_OUT_OF_STOCK,static::ERROR_CODE_FLASH_EVENT_OUT_OF_STOCK);
         }
 
-        $response = [];
+        $pulsa_buy = [
+            'uid' => $user->uid,
+            'pulsa_goods_id' => 0,
+            'cash' => $product->point,
+            'phone' => $user->phone
+        ];
 
-        return $this->successResponse($product);
+        $status = false;
+        if(PulsaBuy::insert($pulsa_buy)){
+            $status = true;
+        }
+
+        $response = [
+            'status' => $status
+        ];
+
+        return $this->successResponse($response);
     }
 
     public function map_flash_event($event_code){

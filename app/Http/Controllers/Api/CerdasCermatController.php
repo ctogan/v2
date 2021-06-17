@@ -193,7 +193,7 @@ class CerdasCermatController extends ApiController
 
         Cache::forget('_list_session_'.$user->uid);
 
-        User::use_cash($user,Code::USING_PAY_CCC, $session->registration_fee);
+        User::use_cash($user,Code::USING_PAY_CCC, $session->registration_fee, 'Registration Cerdas Cermat');
 
         return $this->successResponse($response);
     }
