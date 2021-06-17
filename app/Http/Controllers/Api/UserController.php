@@ -189,11 +189,12 @@ class UserController extends ApiController
                 if ($connectEmail <= 0) {
                     return $this->errorResponse($validation->errors(),static::TRANSACTION_ERROR_GENERAL);
                 }
-            } else {
-                if ($user->email != $request->email) {
-                    return $this->errorResponse($validation->errors(),static::PHONE_EMAIL_NOT_SYNC);
-                }
             }
+//            else {
+//                if ($user->email != $request->email) {
+//                    return $this->errorResponse($validation->errors(),static::PHONE_EMAIL_NOT_SYNC);
+//                }
+//            }
 
             $userConfig = UserConfig::where('uid', $user->uid)->first();
             $userCash = UserCash::where('uid', $user->uid)->first();
