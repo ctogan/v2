@@ -501,7 +501,7 @@ class UserController extends ApiController
         $data = [
             'session' => [
                 'u'             => strval($uid),
-                's'             => strval($request->account_id),
+                's'             => strval($request->id),
                 'ses'           => strval($ses),
                 'registered'    => true,
             ],
