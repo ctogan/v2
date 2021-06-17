@@ -414,8 +414,8 @@ class UserController extends ApiController
             //Register logic
             $query = "nextval('uid') as uid";
             $uid = UserApp::selectRaw($query)->value('uid');
-            DB::beginTransaction();
-            try {
+//            DB::beginTransaction();
+//            try {
                 if (count($request->profile_img) > 1) {
                     $profile_img = $request->profile_img;
                 } else {
@@ -488,10 +488,10 @@ class UserController extends ApiController
                     'device_name' => null,
                 ]);
 
-                DB::commit();
-            }catch (\Exception $e) {
-                DB::rollback();
-            }
+//                DB::commit();
+//            }catch (\Exception $e) {
+//                DB::rollback();
+//            }
 
         } else {
             return $this->errorResponse($validation->errors(),static::USER_EMAIL_EXIST);
