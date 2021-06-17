@@ -127,7 +127,13 @@ class UserController extends ApiController
 
             return $this->successResponse($data);
         } else {
-            return $this->errorResponse($validation->errors(),static::ERROR_USER_NOT_FOUND);
+            $data = [
+                'code' => 401,
+                'status' => false,
+                'message' => 'Email not found.'
+            ];
+            return $this->successResponse($data);
+//            return $this->errorResponse($validation->errors(),static::ERROR_USER_NOT_FOUND);
         }
     }
 
@@ -191,7 +197,13 @@ class UserController extends ApiController
                 }
             } else {
                 if ($user->email != $request->email) {
-                    return $this->errorResponse($validation->errors(),static::PHONE_EMAIL_NOT_SYNC);
+                    $data = [
+                        'code' => 401,
+                        'status' => false,
+                        'message' => 'Phone number and email does not match.'
+                    ];
+                    return $this->successResponse($data);
+//                    return $this->errorResponse($validation->errors(),static::PHONE_EMAIL_NOT_SYNC);
                 }
             }
 
@@ -410,7 +422,7 @@ class UserController extends ApiController
             $uid = UserApp::selectRaw($query)->value('uid');
             DB::beginTransaction();
             try {
-                if (count($request->profile_img) > 1) {
+                if (strlen($request->profile_img) > 1) {
                     $profile_img = $request->profile_img;
                 } else {
                     $profile_img = null;
@@ -418,7 +430,7 @@ class UserController extends ApiController
 
                 $createUser = UserApp::create([
                     'uid' => (int) $uid,
-                    'sim' => $request->account_id,
+                    'sim' => $request->id,
                     'anid' => $request->anid,
                     'imei' => $request->imei,
                     'gaid' => $request->gaid,
@@ -488,14 +500,20 @@ class UserController extends ApiController
             }
 
         } else {
-            return $this->errorResponse($validation->errors(),static::USER_EMAIL_EXIST);
+            $data = [
+                'code' => 401,
+                'status' => false,
+                'message' => 'Email already registered.'
+            ];
+            return $this->successResponse($data);
+//            return $this->errorResponse($validation->errors(),static::USER_EMAIL_EXIST);
         }
 
         //Prepare login Here
         $data = [
             'session' => [
                 'u'             => strval($uid),
-                's'             => strval($request->account_id),
+                's'             => strval($request->id),
                 'ses'           => strval($ses),
                 'registered'    => true,
             ],
