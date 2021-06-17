@@ -127,7 +127,13 @@ class UserController extends ApiController
 
             return $this->successResponse($data);
         } else {
-            return $this->errorResponse($validation->errors(),static::ERROR_USER_NOT_FOUND);
+            $data = [
+                'code' => 401,
+                'status' => false,
+                'message' => 'Email not found.'
+            ];
+            return $this->successResponse($data);
+//            return $this->errorResponse($validation->errors(),static::ERROR_USER_NOT_FOUND);
         }
     }
 
@@ -424,7 +430,7 @@ class UserController extends ApiController
 
                 $createUser = UserApp::create([
                     'uid' => (int) $uid,
-                    'sim' => $request->account_id,
+                    'sim' => $request->id,
                     'anid' => $request->anid,
                     'imei' => $request->imei,
                     'gaid' => $request->gaid,
