@@ -4,6 +4,8 @@ namespace App\Http\Controllers\Api;
 
 use App\FlashEvent;
 use App\FlashEventDetail;
+use App\Helpers\Code;
+use App\Helpers\User;
 use App\Http\Resources\FlashEventDetailResource;
 use App\Http\Resources\FlashEventResource;
 use App\PulsaBuy;
@@ -97,7 +99,6 @@ class FlashEventController extends ApiController
 
         $stock = PulsaBuy::where('flash_detail_code','=',$request->flash_detail_code)->count();
 
-
         foreach ($product as &$item){
             $item['stock'] = $stock;
         }
@@ -133,10 +134,29 @@ class FlashEventController extends ApiController
      *   @OA\Response(
      *     response=200,
      *     description="Transaction success"
+     *   ),
+     *   @OA\Response(
+     *     response=201,
+     *     description="Flash event not found"
+     *   ),
+     *   @OA\Response(
+     *     response=222,
+     *     description="Flash event expired"
+     *   ),
+     *   @OA\Response(
+     *     response=223,
+     *     description="Out of stock"
+     *   ),
+     *   @OA\Response(
+     *     response=224,
+     *     description="Please verify the phone number"
      *   )
      * )
      */
     public function buy_product(Request $request){
+        $rand = rand(30,120);
+        sleep($rand);
+
         $user = $this->user;
 
         $product = FlashEventDetail::with('flash_event')->where('flash_detail_code','=', $request->flash_detail_code)->first();
@@ -154,7 +174,7 @@ class FlashEventController extends ApiController
 
         $stock = PulsaBuy::where('flash_detail_code','=',$request->flash_detail_code)->count();
 
-        if($product->cap < $stock){
+        if($product->cap <= $stock){
             return $this->errorResponse(static::ERROR_FLASH_EVENT_OUT_OF_STOCK,static::ERROR_CODE_FLASH_EVENT_OUT_OF_STOCK);
         }
 
@@ -166,8 +186,10 @@ class FlashEventController extends ApiController
         ];
 
         $status = false;
-        if(PulsaBuy::insert($pulsa_buy)){
+        $trans = PulsaBuy::insert($pulsa_buy);
+        if($trans){
             $status = true;
+            User::earn_point($user,Code::USING_PAY_PULSA, $product->point, null, 'pulsa_'.$trans->seq);
         }
 
         $response = [

@@ -20,7 +20,7 @@ class FlashEventDetailResource extends JsonResource
             'product_name' => $this->product->product_name,
             'product_img' => $this->product->img,
             'point' => $this->point,
-            'stock' => $this->stock,
+            'stock' => $this->cap - $this->stock,
             'cap' => $this->cap
         ];
     }
