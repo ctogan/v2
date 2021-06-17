@@ -500,7 +500,13 @@ class UserController extends ApiController
             }
 
         } else {
-            return $this->errorResponse($validation->errors(),static::USER_EMAIL_EXIST);
+            $data = [
+                'code' => 401,
+                'status' => false,
+                'message' => 'Email already registered.'
+            ];
+            return $this->successResponse($data);
+//            return $this->errorResponse($validation->errors(),static::USER_EMAIL_EXIST);
         }
 
         //Prepare login Here
