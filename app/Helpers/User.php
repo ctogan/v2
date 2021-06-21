@@ -201,7 +201,7 @@ class User {
     }
 
     public static function purge_cache($uid) {
-        $url = "https://api2.ctree.id/api/user/login/purgecache?uid=" . $uid;
+        $url = "https://api2.ctree.id/api2/user/login/purgecache?uid=" . $uid;
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_URL, $url);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);

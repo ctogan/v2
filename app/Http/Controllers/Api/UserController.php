@@ -185,7 +185,7 @@ class UserController extends ApiController
         $user_by_account_id = UserApp::where('account_id', '=', $request->id)->first();
 
         if ($user) {
-            if (is_null($user->account_id)) { // && !$user_by_account_id
+            if (is_null($user->account_id) && !$user_by_account_id) {
                 $connectEmail = UserApp::where('uid', $user->uid)->update([
                     'first_name' => $request->give_name,
                     'last_name' => $request->family_name,
@@ -505,8 +505,9 @@ class UserController extends ApiController
                 DB::rollback();
             }
 
-            $createUserTime->ses = $ses;
-            $createUserTime->save();
+            $updateUserTime = UserApp::where('uid', $uid)->update([
+                'ses' => $ses
+            ]);
 
         } else {
             $data = [
