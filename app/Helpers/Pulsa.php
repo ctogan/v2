@@ -9,4 +9,7 @@ namespace App\Helpers;
 
 class Pulsa {
 
+    public static function buy(){
+
+    }
 }
