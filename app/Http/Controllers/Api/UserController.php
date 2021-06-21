@@ -418,7 +418,7 @@ class UserController extends ApiController
         }
 
         $user = UserApp::where('email', '=', $request->email)->first();
-        $ses = substr(md5(microtime()), 0, 20);
+
 
         if (!$user) {
             //Register logic
@@ -427,6 +427,7 @@ class UserController extends ApiController
             $inv_code = strval(Utils::generateInvCode());
             DB::beginTransaction();
             try {
+                $ses = substr(md5(microtime()), 0, 20);
                 if (strlen($request->profile_img) > 1) {
                     $profile_img = $request->profile_img;
                 } else {
@@ -471,7 +472,7 @@ class UserController extends ApiController
                     'inv_cash_total' => 0
                 ]);
 
-                $createUserTime = UserTime::insert([
+                $createUserTime = UserTime::create([
                     'uid' => (int) $uid,
                     'register' => date("Y-m-d H:i:s"),
                     'changed' => date("Y-m-d H:i:s"),
@@ -520,7 +521,7 @@ class UserController extends ApiController
             'session' => [
                 'u'             => strval($uid),
                 's'             => strval($request->id),
-                'ses'           => strval($ses),
+                'ses'           => strval($createUserTime->ses),
                 'registered'    => true,
             ],
             'info' => [
