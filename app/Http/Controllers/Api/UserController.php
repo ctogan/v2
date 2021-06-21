@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Earning;
+use App\Helpers\Code;
 use App\Helpers\Operator;
 use App\Helpers\User;
 use App\Helpers\Utils;
@@ -19,7 +21,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 use OpenApi\Util;
 use Illuminate\Support\Facades\Http;
-
+use Illuminate\Support\Facades\Lang;
 
 class UserController extends ApiController
 {
@@ -733,20 +735,17 @@ class UserController extends ApiController
     public function point_history(Request $request){
         $user = $this->user;
         $uid = $user->uid;
-        $point = Point::select('user_earning_detail.txt as title','user_earning_data.*')
-        ->leftJoin('user_earning_detail' , 'user_earning_data.detail' ,'user_earning_detail.id')
-        ->where('user_earning_data.uid' , $uid)
-        ->where('user_earning_data.tm' , '>' , date('Y-m-d', strtotime('today - 30 days')))
-        ->orderBy('user_earning_data.seq' , 'DESC')
+        $point = Earning::on(Utils::db_earning($user->uid))
+        ->where('uid' , $uid)
+        ->where('tm' , '>' , date('Y-m-d', strtotime('today - 30 days')))
+       ->orderBy('seq' , 'DESC')
         ->limit(50)->get();
-        if(!$point){
-            return $this->successResponse([]);
-        }
         $data = [];
         foreach($point as $item){
+            $item['title'] = $item->detail;
             $date = date('Y-m-d' , strtotime($item->tm));
-            if($item->title == '' || $item->title == null){
-                $item['title'] = 'Kamu dapat Poin';
+            if($item->detail == '' || $item->detail == null){
+                $item['title'] = trans('code.'.Code::getLang($item->code));
             }
             $data[$date][] = $item;
         }
@@ -758,19 +757,6 @@ class UserController extends ApiController
             );
 
         }
-
-
-
-
-        // $notification = Notification::
-        //     with(['detail'=>function($q) use($uid){
-        //         return $q->where('uid','=', $uid);
-        //     }])->paginate();
-
-        // $response = [
-        //     'notification' => NotificationResource::collection($notification)
-        // ];
-
          return $this->successResponse($d);
     }
 

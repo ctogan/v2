@@ -93,7 +93,212 @@ class Code {
 
     const USING_PAY_CCC = 'U801';
 
+	const AD_TYPE = [
+		'cpc' => Code::CODE_CPC,         //visit
+		'cpv' => Code::CODE_CPV,         //video
+		'cpi' => Code::CODE_CPI,         //install
+		'cpe' => Code::CODE_CPE,         //mission
+		'cpr' => Code::CODE_CPR,         //sign up
+	];
+
+	public static $labels = [
+		Code::CODE_RELEASE => 'Release',
+		Code::CODE_CPC => 'CPC',
+		Code::CODE_CPV => 'CPV',
+		Code::CODE_CPI => 'CPI',
+		Code::CODE_CPE => 'CPE',
+		Code::CODE_CPR => 'CPR',
+		Code::CODE_VIRALAD => 'ViralAD',
+		Code::CODE_PARTNER_PAY => 'Bonus(partner)',
+
+		Code::CODE_ADNET_ADXMI => 'ADXMI',
+		Code::CODE_ADNET_SUPERS => 'SuperSonic',
+		Code::CODE_ADNET_VUNGLE => 'Vungle',
+		Code::CODE_ADNET_TAPJOY => 'Tapjoy',
+		Code::CODE_ADNET_FYBER => 'Fyber',
+		Code::CODE_ADNET_VALUEPOTION => 'ValuePotion',
+		Code::CODE_ADNET_MOBVISTA => 'Mobvista',
+		Code::CODE_ADNET_ADPOPCORN => 'ADPopCorn',
+		Code::CODE_ADNET_GMOR => 'GMO Research',
+
+		Code::CODE_BONUS => 'Bonus',
+		Code::CODE_ADMIN => 'Admin',
+		Code::CODE_PARTNER_PAY_GIFT => 'Partner pay gift',
+		Code::CODE_RCMD => 'Invite',
+		Code::CODE_INVITE_JOIN => 'Invite referrel',
+		Code::CODE_PHONE_AUTH => 'Phone auth',
+		Code::CODE_PHONE_AUTH2 => 'Phone auth(1more)',
+		Code::CODE_PULSA_CASHBACK => 'Pulsa Cashback',
+		Code::CODE_VOUCHER_CASHBACK => 'Voucher Cashback',
+		Code::CODE_COUPON_CODE => 'Coupon Code',
+		Code::CODE_WEEKLY_EVENT => 'Weelky',
+		Code::CODE_LUCKY_CHANCE => 'Lucky',
+		Code::CODE_INVITE_BONUS => 'Chidren',
+		Code::CODE_INVITE_BONUS2 => 'Chidren(1000 Rp)',
+		Code::CODE_ATTENDANCE => 'Attendance',
+		Code::CODE_GAMECENTER_PRIZE => 'Game Coupon',
+
+		Code::CODE_FRUIT_GAME_WIN => 'Game-Fruit',
+		Code::CODE_AB_GAME_WIN => 'Game-A/B',
+
+		Code::CODE_DEPOSIT_INVITE => 'Deposit - Invite',
+		Code::CODE_DEPOSIT_CASHBACK => 'Deposit - Cashback',
+        Code::CODE_DEPOSIT_PULSA_MISSION => 'Reward - Pulsa Mission',
+        Code::CODE_TOP_UP_VOUCHER => 'Top Up Poin - Voucher',
+        Code::CODE_BIDDING_WINNER => 'Top Up Poin - Bidding Winner',
+        Code::CODE_LEADERBOARD_WINNER => 'Top Up Poin - Leaderboard Winner',
+
+
+		Code::CODE_MINUS_EARN => 'Minus(work)',
+		Code::CODE_MINUS_GIFT => 'Minus(free)',
+		Code::CODE_MINUS_EARN_DUP => 'Minus(work,dup)',
+		Code::CODE_MINUS_GIFT_DUP => 'Minus(free,dup)',
+
+		Code::USING_CANCEL_PULSA => 'Pulsa cancel',
+		Code::USING_CANCEL_PHONE => 'Phone cancel',
+		Code::USING_CANCEL_LTDSHOP => 'Limited Shop cancel',
+        Code::USING_CANCEL_FHNSHOP => 'Fashion Shop cancel',
+        Code::USING_CANCEL_SPONSOREDSHOP => 'Sponsored Shop cancel',
+		Code::USING_CANCEL_ECASH => 'ECash Refund',
+
+		Code::USING_PAY_PULSA => 'Pulsa',
+		Code::USING_PAY_VOUCHER => 'Voucher',
+		Code::USING_PAY_LTDSHOP => 'Limited Shop',
+		Code::USING_PAY_ECASH => 'ECash',
+		Code::USING_PAY_PHONE => 'Phone',
+        Code::USING_PAY_FHNSHOP => 'Fashion Shop',
+        Code::USING_PAY_SPONSOREDSHOP => 'Sponsored Shop',
+        Code::USING_CANCEL_BIDDINGSHOP => 'Cashtree Bidding',
+		Code::USING_FRUIT_GAME => 'Game-Fruit',
+		Code::USING_AB_GAME => 'Game-A/B',
+		Code::USING_HOROSCOPE_GAME => 'Horoscope',
+		Code::USING_LOVECALC_GAME => 'LoveCalc',
+		Code::USING_EXTERNAL => 'External',
+
+        Code::USING_PAY_BIDDINGSHOP => 'Bidding', // analityc bidding shop
+        Code::USING_PAY_WEEKEND_EVENT => 'Bidding',
+	];
+
+	private static $msgCodes = [
+		Code::CODE_RELEASE => 'bonus_cash_by_unlock',
+		Code::CODE_CPC => 'cash_by_visiting',
+		Code::CODE_CPV => 'cash_by_watching',
+		Code::CODE_CPI => 'cash_by_install',
+		Code::CODE_CPE => 'cash_by_mission',
+		Code::CODE_CPR => 'cash_by_retention',
+		Code::CODE_VIRALAD => 'cash_for_sharing_app_VAL',
+		Code::CODE_PARTNER_PAY => 'bonus_cash_by',
+
+		Code::CODE_ADNET_ADXMI => 'cash_by_network',
+		Code::CODE_ADNET_SUPERS => 'cash_by_network',
+		Code::CODE_ADNET_VUNGLE => 'cash_by_network',
+		Code::CODE_ADNET_TAPJOY => 'cash_by_network',
+		Code::CODE_ADNET_FYBER => 'cash_by_network',
+		Code::CODE_ADNET_VALUEPOTION => 'cash_by_network',
+		Code::CODE_ADNET_MOBVISTA => 'cash_by_network',
+		Code::CODE_ADNET_ADPOPCORN => 'cash_by_network',
+		Code::CODE_ADNET_GMOR => 'cash_by_network',
+
+		Code::CODE_BONUS => 'bonus_cash',
+		Code::CODE_ADMIN => 'bonus_cash_cashtree',
+		Code::CODE_PARTNER_PAY_GIFT => 'cash_by',
+		Code::CODE_RCMD => 'bouns_cash_inviting',
+		Code::CODE_INVITE_JOIN => 'bonus_cash_referral',
+		Code::CODE_PHONE_AUTH => 'bonus_cash_phone_auth',
+		Code::CODE_PHONE_AUTH2 => 'bonus_cash_phone_auth',
+		Code::CODE_PULSA_CASHBACK => 'bonus_cash',
+		Code::CODE_VOUCHER_CASHBACK => 'bonus_cashback_voucher',
+		Code::CODE_COUPON_CODE => 'bonus_cash',
+		Code::CODE_WEEKLY_EVENT => 'Code_code_weekly_event_msg',
+		Code::CODE_LUCKY_CHANCE => 'Code_code_lucky_chance',
+		Code::CODE_INVITE_BONUS => 'Code_code_invite_bonus',
+		Code::CODE_INVITE_BONUS2 => 'Code_code_invite_bonus',
+		Code::CODE_ATTENDANCE => 'Code_code_attendance',
+		Code::CODE_GAMECENTER_PRIZE => 'coupon_game',
+
+		Code::CODE_FRUIT_GAME_WIN => 'Code_code_fruit_event_win',
+		Code::CODE_AB_GAME_WIN => 'Code_code_game_ab_win',
+
+		Code::CODE_DEPOSIT_INVITE => 'Code_code_deposit_invite',
+		Code::CODE_DEPOSIT_CASHBACK => 'Code_code_deposit_cashback',
+        Code::CODE_DEPOSIT_PULSA_MISSION => 'Code_code_deposit_pulsa_mission',
+        Code::CODE_TOP_UP_VOUCHER => 'Code_top_up_point',
+        //winner
+        Code::CODE_BIDDING_WINNER => 'Code_bidding_winner',
+        Code::CODE_LEADERBOARD_WINNER => 'Top Up Poin - Leaderboard Winner',
+
+		Code::CODE_MINUS_EARN => 'withdrawal_cash',
+		Code::CODE_MINUS_GIFT => 'withdrawal_bonus_cash',
+		Code::CODE_MINUS_EARN_DUP => 'Code_code_minus_earn_dup',
+		Code::CODE_MINUS_GIFT_DUP => 'Code_code_minus_gift_dup',
+
+		Code::USING_CANCEL_PULSA => 'pulsa_purchase_cancel',
+		Code::USING_CANCEL_PHONE => 'phone_purchase_cancel',
+		Code::USING_CANCEL_LTDSHOP => 'ltdshop_purchase_cancel',
+        Code::USING_CANCEL_FHNSHOP => 'fhnshop_purchase_cancel',
+        Code::USING_CANCEL_SPONSOREDSHOP => 'sponsoredshop_purchase_cancel',
+        Code::USING_CANCEL_BIDDINGSHOP => 'cashtreebidding_bid_cancel',
+		Code::USING_CANCEL_ECASH => 'ecash_purchase_cancel',
+
+		Code::USING_PAY_PULSA => 'buy_pulsa',
+		Code::USING_PAY_VOUCHER => 'buy_voucher',
+		Code::USING_PAY_LTDSHOP => 'buy_ltdshop',
+        Code::USING_PAY_FHNSHOP => 'buy_fhnshop',
+        Code::USING_PAY_SPONSOREDSHOP => 'buy_sponsoredshop',
+        Code::USING_PAY_BIDDINGSHOP => 'cashtree_bidding',
+        Code::USING_PAY_WEEKEND_EVENT => 'cashtree_weekend_event',
+        Code::USING_PAY_AIDO_MPL => 'mpl_aido_pulsa',
+		Code::USING_PAY_ECASH => 'buy_ecash',
+		Code::USING_PAY_PHONE => 'buy_phone',
+		Code::USING_FRUIT_GAME => 'using_code_fruit_event',
+		Code::USING_AB_GAME => 'using_code_game_ab',
+		Code::USING_HOROSCOPE_GAME => 'using_code_horoscope',
+		Code::USING_LOVECALC_GAME => 'using_code_lovecalc',
+		Code::USING_EXTERNAL => 'using_code_external',
+        Code::USING_PAY_CCC => 'cerdas_cermat'
+	];
+
+	//=== false 이면 푸쉬를 보내지 않고, 값이 있으면 보내고, 없으면 'got_rp' 를 보낸다
+	private static $pushMsgCode = [
+		Code::CODE_RCMD => 'bouns_cash_inviting_father',
+		Code::CODE_RELEASE => false,
+		Code::CODE_INVITE_BONUS => false,
+		Code::CODE_INVITE_BONUS2 => false,
+
+		Code::USING_CANCEL_PULSA => false,
+		Code::USING_CANCEL_PHONE => false,
+		Code::USING_CANCEL_LTDSHOP => false,
+		Code::USING_CANCEL_ECASH => false,
+	];
+
+	private static $parentOffsetCodes = [
+		Code::CODE_RELEASE,
+		Code::CODE_CPC,
+		Code::CODE_CPI,
+		Code::CODE_CPE,
+		Code::CODE_CPV,
+		Code::CODE_VIRALAD,
+
+		//ad network
+		Code::CODE_ADNET_ADXMI,
+		Code::CODE_ADNET_SUPERS,
+		Code::CODE_ADNET_VUNGLE,
+		Code::CODE_ADNET_TAPJOY,
+		Code::CODE_ADNET_FYBER,
+		Code::CODE_ADNET_VALUEPOTION,
+		Code::CODE_ADNET_MOBVISTA,
+		Code::CODE_ADNET_ADPOPCORN,
+		Code::CODE_ADNET_GMOR,
+
+		Code::CODE_RCMD, //invite
+		Code::CODE_PHONE_AUTH,
+	];
+
+
     const ADCOLONY_ZONE_ID = ['18'=>'vz3526e166b8ed4ddea2' , '19'=>'vz5ab55c75fe154bcbb2' ,'skyblaster' => 'vz58053d9fb3f74f1798'];
     const INMOBY_PLACEMENT_ID = ['18'=>'1595188844203' , '19'=>'1592941605245' ,'17' => '1593832416993'];
 
+    public static function getLang($code){
+        return static::$msgCodes[$code];
+    }
 }
