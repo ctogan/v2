@@ -185,30 +185,36 @@ class FlashEventController extends ApiController
             return $this->errorResponse(static::ERROR_NEED_PHONE,static::ERROR_CODE_PHONE_NUMBER);
         }
 
-        $stock = PulsaBuy::where('flash_detail_code','=',$request->flash_detail_code)->count();
-
-        if($flash_detail->cap <= $stock){
-            return $this->errorResponse(static::ERROR_FLASH_EVENT_OUT_OF_STOCK,static::ERROR_CODE_FLASH_EVENT_OUT_OF_STOCK);
-        }
-
-        $pulsa_goods = PulsaGoods::where('opcode','=',$user->opcode)->where('good_code','=',$flash_detail->product->product_code)->first();
-
-        if(!$pulsa_goods){
-            return $this->errorResponse(static::ERROR_PRODUCT_NOT_FOUND,static::ERROR_CODE_FLASH_EVENT_OUT_OF_STOCK);
-        }
-
-        $pulsa_buy = [
-            'uid' => $user->uid,
-            'pulsa_goods_id' => $pulsa_goods->goods_id,
-            'cash' => $flash_detail->point,
-            'phone' => $user->phone
-        ];
-
         $status = false;
-        $trans = PulsaBuy::create($pulsa_buy);
-        if($trans){
-            $status = true;
-            User::earn_point($user,Code::USING_PAY_PULSA, $flash_detail->point, null, 'pulsa_'.$trans->seq);
+
+        if($flash_detail->product->product_type == 'point'){
+//            User::use_cash($user,Code::USING_PAY_PULSA, $flash_detail->point, null);
+//            User::earn_point($user,Code::USING_PAY_PULSA, $flash_detail->point, null);
+        }else{
+            $stock = PulsaBuy::where('flash_detail_code','=',$request->flash_detail_code)->count();
+
+            if($flash_detail->cap <= $stock){
+                return $this->errorResponse(static::ERROR_FLASH_EVENT_OUT_OF_STOCK,static::ERROR_CODE_FLASH_EVENT_OUT_OF_STOCK);
+            }
+
+            $pulsa_goods = PulsaGoods::where('opcode','=',$user->opcode)->where('good_code','=',$flash_detail->product->product_code)->first();
+
+            if(!$pulsa_goods){
+                return $this->errorResponse(static::ERROR_PRODUCT_NOT_FOUND,static::ERROR_CODE_FLASH_EVENT_OUT_OF_STOCK);
+            }
+
+            $pulsa_buy = [
+                'uid' => $user->uid,
+                'pulsa_goods_id' => $pulsa_goods->goods_id,
+                'cash' => $flash_detail->point,
+                'phone' => $user->phone
+            ];
+
+            $trans = PulsaBuy::create($pulsa_buy);
+            if($trans){
+                $status = true;
+                User::use_cash($user,Code::USING_PAY_PULSA, $flash_detail->point, null, 'pulsa_'.$trans->seq);
+            }
         }
 
         $response = [
