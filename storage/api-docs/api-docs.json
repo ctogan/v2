@@ -218,6 +218,24 @@
                 "responses": {
                     "200": {
                         "description": "Transaction success"
+                    },
+                    "201": {
+                        "description": "Flash event not found"
+                    },
+                    "222": {
+                        "description": "Flash event expired"
+                    },
+                    "223": {
+                        "description": "Out of stock"
+                    },
+                    "224": {
+                        "description": "Please verify the phone number"
+                    },
+                    "225": {
+                        "description": "Purchase can only be made once, 1 user 1 transaction"
+                    },
+                    "226": {
+                        "description": "Product not found"
                     }
                 }
             }

@@ -47,6 +47,8 @@ class Controller extends BaseController
     const ERROR_FLASH_EVENT_EXPIRED = 'Event ini sudah berakhir atau belum dimulai';
     const ERROR_FLASH_EVENT_OUT_OF_STOCK = 'Mohon maaf, stock telah habis.';
     const ERROR_NEED_PHONE = 'Phone number required';
+    const ERROR_FLASH_BUY_DUPLICATE = 'Purchase can only be made once';
+    const ERROR_PRODUCT_NOT_FOUND = 'Product not found';
 
     // TRANSACTION
     protected const CODE_ERROR_ORDER_NUMBER_NOT_FOUND = '401';
@@ -77,6 +79,8 @@ class Controller extends BaseController
     const ERROR_CODE_FLASH_EVENT_EXPIRED = '222';
     const ERROR_CODE_FLASH_EVENT_OUT_OF_STOCK = '223';
     const ERROR_CODE_PHONE_NUMBER = '224';
+    const ERROR_CODE_FLASH_BUY_DUPLICATE = '225';
+    const ERROR_CODE_PRODUCT_NOT_FOUND = '226';
 
 
     // MESAAGE

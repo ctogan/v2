@@ -12,4 +12,8 @@ class Product extends Model
     protected $fillable = [
         'row_status','product_code','product_name','img','created_at','created_by','updated_at','updated_by'
     ];
+
+    public function flash_event(){
+        return $this->hasOne(FlashEventDetail::class,'product_id');
+    }
 }
