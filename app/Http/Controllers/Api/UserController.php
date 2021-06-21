@@ -456,7 +456,7 @@ class UserController extends ApiController
                     'status' => '0',
                     'abuse' => '0',
                     'sel_goods_id' => null,
-                    'is_rooted' => false
+                    'is_rooted' => $request->rt == 't' ? 't' : 'f'
                 ]);
 
                 $createUserCash = UserCash::create([
@@ -476,10 +476,10 @@ class UserController extends ApiController
                     'register' => date("Y-m-d H:i:s"),
                     'changed' => date("Y-m-d H:i:s"),
                     'login' => date("Y-m-d H:i:s"),
-                    'appopen' => date("Y-m-d H:i:s"),
                     'ses' => $ses,
-                    'last_ip' => ip2long($request->getClientIp()),
-                    'last_ad_list' => null,
+                    'appopen' => date("Y-m-d H:i:s"),
+//                    'last_ip' => ip2long($request->getClientIp()),
+//                    'last_ad_list' => null,
                 ]);
 
                 $createUserTargetInfo = UserTargetInfo::insert([
