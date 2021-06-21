@@ -106,6 +106,7 @@
             <div class="modal-dialog" role="document">
                 <div class="modal-content">
                     <div class="modal-body">
+                        <p>Daftar Hadiah</p>
                         <table v-if="prize" class="table table-striped w-100">
                             <thead>
                             <tr>

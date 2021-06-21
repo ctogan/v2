@@ -183,6 +183,7 @@ return [
         Barryvdh\DomPDF\ServiceProvider::class,
         App\Providers\CodeServiceProvider::class,
         App\Providers\UserServiceProvider::class,
+        App\Providers\PulsaServiceProvider::class,
        // BaoPham\DynamoDb\DynamoDbServiceProvider::class,
     ],
 
@@ -243,7 +244,8 @@ return [
         'PDF' => Barryvdh\DomPDF\Facade::class,
         'Code' => App\Helpers\Code::class,
         'Operator' => App\Helpers\Operator::class,
-        'AWS' => Aws\Laravel\AwsFacade::class,
+        'Pulsa' => App\Helpers\Pulsa::class,
+        //'AWS' => Aws\Laravel\AwsFacade::class,
     ],
 
 ];

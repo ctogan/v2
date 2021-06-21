@@ -91,6 +91,8 @@ class Code {
     const USING_LOVECALC_GAME = 'U935';     //[출금]💞
     const USING_EXTERNAL = 'U999';          //
 
+    const USING_PAY_CCC = 'U801';
+
     const ADCOLONY_ZONE_ID = ['18'=>'vz3526e166b8ed4ddea2' , '19'=>'vz5ab55c75fe154bcbb2' ,'skyblaster' => 'vz58053d9fb3f74f1798'];
     const INMOBY_PLACEMENT_ID = ['18'=>'1595188844203' , '19'=>'1592941605245' ,'17' => '1593832416993'];
 

@@ -8,14 +8,10 @@
     ],
     "license": "MIT",
     "require": {
-<<<<<<< HEAD
         "php": "^7.2.5",
         "aws/aws-sdk-php": "^3.184",
         "aws/aws-sdk-php-laravel": "^3.6",
         "baopham/dynamodb": "^6.1",
-=======
-        "php": "^7.3|^8.0",
->>>>>>> 2e8e487087435beeb4ee46deb469b40a084f391b
         "barryvdh/laravel-dompdf": "^0.9.0",
         "darkaonline/l5-swagger": "^8.0",
         "fideloper/proxy": "^4.2",
