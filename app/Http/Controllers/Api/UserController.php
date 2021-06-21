@@ -182,9 +182,10 @@ class UserController extends ApiController
 
         //Login Logic Here
         $user = UserApp::where('phone', '=', $request->phone_number)->first();
+        $user_by_account_id = UserApp::where('account_id', '=', $request->id)->first();
 
         if ($user) {
-            if (is_null($user->account_id)) {
+            if (is_null($user->account_id)) { // && !$user_by_account_id
                 $connectEmail = UserApp::where('uid', $user->uid)->update([
                     'first_name' => $request->give_name,
                     'last_name' => $request->family_name,
@@ -423,6 +424,7 @@ class UserController extends ApiController
             //Register logic
             $query = "nextval('uid') as uid";
             $uid = UserApp::selectRaw($query)->value('uid');
+            $inv_code = strval(Utils::generateInvCode());
             DB::beginTransaction();
             try {
                 if (strlen($request->profile_img) > 1) {
@@ -437,6 +439,7 @@ class UserController extends ApiController
                     'anid' => $request->anid,
                     'imei' => $request->imei,
                     'gaid' => $request->gaid,
+                    'inv_code' => $inv_code,
                     'first_name' => $request->give_name,
                     'last_name' => $request->family_name,
                     'full_name' => $request->display_name,
@@ -453,7 +456,7 @@ class UserController extends ApiController
                     'status' => '0',
                     'abuse' => '0',
                     'sel_goods_id' => null,
-                    'is_rooted' => false
+                    'is_rooted' => $request->rt == 't' ? 't' : 'f'
                 ]);
 
                 $createUserCash = UserCash::create([
@@ -473,13 +476,13 @@ class UserController extends ApiController
                     'register' => date("Y-m-d H:i:s"),
                     'changed' => date("Y-m-d H:i:s"),
                     'login' => date("Y-m-d H:i:s"),
-                    'appopen' => date("Y-m-d H:i:s"),
                     'ses' => $ses,
+                    'appopen' => date("Y-m-d H:i:s"),
                     'last_ip' => ip2long($request->getClientIp()),
                     'last_ad_list' => null,
                 ]);
 
-                $createUserTargetInfo = UserTargetInfo::create([
+                $createUserTargetInfo = UserTargetInfo::insert([
                     'uid' => (int) $uid,
                     'tm_target_changed' => date("Y-m-d H:i:s"),
                     'locale' => 'id',
@@ -502,6 +505,9 @@ class UserController extends ApiController
                 DB::rollback();
             }
 
+            $createUserTime->ses = $ses;
+            $createUserTime->save();
+
         } else {
             $data = [
                 'code' => 401,
@@ -523,7 +529,7 @@ class UserController extends ApiController
             'info' => [
                 'u' => intval($uid),
                 'id' => strval($uid),
-                'inv_code' => strval(Utils::generateInvCode()),
+                'inv_code' => $inv_code,
                 'reg_tm' => date("Y-m-d H:i:s"),
                 'ph' => null,
                 'lock_screen' => false,
