@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Helpers\Operator;
+use App\Helpers\User;
 use App\Helpers\Utils;
 use App\Http\Controllers\Controller;
 use App\Point;
@@ -123,7 +124,7 @@ class UserController extends ApiController
                 ]
             ];
 
-//        Abuse::LogoutOtherUsersInSameMachine($user);
+            User::purge_cache($user->uid);
 
             return $this->successResponse($data);
         } else {
@@ -266,6 +267,8 @@ class UserController extends ApiController
                     'last_transaction' => strval($userCash->last_earn)
                 ]
             ];
+
+            User::purge_cache($user->uid);
 
             return $this->successResponse($data);
         } else {
