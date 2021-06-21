@@ -182,9 +182,10 @@ class UserController extends ApiController
 
         //Login Logic Here
         $user = UserApp::where('phone', '=', $request->phone_number)->first();
+        $user_by_account_id = UserApp::where('account_id', '=', $request->id)->first();
 
         if ($user) {
-            if (is_null($user->account_id)) {
+            if (is_null($user->account_id) && !$user_by_account_id) {
                 $connectEmail = UserApp::where('uid', $user->uid)->update([
                     'first_name' => $request->give_name,
                     'last_name' => $request->family_name,
@@ -473,10 +474,10 @@ class UserController extends ApiController
                     'register' => date("Y-m-d H:i:s"),
                     'changed' => date("Y-m-d H:i:s"),
                     'login' => date("Y-m-d H:i:s"),
-                    'last_ad_list' => null,
                     'appopen' => date("Y-m-d H:i:s"),
                     'ses' => $ses,
-                    'last_ip' => ip2long($request->getClientIp())
+                    'last_ip' => ip2long($request->getClientIp()),
+                    'last_ad_list' => null,
                 ]);
 
                 $createUserTargetInfo = UserTargetInfo::create([
