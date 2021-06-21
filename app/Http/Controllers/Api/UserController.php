@@ -507,7 +507,7 @@ class UserController extends ApiController
                 DB::rollback();
             }
 
-            $updateUserTime = UserApp::where('uid', $uid)->update([
+            $updateUserTime = UserTime::where('uid', $uid)->update([
                 'ses' => $ses
             ]);
 
