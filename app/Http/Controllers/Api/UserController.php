@@ -424,6 +424,7 @@ class UserController extends ApiController
             //Register logic
             $query = "nextval('uid') as uid";
             $uid = UserApp::selectRaw($query)->value('uid');
+            $inv_code = strval(Utils::generateInvCode());
             DB::beginTransaction();
             try {
                 if (strlen($request->profile_img) > 1) {
@@ -438,6 +439,7 @@ class UserController extends ApiController
                     'anid' => $request->anid,
                     'imei' => $request->imei,
                     'gaid' => $request->gaid,
+                    'inv_code' => $inv_code,
                     'first_name' => $request->give_name,
                     'last_name' => $request->family_name,
                     'full_name' => $request->display_name,
@@ -469,7 +471,7 @@ class UserController extends ApiController
                     'inv_cash_total' => 0
                 ]);
 
-                $createUserTime = UserTime::create([
+                $createUserTime = UserTime::insert([
                     'uid' => (int) $uid,
                     'register' => date("Y-m-d H:i:s"),
                     'changed' => date("Y-m-d H:i:s"),
@@ -480,7 +482,7 @@ class UserController extends ApiController
                     'last_ad_list' => null,
                 ]);
 
-                $createUserTargetInfo = UserTargetInfo::create([
+                $createUserTargetInfo = UserTargetInfo::insert([
                     'uid' => (int) $uid,
                     'tm_target_changed' => date("Y-m-d H:i:s"),
                     'locale' => 'id',
@@ -524,7 +526,7 @@ class UserController extends ApiController
             'info' => [
                 'u' => intval($uid),
                 'id' => strval($uid),
-                'inv_code' => strval(Utils::generateInvCode()),
+                'inv_code' => $inv_code,
                 'reg_tm' => date("Y-m-d H:i:s"),
                 'ph' => null,
                 'lock_screen' => false,
