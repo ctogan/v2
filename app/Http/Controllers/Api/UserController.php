@@ -187,7 +187,7 @@ class UserController extends ApiController
         $user_by_account_id = UserApp::where('account_id', '=', $request->id)->first();
 
         if ($user) {
-            if (is_null($user->account_id) && !$user_by_account_id) {
+            if (is_null($user->account_id)) { // && !$user_by_account_id
                 $connectEmail = UserApp::where('uid', $user->uid)->update([
                     'first_name' => $request->give_name,
                     'last_name' => $request->family_name,
@@ -420,7 +420,7 @@ class UserController extends ApiController
         }
 
         $user = UserApp::where('email', '=', $request->email)->first();
-
+        $ses = substr(md5(microtime()), 0, 20);
 
         if (!$user) {
             //Register logic
@@ -429,7 +429,6 @@ class UserController extends ApiController
             $inv_code = strval(Utils::generateInvCode());
             DB::beginTransaction();
             try {
-                $ses = substr(md5(microtime()), 0, 20);
                 if (strlen($request->profile_img) > 1) {
                     $profile_img = $request->profile_img;
                 } else {
@@ -481,8 +480,8 @@ class UserController extends ApiController
                     'login' => date("Y-m-d H:i:s"),
                     'ses' => $ses,
                     'appopen' => date("Y-m-d H:i:s"),
-//                    'last_ip' => ip2long($request->getClientIp()),
-//                    'last_ad_list' => null,
+                    'last_ip' => ip2long($request->getClientIp()),
+                    'last_ad_list' => null,
                 ]);
 
                 $createUserTargetInfo = UserTargetInfo::insert([
@@ -508,6 +507,9 @@ class UserController extends ApiController
                 DB::rollback();
             }
 
+            $createUserTime->ses = $ses;
+            $createUserTime->save();
+
         } else {
             $data = [
                 'code' => 401,
@@ -523,7 +525,7 @@ class UserController extends ApiController
             'session' => [
                 'u'             => strval($uid),
                 's'             => strval($request->id),
-                'ses'           => strval($createUserTime->ses),
+                'ses'           => strval($ses),
                 'registered'    => true,
             ],
             'info' => [
@@ -764,11 +766,11 @@ class UserController extends ApiController
         $user = $this->user;
         $uid = $user->uid;
         $point = Point::select('user_earning_detail.txt as title','user_earning_data.*')
-        ->leftJoin('user_earning_detail' , 'user_earning_data.detail' ,'user_earning_detail.id')
-        ->where('user_earning_data.uid' , $uid)
-        ->where('user_earning_data.tm' , '>' , date('Y-m-d', strtotime('today - 30 days')))
-        ->orderBy('user_earning_data.seq' , 'DESC')
-        ->limit(50)->get();
+            ->leftJoin('user_earning_detail' , 'user_earning_data.detail' ,'user_earning_detail.id')
+            ->where('user_earning_data.uid' , $uid)
+            ->where('user_earning_data.tm' , '>' , date('Y-m-d', strtotime('today - 30 days')))
+            ->orderBy('user_earning_data.seq' , 'DESC')
+            ->limit(50)->get();
         if(!$point){
             return $this->successResponse([]);
         }
