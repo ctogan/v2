@@ -547,6 +547,8 @@ class UserController extends ApiController
             ]
         ];
 
+        User::purge_cache($uid);
+
         return $this->successResponse($data);
     }
 
