@@ -508,7 +508,20 @@ class UserController extends ApiController
             }
 
             $updateUserTime = UserTime::where('uid', $uid)->update([
-                'ses' => $ses
+                'ses' => $ses,
+                'appopen' => date("Y-m-d H:i:s"),
+                'last_ip' => ip2long($request->getClientIp()),
+            ]);
+
+            $updateUserTargetInfo = UserTargetInfo::where('uid', $uid)->update([
+                'locale' => 'id',
+                'opcode' => $request->opcode,
+                'osver' => $request->ov,
+                'appver' => $request->av,
+                'resw' => $request->resw,
+                'resh' => $request->resh,
+                'lat' => $request->lat,
+                'lng' => $request->lng,
             ]);
 
         } else {
