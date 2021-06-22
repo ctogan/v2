@@ -3949,6 +3949,8 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
@@ -4751,12 +4753,18 @@ var render = function() {
           [
             _c("div", { staticClass: "modal-content" }, [
               _c("div", { staticClass: "modal-body" }, [
-                _c("p", [_vm._v("Daftar Pemenang")]),
+                _c("p", { staticClass: "mb-0" }, [_vm._v("Daftar Pemenang")]),
                 _vm._v(" "),
-                _vm.loading_prize ? _c("div", [_vm._m(4)]) : _vm._e(),
+                _c("small", [
+                  _vm._v("Hadiah dapat diambil setelah sesi selesai")
+                ]),
+                _vm._v(" "),
+                _vm.loading_prize
+                  ? _c("div", { staticClass: "mt-3" }, [_vm._m(4)])
+                  : _vm._e(),
                 _vm._v(" "),
                 !_vm.loading_prize
-                  ? _c("div", [
+                  ? _c("div", { staticClass: "mt-3" }, [
                       _vm.result
                         ? _c(
                             "table",
@@ -4831,6 +4839,12 @@ var render = function() {
               ]),
               _vm._v(" "),
               _c("div", { staticClass: "modal-footer" }, [
+                _c(
+                  "div",
+                  { staticStyle: { position: "absolute", left: "15px" } },
+                  [_vm._v("Kamu Ranking : " + _vm._s(_vm.rank))]
+                ),
+                _vm._v(" "),
                 _c(
                   "button",
                   {

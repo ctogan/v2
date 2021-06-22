@@ -132,8 +132,9 @@
             <div class="modal-dialog" role="document">
                 <div class="modal-content">
                     <div class="modal-body">
-                        <p>Daftar Pemenang</p>
-                        <div v-if="loading_prize">
+                        <p class="mb-0">Daftar Pemenang</p>
+                        <small>Hadiah dapat diambil setelah sesi selesai</small>
+                        <div class="mt-3" v-if="loading_prize">
                             <div class="mb-4">
                                 <div class="d-flex justify-content-between">
                                     <div class="h-25 w-50 bg-placeholder mb-2 flex-1 mr-5"></div>
@@ -148,7 +149,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div v-if="!loading_prize">
+                        <div class="mt-3" v-if="!loading_prize">
                             <table v-if="result" class="table table-sm table-striped w-100 responsive">
                                 <thead>
                                 <tr>
@@ -174,6 +175,7 @@
                         </div>
                     </div>
                     <div class="modal-footer">
+                        <div style="position: absolute;left: 15px;">Kamu Ranking : {{rank}}</div>
                         <button v-on:click="close_modal()" type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                     </div>
                 </div>
