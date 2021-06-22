@@ -126,7 +126,7 @@ class UserController extends ApiController
                 ]
             ];
 
-            User::purge_cache($user->uid);
+//            User::purge_cache($user->uid);
 
             return $this->successResponse($data);
         } else {
@@ -271,7 +271,7 @@ class UserController extends ApiController
                 ]
             ];
 
-            User::purge_cache($user->uid);
+//            User::purge_cache($user->uid);
 
             return $this->successResponse($data);
         } else {
