@@ -11,6 +11,7 @@ use App\CCSessionQuestion;
 use App\Helpers\Code;
 use App\Helpers\User;
 use App\Http\Resources\CCSessionResource;
+use App\UserApp;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
@@ -475,12 +476,19 @@ class CerdasCermatController extends ApiController
               RANK () OVER (
                     ORDER BY score DESC , minutes ASC, seconds ASC, miliseconds asc, last_point desc , cc_register_date DESC
                 ) rank
-              from cc_participant where row_status='completed' and cc_session_id=".$session->id."
+              from cc_participant where row_status='completed' and cc_session_id=".$session->id." limit 15
             )
             select * from rank ";
 
         $result = DB::connection('game_center')->select($query);
         $myrank = DB::connection('game_center')->select($query . ' where uid=' .$uid);
+
+        foreach ($result as &$item){
+            $userapp = UserApp::where('uid','=',$item->uid)->first();
+            $phone = $userapp && $userapp->phone ? substr($userapp->phone,0,strlen($userapp->phone)-3) . '***' : '' ;
+            $item->name = $userapp ? $userapp->first_name : '-';
+            $item->phone = $phone;
+        }
 
         $rank = 0;
         if($myrank){

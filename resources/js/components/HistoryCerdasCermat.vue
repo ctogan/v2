@@ -162,7 +162,7 @@
                                 <tbody>
                                 <tr v-for="item in result" :class="item.uid === uid ? 'my-position' :'' ">
                                     <td align="center">{{item.rank}}</td>
-                                    <td>{{item.uid}}</td>
+                                    <td>{{item.name}} <small class="d-block">{{item.phone}}</small></td>
                                     <td align="center">{{item.score}}</td>
                                     <td align="right">{{item.duration}}</td>
                                     <td align="center">

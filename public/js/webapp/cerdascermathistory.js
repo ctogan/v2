@@ -4783,7 +4783,14 @@ var render = function() {
                                         _vm._v(_vm._s(item.rank))
                                       ]),
                                       _vm._v(" "),
-                                      _c("td", [_vm._v(_vm._s(item.uid))]),
+                                      _c("td", [
+                                        _vm._v(_vm._s(item.name) + " "),
+                                        _c(
+                                          "small",
+                                          { staticClass: "d-block" },
+                                          [_vm._v(_vm._s(item.phone))]
+                                        )
+                                      ]),
                                       _vm._v(" "),
                                       _c("td", { attrs: { align: "center" } }, [
                                         _vm._v(_vm._s(item.score))
