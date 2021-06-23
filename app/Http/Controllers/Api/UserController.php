@@ -822,7 +822,7 @@ class UserController extends ApiController
             foreach($data as $v){
                 $date = trim($v['t']);
                 if($v['tt'] == '' || $v['tt'] == null){
-                    $v['title'] = 'Kamu dapat Poin';
+                    $item['title'] = trans('code.'.Code::getLang($v['tt']));
                 }
                 $datas[$date][] = $v;
             }
