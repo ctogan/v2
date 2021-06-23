@@ -8,6 +8,7 @@ use App\Helpers\Code;
 use App\Helpers\User;
 use App\Http\Resources\FlashEventDetailResource;
 use App\Http\Resources\FlashEventResource;
+use App\PointPurchase;
 use App\PulsaBuy;
 use App\PulsaGoods;
 use Carbon\Carbon;
@@ -169,8 +170,13 @@ class FlashEventController extends ApiController
             return $this->errorResponse(static::ERROR_FLASH_BUY_DUPLICATE,static::ERROR_CODE_FLASH_BUY_DUPLICATE);
         }
 
-        $rand = rand(30,120);
-        sleep($rand);
+        $point_purchase = PointPurchase::where('transaction_code','=',$request->flash_detail_code)->where('uid','=',$user->uid)->count();
+        if($point_purchase > 0){
+            return $this->errorResponse(static::ERROR_FLASH_BUY_DUPLICATE,static::ERROR_CODE_FLASH_BUY_DUPLICATE);
+        }
+
+        $rand = rand(1000000,2000000);
+        usleep($rand);
 
         $flash_detail = FlashEventDetail::with('flash_event')->with('product')->where('flash_detail_code','=', $request->flash_detail_code)->first();
         if(!$flash_detail){
@@ -188,8 +194,14 @@ class FlashEventController extends ApiController
         $status = false;
 
         if($flash_detail->product->product_type == 'point'){
-//            User::use_cash($user,Code::USING_PAY_PULSA, $flash_detail->point, null);
-//            User::earn_point($user,Code::USING_PAY_PULSA, $flash_detail->point, null);
+            User::earn_point($user, Code::CODE_BONUS, $flash_detail->product->product_value, 'Flash Event');
+            $data_point_purchase = [
+                'uid' => $user->uid,
+                'transaction_code' => $request->flash_detail_code,
+                'description' => 'Flash Event - '.$flash_detail->flash_event->event_name,
+                'price' => $flash_detail->point
+            ];
+            PointPurchase::insert($data_point_purchase);
         }else{
             $stock = PulsaBuy::where('flash_detail_code','=',$request->flash_detail_code)->count();
 
@@ -207,7 +219,9 @@ class FlashEventController extends ApiController
                 'uid' => $user->uid,
                 'pulsa_goods_id' => $pulsa_goods->goods_id,
                 'cash' => $flash_detail->point,
-                'phone' => $user->phone
+                'phone' => $user->phone,
+                'flash_detail_code' => $request->flash_detail_code,
+                'additional_1' => $request->flash_detail_code
             ];
 
             $trans = PulsaBuy::create($pulsa_buy);
