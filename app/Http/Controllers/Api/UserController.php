@@ -841,7 +841,7 @@ class UserController extends ApiController
      * )
      */
     public function invite(Request $request){
-        $response = Http::post('https://api.ctree.id/api2/user/invite/daily.json', [
+        $response = Http::post('https://api.ctree.id/api2/user/cash/all.json', [
             'mmses' => $request->mmses,
         ]);
         $datas = [];
