@@ -220,6 +220,7 @@
                 $('#prize_modal').modal('show');
             },
             showresult(index, session_code, status){
+                this.rank = 0;
                 $('#ccc_result_modal').modal('show');
                 this.result = [];
                 this.loading_prize = true;

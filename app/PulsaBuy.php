@@ -10,7 +10,7 @@ class PulsaBuy extends Model
     protected $table = 'pulsa_buy';
 
     protected $fillable = [
-        'seq','uid','dt','pulsa_good_id','is_auto','tm','run_at','complete','changed','cash','status','req_count','phone','res_code','tr_id','additional_1'
+        'seq','uid','dt','pulsa_good_id','is_auto','tm','run_at','complete','changed','cash','status','req_count','phone','res_code','tr_id','additional_1','flash_detail_code'
     ];
 
 }

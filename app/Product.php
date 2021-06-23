@@ -10,7 +10,7 @@ class Product extends Model
     protected $table = 'products';
 
     protected $fillable = [
-        'row_status','product_code','product_name','img','created_at','created_by','updated_at','updated_by','product_type'
+        'row_status','product_code','product_name','img','created_at','created_by','updated_at','updated_by','product_type','product_value'
     ];
 
     public function flash_event(){

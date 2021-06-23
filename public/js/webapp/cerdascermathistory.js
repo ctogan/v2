@@ -3991,6 +3991,7 @@ __webpack_require__.r(__webpack_exports__);
     showresult: function showresult(index, session_code, status) {
       var _this2 = this;
 
+      this.rank = 0;
       $('#ccc_result_modal').modal('show');
       this.result = [];
       this.loading_prize = true;
