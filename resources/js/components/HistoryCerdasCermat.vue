@@ -102,7 +102,7 @@
             </ul>
         </div>
 
-        <div id="prize_modal" class="modal" tabindex="-1" role="dialog">
+        <div id="prize_modal" class="modal" data-backdrop="static" tabindex="-1" role="dialog" aria-hidden="true">
             <div class="modal-dialog" role="document">
                 <div class="modal-content">
                     <div class="modal-body">
@@ -128,7 +128,8 @@
                 </div>
             </div>
         </div>
-        <div id="ccc_result_modal" class="modal" tabindex="-1" role="dialog">
+
+        <div id="ccc_result_modal" class="modal fade" data-backdrop="static" tabindex="-1" role="dialog">
             <div class="modal-dialog" role="document">
                 <div class="modal-content">
                     <div class="modal-body">
@@ -181,6 +182,20 @@
                 </div>
             </div>
         </div>
+
+        <div id="ccc_progress_modal" class="modal fade" tabindex="-1" data-keyboard="false" data-backdrop="static">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content">
+                    <div class="modal-body">
+                        <div class="text-center">
+                            <img src="https://scdn.ctree.id/f/210623/1624430473937_Pulsa%20Mission@2x.webp" style="width: 80%;">
+                            <h5>Mohon Tunggu ....</h5>
+                            <p>Hadiah kamu sedang disiapkan</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 </template>
 
@@ -196,7 +211,8 @@
                 uid : 0,
                 rank : 0,
                 status : false,
-                loading_prize : true
+                loading_prize : true,
+                session_code : ''
             }
         },
         mounted () {
@@ -221,6 +237,7 @@
             },
             showresult(index, session_code, status){
                 this.rank = 0;
+                this.session_code = session_code;
                 $('#ccc_result_modal').modal('show');
                 this.result = [];
                 this.loading_prize = true;
@@ -240,6 +257,32 @@
                         this.uid = response.data.data.uid;
                         this.rank = response.data.data.rank;
                         this.status = status === "expired" ? true : false;
+                    })
+            },
+            redeem_prize(){
+                var scode = this.session_code;
+                $('#ccc_result_modal').modal('hide');
+                var content = '<div class="text-center">\n' +
+                    '                            <img src="https://scdn.ctree.id/f/210623/1624430473937_Pulsa%20Mission@2x.webp" style="width: 80%;">\n' +
+                    '                            <h5>Mohon Tunggu ....</h5>\n' +
+                    '                            <p>Hadiah kamu sedang disiapkan</p>\n' +
+                    '                        </div>'
+                alertify.alert(content).setting({'title':'Cerdas Cermat','closable':false,'basic':true});
+
+                axios
+                    .get('/api/cerdas-cermat/prize/get' , {
+                        params: {
+                            mmses: $('meta[name=usr-token]').attr('content'),
+                            session_code : scode,
+                        }
+                    })
+                    .then(response => {
+                        alertify.alert().destroy();
+                        if(response.data.code === "202"){
+                            alertify.alert(response.data.message).setting({'title':'Cerdas Cermat'});
+                        }else{
+                            alertify.alert('Selamat kamu mendapatkan '+response.data.prize).setting({'title':'Cerdas Cermat'});
+                        }
                     })
             },
             close_modal(){
