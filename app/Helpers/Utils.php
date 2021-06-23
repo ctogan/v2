@@ -61,6 +61,10 @@ class Utils {
         return $mmses;
     }
 
+    public static function get_mmses(){
+        return \Illuminate\Support\Facades\Cache::get('mmses');
+    }
+
     public static function generateInvCode($length = 6) {
         $characters = '0123456789abcdefghijklmnopqrstuvwxyz';
         $charactersLength = strlen($characters);
