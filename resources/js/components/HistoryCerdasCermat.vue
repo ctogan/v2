@@ -263,7 +263,7 @@
                 var scode = this.session_code;
                 $('#ccc_result_modal').modal('hide');
                 var content = '<div class="text-center">\n' +
-                    '                            <img src="https://scdn.ctree.id/f/210623/1624430473937_Pulsa%20Mission@2x.webp" style="width: 80%;">\n' +
+                    '                            <img src="https://scdn.ctree.id/f/210623/1624430473937_Pulsa%20Mission@2x.webp" style="width: 80%;margin-bottom: 15px">\n' +
                     '                            <h5>Mohon Tunggu ....</h5>\n' +
                     '                            <p>Hadiah kamu sedang disiapkan</p>\n' +
                     '                        </div>'
@@ -277,11 +277,10 @@
                         }
                     })
                     .then(response => {
-                        alertify.alert().destroy();
-                        if(response.data.code === "202"){
-                            alertify.alert(response.data.message).setting({'title':'Cerdas Cermat'});
+                        if(response.data.code !== "200"){
+                            alertify.alert('<div style="text-align: center"><img style="width: 80%;margin-bottom: 15px;" src="https://scdn.ctree.id/f/210623/1624438905913_Shop%202@2x.webp"><h4>'+response.data.message +'</h4></div>').setting({'title':'Cerdas Cermat','closable':true,'basic':false});
                         }else{
-                            alertify.alert('Selamat kamu mendapatkan '+response.data.prize).setting({'title':'Cerdas Cermat'});
+                            alertify.alert('<div style="text-align: center"><img style="width: 80%;margin-bottom: 15px;" src="https://scdn.ctree.id/f/210623/1624438404738_Leaderboard@2x.webp"><h4>Selamat kamu mendapatkan '+response.data.data.prize +'</h4></div>').setting({'title':'Cerdas Cermat','closable':true,'basic':false});
                         }
                     })
             },

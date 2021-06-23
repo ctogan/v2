@@ -9,7 +9,9 @@ class PointPurchase extends Model
     protected $connection = 'common';
     protected $table = 'point_purchase';
 
+    public $timestamps = false;
+
     protected $fillable = [
-        'id','uid','transaction_code','description','price','tm'
+        'uid','transaction_code','description','price','tm'
     ];
 }

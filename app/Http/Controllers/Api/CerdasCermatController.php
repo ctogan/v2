@@ -511,7 +511,8 @@ class CerdasCermatController extends ApiController
     }
 
     public function get_prize(Request $request){
-        sleep(1);
+        $rand = rand(1000000,2000000);
+        usleep($rand);
 
         $user = $this->user;
         $uid = $this->user->uid;
@@ -565,7 +566,6 @@ class CerdasCermatController extends ApiController
                 if($point_purchase > 0){
                     return $this->errorResponse('Hadiah sudah pernah diambil',static::CODE_ERROR_VALIDATION);
                 }
-
                 User::earn_point($user, Code::CODE_BONUS, $prize->product->product_value, 'Cerdas Cermat');
                 $data_point_purchase = [
                     'uid' => $user->uid,
@@ -574,7 +574,7 @@ class CerdasCermatController extends ApiController
                     'price' => 0
                 ];
 
-                PointPurchase::insert($data_point_purchase);
+                PointPurchase::create($data_point_purchase);
             }else{
                 $additional_1 = $request->session_code .'_' . $uid;
                 $exist = PulsaBuy::where('additional_1','=', $additional_1)->count();
