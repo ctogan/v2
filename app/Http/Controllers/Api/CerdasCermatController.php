@@ -582,7 +582,7 @@ class CerdasCermatController extends ApiController
                     return $this->errorResponse('Hadiah sudah pernah diambil',static::CODE_ERROR_VALIDATION);
                 }
 
-                $pulsa_goods = PulsaGoods::where('opcode','=',$user->opcode)->where('good_code','=',$prize->product->product_code)->first();
+                $pulsa_goods = PulsaGoods::where('opcode','=',$user->opcode)->where('good_code','=',$prize->product->product_code)->where('server_pulsa','=','MOBILEPULSA')->first();
                 if(!$pulsa_goods){
                     return $this->errorResponse(static::ERROR_PRODUCT_NOT_FOUND,static::CODE_ERROR_VALIDATION);
                 }
