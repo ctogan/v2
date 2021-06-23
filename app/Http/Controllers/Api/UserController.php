@@ -850,15 +850,17 @@ class UserController extends ApiController
         if(count($data) > 0){
             $cnt = $count_data;
             foreach($data as $v){
+                if($v['cash'] > 0){
+                    $date = trim($v['dt']);
+                    $item['tt'] = $cnt.'   '.$v['cnt'].' '.trans('code.friend');
+                    $item['c'] = '+P '.number_format($v['cash'] ,0,'.','.');
+                    $item['create_time'] = $v['dt'];
+                    $item['t'] = $v['dt'];
+                    $item['tm'] = $v['dt'];
+                    $datas[$date][] = $item;
+                    $cnt = ($cnt - $v['cnt']);
+                }
                 
-                $date = trim($v['dt']);
-                $item['tt'] = $cnt.'   '.$v['cnt'].' '.trans('code.friend');
-                $item['c'] = $v['cash'];
-                $item['create_time'] = $v['dt'];
-                $item['t'] = $v['dt'];
-                $item['tm'] = $v['dt'];
-                $datas[$date][] = $item;
-                $cnt = ($cnt - $v['cnt']);
             }
             $d=[];
             foreach($datas as $k=>$v){

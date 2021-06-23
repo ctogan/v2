@@ -80,7 +80,7 @@ class Utils {
         $data = json_decode($str , true);
         if(count($data) > 0){
             if(array_key_exists('result' , $data)){
-                if(array_key_exists('list' , $data['result'])){
+                if(array_key_exists($key , $data['result'])){
                     return $data['result'][$key];
                 }
             }
