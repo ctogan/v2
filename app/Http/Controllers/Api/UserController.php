@@ -9,6 +9,7 @@ use App\Helpers\User;
 use App\Helpers\Utils;
 use App\Http\Controllers\Controller;
 use App\Point;
+use App\PushToken;
 use App\UserApp;
 use App\UserCash;
 use App\UserConfig;
@@ -55,7 +56,8 @@ class UserController extends ApiController
     public function login_email(Request $request){
         $validation = Validator::make($request->all(), [
             'id' => 'required',
-            'email' => 'required'
+            'email' => 'required',
+//            'push_token' => 'required'
         ]);
 
         if ($validation->fails()) {
@@ -70,6 +72,7 @@ class UserController extends ApiController
             $userCash = UserCash::where('uid', $user->uid)->first();
             $userTime = UserTime::where('uid', $user->uid)->first();
             $userTargetInfo = UserTargetInfo::where('uid', $user->uid)->first();
+            $pushToken = PushToken::where('uid', $user->uid)->first();
             $ses = substr(md5(microtime()), 0, 20);
 
             $updateUser = UserApp::where('uid', $user->uid)->update([
@@ -91,6 +94,10 @@ class UserController extends ApiController
             $updateUserTime = UserTime::where('uid', $user->uid)->update([
                 'ses' => $ses,
                 'last_ip' => ip2long($request->getClientIp())
+            ]);
+
+            $pushToken = PushToken::where('uid', $user->uid)->update([
+               'token' => $request->push_token
             ]);
 
             $data = [
@@ -175,7 +182,8 @@ class UserController extends ApiController
             'av' => 'required',
             'lc' => 'required',
             'phone_number' => 'required',
-            'id' => 'required'
+            'id' => 'required',
+//            'push_token' => 'required'
         ]);
 
         if ($validation->fails()) {
@@ -215,6 +223,7 @@ class UserController extends ApiController
             $userCash = UserCash::where('uid', $user->uid)->first();
             $userTime = UserTime::where('uid', $user->uid)->first();
             $userTargetInfo = UserTargetInfo::where('uid', $user->uid)->first();
+            $pushToken = PushToken::where('uid', $user->uid)->first();
 
             $ses = substr(md5(microtime()), 0, 20);
 
@@ -236,6 +245,9 @@ class UserController extends ApiController
             $userTime->ses = $ses;
             $userTime->last_ip = ip2long($request->getClientIp());
             $userTime->save();
+
+            $pushToken->token = $request->push_token;
+            $pushToken->save();
 
             $data = [
                 'session' => [
@@ -412,7 +424,8 @@ class UserController extends ApiController
      */
     public function register(Request $request){
         $validation = Validator::make($request->all(), [
-            'email' => 'required'
+            'email' => 'required',
+//            'push_token' => 'required'
         ]);
 
         if ($validation->fails()) {
@@ -429,8 +442,8 @@ class UserController extends ApiController
             $inv_code = strval(Utils::generateInvCode());
             DB::beginTransaction();
             try {
-                if (strlen($request->profile_img) > 1) {
-                    $profile_img = $request->profile_img;
+                if (strlen($request->photo_url) > 5) {
+                    $profile_img = $request->photo_url;
                 } else {
                     $profile_img = null;
                 }
@@ -484,7 +497,7 @@ class UserController extends ApiController
                     'last_ad_list' => null,
                 ]);
 
-                $createUserTargetInfo = UserTargetInfo::insert([
+                $createUserTargetInfo = UserTargetInfo::create([
                     'uid' => (int) $uid,
                     'tm_target_changed' => date("Y-m-d H:i:s"),
                     'locale' => 'id',
@@ -500,6 +513,12 @@ class UserController extends ApiController
                     'marriage' => null,
                     'religion' => null,
                     'device_name' => null,
+                ]);
+
+                $createPushToken = PushToken::create([
+                    'uid' => (int) $uid,
+                    'failed' => 0,
+                    'token' => $request->push_token
                 ]);
 
                 DB::commit();
@@ -849,6 +868,56 @@ class UserController extends ApiController
 
             }
             return $this->successResponse($d);
+        }
+    }
+
+    /**
+     * @OA\Get(
+     *   path="/api/user/auth/update-push-token",
+     *   summary="list of point",
+     *   tags={"push token"},
+     *     @OA\Parameter(
+     *          name="uid",
+     *          required=true,
+     *          in="query",
+     *          @OA\Schema(
+     *              type="string"
+     *          )
+     *     ),
+     *     @OA\Parameter(
+     *          name="push_token",
+     *          required=true,
+     *          in="query",
+     *          @OA\Schema(
+     *              type="string"
+     *          )
+     *     ),
+     *   @OA\Response(
+     *     response=200,
+     *     description="Update push token"
+     *   )
+     * )
+     */
+    public function update_push_token(Request $request) {
+        $validation = Validator::make($request->all(), [
+            'uid' => 'required',
+            'push_token' => 'required'
+        ]);
+
+        if ($validation->fails()) {
+            return $this->errorResponse($validation->errors(),static::CODE_ERROR_VALIDATION);
+        }
+
+        $pushToken = PushToken::where('uid', $request->uid)->update([
+           'token' => $request->push_token
+        ]);
+
+        if ($pushToken > 0) {
+            return true;
+//            return $this->successResponse(true);
+        } else {
+            return false;
+//            return $this->errorResponse($validation->errors(),static::TRANSACTION_ERROR_GENERAL);
         }
     }
 
