@@ -853,7 +853,7 @@ class UserController extends ApiController
                 $item['tt'] = $count_data.' '.trans('code.friend');
                 $item['c'] = $v['cash'];
                 $item['tm'] = $v['dt'];
-                $datas[$date][] = $v;
+                $datas[$date][] = $item;
             }
             $d=[];
             foreach($datas as $k=>$v){
