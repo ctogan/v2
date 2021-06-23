@@ -511,7 +511,7 @@ class CerdasCermatController extends ApiController
     }
 
     public function get_prize(Request $request){
-        sleep(120);
+        sleep(1);
 
         $user = $this->user;
         $uid = $this->user->uid;

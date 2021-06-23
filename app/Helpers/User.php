@@ -100,6 +100,7 @@ class User {
         }
 
         $cash = round(abs($cash));
+        $last_cash = $user->total_earn - $user->total_use;
         if ($cash <= 0) {
             return false;
         }
@@ -113,9 +114,9 @@ class User {
             'code' => $code,
             'cash' => $cash,
             'before_free_cash' => 0,
-            'before_work_cash' => $user_cash->cash,
+            'before_work_cash' => $last_cash,
             'after_free_cash' => 0,
-            'after_work_cash' => $user_cash->cash + $cash,
+            'after_work_cash' => $last_cash + $cash,
             'detail' => $detail,
             'uniq' => $uniq
         ];

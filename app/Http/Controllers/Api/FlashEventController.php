@@ -175,7 +175,7 @@ class FlashEventController extends ApiController
             return $this->errorResponse(static::ERROR_FLASH_BUY_DUPLICATE,static::ERROR_CODE_FLASH_BUY_DUPLICATE);
         }
 
-        $rand = rand(30,120);
+        $rand = rand(1,3);
         sleep($rand);
 
         $flash_detail = FlashEventDetail::with('flash_event')->with('product')->where('flash_detail_code','=', $request->flash_detail_code)->first();
