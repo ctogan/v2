@@ -110,6 +110,7 @@ Route::get('cerdas-cermat/question', 'Api\CerdasCermatController@get_question');
 Route::get('cerdas-cermat/start', 'Api\CerdasCermatController@start');
 Route::get('cerdas-cermat/history', 'Api\CerdasCermatController@history');
 Route::get('cerdas-cermat/result', 'Api\CerdasCermatController@result');
+Route::get('cerdas-cermat/prize/get', 'Api\CerdasCermatController@get_prize');
 
 //Notification
 Route::get('/notification', 'Api\NotificationController@index');
@@ -128,6 +129,7 @@ Route::post('/user/auth/verify-otp', 'Api\UserController@verify_otp');
 Route::post('/user/auth/request-otp', 'Api\UserController@request_otp');
 Route::post('/user/auth/login/email', 'Api\UserController@login_email');
 Route::post('/user/auth/login/phone', 'Api\UserController@login_phone');
+Route::post('/user/auth/update-push-token', 'Api\UserController@update_push_token');
 Route::post('/user/auth/register', 'Api\UserController@register');
 
 

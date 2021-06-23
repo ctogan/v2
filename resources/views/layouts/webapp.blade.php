@@ -7,7 +7,7 @@
     <!-- CSRF Token -->
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
-    <meta name="usr-token" content="{{\App\Helpers\Utils::get_cookie('mmses')}}"/>
+    <meta name="usr-token" content="{{\App\Helpers\Utils::get_mmses()}}"/>
 
     <title>{{ config('app.name', 'Cashtree') }}</title>
 

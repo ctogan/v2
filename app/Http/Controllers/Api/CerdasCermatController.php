@@ -7,10 +7,15 @@ use App\CCParticipant;
 use App\CCParticipantDetail;
 use App\CCQuestion;
 use App\CCSession;
+use App\CCSessionPrize;
 use App\CCSessionQuestion;
 use App\Helpers\Code;
 use App\Helpers\User;
 use App\Http\Resources\CCSessionResource;
+use App\PointPurchase;
+use App\PulsaBuy;
+use App\PulsaGoods;
+use App\UserApp;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
@@ -475,12 +480,19 @@ class CerdasCermatController extends ApiController
               RANK () OVER (
                     ORDER BY score DESC , minutes ASC, seconds ASC, miliseconds asc, last_point desc , cc_register_date DESC
                 ) rank
-              from cc_participant where row_status='completed' and cc_session_id=".$session->id."
+              from cc_participant where row_status='completed' and cc_session_id=".$session->id." limit 15
             )
             select * from rank ";
 
         $result = DB::connection('game_center')->select($query);
         $myrank = DB::connection('game_center')->select($query . ' where uid=' .$uid);
+
+        foreach ($result as &$item){
+            $userapp = UserApp::where('uid','=',$item->uid)->first();
+            $phone = $userapp && $userapp->phone ? substr($userapp->phone,0,strlen($userapp->phone)-3) . '***' : '' ;
+            $item->name = $userapp ? $userapp->first_name : '-';
+            $item->phone = $phone;
+        }
 
         $rank = 0;
         if($myrank){
@@ -493,6 +505,107 @@ class CerdasCermatController extends ApiController
             'result' => $result,
             'uid' => $uid,
             'rank' => $rank
+        ];
+
+        return $this->successResponse($response);
+    }
+
+    public function get_prize(Request $request){
+        $rand = rand(1000000,2000000);
+        usleep($rand);
+
+        $user = $this->user;
+        $uid = $this->user->uid;
+
+        $validation = Validator::make($request->all(), [
+            'session_code' => 'required'
+        ]);
+
+        if ($validation->fails()) {
+            return $this->errorResponse($validation->errors(),static::CODE_ERROR_VALIDATION);
+        }
+
+        $session = CCSession::where('row_status','=','active')
+            ->where('session_code','=',$request->session_code)
+            ->first();
+
+        if(!$session){
+            return $this->errorResponse('Sesi ini tidak ditemukan.',static::CODE_ERROR_VALIDATION);
+        }
+
+        $query = "WITH rank as (
+              select uid, score, duration,
+              RANK () OVER (
+                    ORDER BY score DESC , minutes ASC, seconds ASC, miliseconds asc, last_point desc , cc_register_date DESC
+                ) rank
+              from cc_participant where row_status='completed' and cc_session_id=".$session->id." limit 15
+            )
+            select * from rank ";
+
+        $myrank = DB::connection('game_center')->select($query . ' where uid=' .$uid);
+
+        $rank = 0;
+        if($myrank){
+            foreach ($myrank as $my){
+                $rank =$my->rank;
+            }
+        }
+
+        if($rank > 0){
+            $prize = CCSessionPrize::with('product')
+                ->where('cc_session_id','=',$session->id)
+                ->where('rank','=',$rank)
+                ->first();
+
+            if(!$prize){
+                return $this->errorResponse('Tidak ada hadiah yang tersedia',static::CODE_ERROR_VALIDATION);
+            }
+
+            if($prize->product->product_type == 'point'){
+                $point_purchase = PointPurchase::where('transaction_code','=',$request->session_code)->where('uid','=',$user->uid)->count();
+                if($point_purchase > 0){
+                    return $this->errorResponse('Hadiah sudah pernah diambil',static::CODE_ERROR_VALIDATION);
+                }
+                User::earn_point($user, Code::CODE_BONUS, $prize->product->product_value, 'Cerdas Cermat');
+                $data_point_purchase = [
+                    'uid' => $user->uid,
+                    'transaction_code' => $request->session_code,
+                    'description' => 'Cerdas Cermat - '.$session->title,
+                    'price' => 0
+                ];
+
+                PointPurchase::create($data_point_purchase);
+            }else{
+                $additional_1 = $request->session_code .'_' . $uid;
+                $exist = PulsaBuy::where('additional_1','=', $additional_1)->count();
+                if($exist > 0){
+                    return $this->errorResponse('Hadiah sudah pernah diambil',static::CODE_ERROR_VALIDATION);
+                }
+
+                $pulsa_goods = PulsaGoods::where('opcode','=',$user->opcode)->where('good_code','=',$prize->product->product_code)->first();
+                if(!$pulsa_goods){
+                    return $this->errorResponse(static::ERROR_PRODUCT_NOT_FOUND,static::CODE_ERROR_VALIDATION);
+                }
+
+                $pulsa_buy = [
+                    'uid' => $user->uid,
+                    'pulsa_goods_id' => $pulsa_goods->id,
+                    'cash' => 0,
+                    'phone' => $user->phone,
+                    'additional_1' => $additional_1
+                ];
+
+                PulsaBuy::create($pulsa_buy);
+            }
+        }else{
+            return $this->errorResponse('Tidak ada hadiah yang tersedia',static::CODE_ERROR_VALIDATION);
+        }
+
+        $response = [
+            'status' => true,
+            'uid' => $uid,
+            'rank' => $rank,
+            'prize' => $prize->product->product_name
         ];
 
         return $this->successResponse($response);

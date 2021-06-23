@@ -3949,6 +3949,23 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
@@ -3960,7 +3977,8 @@ __webpack_require__.r(__webpack_exports__);
       uid: 0,
       rank: 0,
       status: false,
-      loading_prize: true
+      loading_prize: true,
+      session_code: ''
     };
   },
   mounted: function mounted() {
@@ -3989,6 +4007,8 @@ __webpack_require__.r(__webpack_exports__);
     showresult: function showresult(index, session_code, status) {
       var _this2 = this;
 
+      this.rank = 0;
+      this.session_code = session_code;
       $('#ccc_result_modal').modal('show');
       this.result = [];
       this.loading_prize = true;
@@ -4009,6 +4029,36 @@ __webpack_require__.r(__webpack_exports__);
         _this2.uid = response.data.data.uid;
         _this2.rank = response.data.data.rank;
         _this2.status = status === "expired" ? true : false;
+      });
+    },
+    redeem_prize: function redeem_prize() {
+      var scode = this.session_code;
+      $('#ccc_result_modal').modal('hide');
+      var content = '<div class="text-center">\n' + '                            <img src="https://scdn.ctree.id/f/210623/1624430473937_Pulsa%20Mission@2x.webp" style="width: 80%;margin-bottom: 15px">\n' + '                            <h5>Mohon Tunggu ....</h5>\n' + '                            <p>Hadiah kamu sedang disiapkan</p>\n' + '                        </div>';
+      alertify.alert(content).setting({
+        'title': 'Cerdas Cermat',
+        'closable': false,
+        'basic': true
+      });
+      axios.get('/api/cerdas-cermat/prize/get', {
+        params: {
+          mmses: $('meta[name=usr-token]').attr('content'),
+          session_code: scode
+        }
+      }).then(function (response) {
+        if (response.data.code !== "200") {
+          alertify.alert('<div style="text-align: center"><img style="width: 80%;margin-bottom: 15px;" src="https://scdn.ctree.id/f/210623/1624438905913_Shop%202@2x.webp"><h4>' + response.data.message + '</h4></div>').setting({
+            'title': 'Cerdas Cermat',
+            'closable': true,
+            'basic': false
+          });
+        } else {
+          alertify.alert('<div style="text-align: center"><img style="width: 80%;margin-bottom: 15px;" src="https://scdn.ctree.id/f/210623/1624438404738_Leaderboard@2x.webp"><h4>Selamat kamu mendapatkan ' + response.data.data.prize + '</h4></div>').setting({
+            'title': 'Cerdas Cermat',
+            'closable': true,
+            'basic': false
+          });
+        }
       });
     },
     close_modal: function close_modal() {
@@ -4677,7 +4727,13 @@ var render = function() {
       "div",
       {
         staticClass: "modal",
-        attrs: { id: "prize_modal", tabindex: "-1", role: "dialog" }
+        attrs: {
+          id: "prize_modal",
+          "data-backdrop": "static",
+          tabindex: "-1",
+          role: "dialog",
+          "aria-hidden": "true"
+        }
       },
       [
         _c(
@@ -4741,8 +4797,13 @@ var render = function() {
     _c(
       "div",
       {
-        staticClass: "modal",
-        attrs: { id: "ccc_result_modal", tabindex: "-1", role: "dialog" }
+        staticClass: "modal fade",
+        attrs: {
+          id: "ccc_result_modal",
+          "data-backdrop": "static",
+          tabindex: "-1",
+          role: "dialog"
+        }
       },
       [
         _c(
@@ -4751,12 +4812,18 @@ var render = function() {
           [
             _c("div", { staticClass: "modal-content" }, [
               _c("div", { staticClass: "modal-body" }, [
-                _c("p", [_vm._v("Daftar Pemenang")]),
+                _c("p", { staticClass: "mb-0" }, [_vm._v("Daftar Pemenang")]),
                 _vm._v(" "),
-                _vm.loading_prize ? _c("div", [_vm._m(4)]) : _vm._e(),
+                _c("small", [
+                  _vm._v("Hadiah dapat diambil setelah sesi selesai")
+                ]),
+                _vm._v(" "),
+                _vm.loading_prize
+                  ? _c("div", { staticClass: "mt-3" }, [_vm._m(4)])
+                  : _vm._e(),
                 _vm._v(" "),
                 !_vm.loading_prize
-                  ? _c("div", [
+                  ? _c("div", { staticClass: "mt-3" }, [
                       _vm.result
                         ? _c(
                             "table",
@@ -4783,7 +4850,14 @@ var render = function() {
                                         _vm._v(_vm._s(item.rank))
                                       ]),
                                       _vm._v(" "),
-                                      _c("td", [_vm._v(_vm._s(item.uid))]),
+                                      _c("td", [
+                                        _vm._v(_vm._s(item.name) + " "),
+                                        _c(
+                                          "small",
+                                          { staticClass: "d-block" },
+                                          [_vm._v(_vm._s(item.phone))]
+                                        )
+                                      ]),
                                       _vm._v(" "),
                                       _c("td", { attrs: { align: "center" } }, [
                                         _vm._v(_vm._s(item.score))
@@ -4825,6 +4899,12 @@ var render = function() {
               _vm._v(" "),
               _c("div", { staticClass: "modal-footer" }, [
                 _c(
+                  "div",
+                  { staticStyle: { position: "absolute", left: "15px" } },
+                  [_vm._v("Kamu Ranking : " + _vm._s(_vm.rank))]
+                ),
+                _vm._v(" "),
+                _c(
                   "button",
                   {
                     staticClass: "btn btn-secondary",
@@ -4842,7 +4922,9 @@ var render = function() {
           ]
         )
       ]
-    )
+    ),
+    _vm._v(" "),
+    _vm._m(6)
   ])
 }
 var staticRenderFns = [
@@ -4971,6 +5053,51 @@ var staticRenderFns = [
         _c("th", { staticClass: "text-center" }, [_vm._v("Hadiah")])
       ])
     ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c(
+      "div",
+      {
+        staticClass: "modal fade",
+        attrs: {
+          id: "ccc_progress_modal",
+          tabindex: "-1",
+          "data-keyboard": "false",
+          "data-backdrop": "static"
+        }
+      },
+      [
+        _c(
+          "div",
+          {
+            staticClass: "modal-dialog modal-dialog-centered",
+            attrs: { role: "document" }
+          },
+          [
+            _c("div", { staticClass: "modal-content" }, [
+              _c("div", { staticClass: "modal-body" }, [
+                _c("div", { staticClass: "text-center" }, [
+                  _c("img", {
+                    staticStyle: { width: "80%" },
+                    attrs: {
+                      src:
+                        "https://scdn.ctree.id/f/210623/1624430473937_Pulsa%20Mission@2x.webp"
+                    }
+                  }),
+                  _vm._v(" "),
+                  _c("h5", [_vm._v("Mohon Tunggu ....")]),
+                  _vm._v(" "),
+                  _c("p", [_vm._v("Hadiah kamu sedang disiapkan")])
+                ])
+              ])
+            ])
+          ]
+        )
+      ]
+    )
   }
 ]
 render._withStripped = true
