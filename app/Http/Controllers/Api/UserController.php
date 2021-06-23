@@ -846,10 +846,11 @@ class UserController extends ApiController
         ]);
         $datas = [];
         $data = Utils::result_http_request($response->body() , 'list');
+        $count_data = Utils::result_http_request($response->body() , 'inv_count');
         if(count($data) > 0){
             foreach($data as $v){
                 $date = trim($v['dt']);
-                $item['tt'] = $data['inv_count'].' '.trans('code.friend');
+                $item['tt'] = $count_data.' '.trans('code.friend');
                 $item['c'] = $v['cash'];
                 $item['tm'] = $v['dt'];
                 $datas[$date][] = $v;
