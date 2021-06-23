@@ -589,7 +589,7 @@ class CerdasCermatController extends ApiController
 
                 $pulsa_buy = [
                     'uid' => $user->uid,
-                    'pulsa_goods_id' => $pulsa_goods->goods_id,
+                    'pulsa_goods_id' => $pulsa_goods->id,
                     'cash' => 0,
                     'phone' => $user->phone,
                     'additional_1' => $additional_1

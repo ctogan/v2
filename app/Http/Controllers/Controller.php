@@ -120,13 +120,8 @@ class Controller extends BaseController
         $mmses = null;
         if($request->mmses){
             $mmses = $request->mmses;
-//            setcookie('mmses',$mmses,time() + (86400 * 30), "/"); //1 day
             Cache::put('mmses',$request->mmses);
         }else{
-//            $cookie = $_COOKIE['mmses'];
-//            if($cookie){
-//                $mmses = $cookie;
-//            }
             $mmses = Cache::get('mmses');
         }
 

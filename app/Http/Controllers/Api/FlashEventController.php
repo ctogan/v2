@@ -217,7 +217,7 @@ class FlashEventController extends ApiController
 
             $pulsa_buy = [
                 'uid' => $user->uid,
-                'pulsa_goods_id' => $pulsa_goods->goods_id,
+                'pulsa_goods_id' => $pulsa_goods->id,
                 'cash' => $flash_detail->point,
                 'phone' => $user->phone,
                 'flash_detail_code' => $request->flash_detail_code,
