@@ -72,7 +72,6 @@ class UserController extends ApiController
             $userCash = UserCash::where('uid', $user->uid)->first();
             $userTime = UserTime::where('uid', $user->uid)->first();
             $userTargetInfo = UserTargetInfo::where('uid', $user->uid)->first();
-            $pushToken = PushToken::where('uid', $user->uid)->first();
             $ses = substr(md5(microtime()), 0, 20);
 
             $updateUser = UserApp::where('uid', $user->uid)->update([
@@ -96,9 +95,7 @@ class UserController extends ApiController
                 'last_ip' => ip2long($request->getClientIp())
             ]);
 
-            $pushToken = PushToken::where('uid', $user->uid)->update([
-               'token' => $request->push_token
-            ]);
+            $pushToken = PushToken::updateOrCreate(['uid' => $user->uid], ['failed' => 0, 'token' => $request->push_token]);
 
             $data = [
                 'session' => [
@@ -223,7 +220,6 @@ class UserController extends ApiController
             $userCash = UserCash::where('uid', $user->uid)->first();
             $userTime = UserTime::where('uid', $user->uid)->first();
             $userTargetInfo = UserTargetInfo::where('uid', $user->uid)->first();
-            $pushToken = PushToken::where('uid', $user->uid)->first();
 
             $ses = substr(md5(microtime()), 0, 20);
 
@@ -246,8 +242,7 @@ class UserController extends ApiController
             $userTime->last_ip = ip2long($request->getClientIp());
             $userTime->save();
 
-            $pushToken->token = $request->push_token;
-            $pushToken->save();
+            $pushToken = PushToken::updateOrCreate(['uid' => $user->uid], ['failed' => 0, 'token' => $request->push_token]);
 
             $data = [
                 'session' => [
