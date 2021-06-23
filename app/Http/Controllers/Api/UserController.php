@@ -841,17 +841,17 @@ class UserController extends ApiController
      * )
      */
     public function invite(Request $request){
-        $response = Http::post('https://api.ctree.id/api2/user/cash/all.json', [
+        $response = Http::post('https://api.ctree.id/api2/user/invite/daily.json', [
             'mmses' => $request->mmses,
         ]);
         $datas = [];
         $data = Utils::result_http_request($response->body() , 'list');
         if(count($data) > 0){
             foreach($data as $v){
-                $date = trim($v['t']);
-                if($v['tt'] == '' || $v['tt'] == null){
-                    $item['title'] = trans('code.'.Code::getLang($v['tt']));
-                }
+                $date = trim($v['dt']);
+                $item['tt'] = trans('code.friend');
+                $item['c'] = $v['cash'];
+                $item['tm'] = $v['dt'];
                 $datas[$date][] = $v;
             }
             $d=[];
@@ -860,7 +860,6 @@ class UserController extends ApiController
                     'date' => $k,
                     'detail' => $datas[$k]
                 );
-
             }
             return $this->successResponse($d);
         }
