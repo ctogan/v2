@@ -209,7 +209,7 @@ class FlashEventController extends ApiController
                 return $this->errorResponse(static::ERROR_FLASH_EVENT_OUT_OF_STOCK,static::ERROR_CODE_FLASH_EVENT_OUT_OF_STOCK);
             }
 
-            $pulsa_goods = PulsaGoods::where('opcode','=',$user->opcode)->where('good_code','=',$flash_detail->product->product_code)->first();
+            $pulsa_goods = PulsaGoods::where('opcode','=',$user->opcode)->where('good_code','=',$flash_detail->product->product_code)->where('server_pulsa','=','MOBILEPULSA')->first();
 
             if(!$pulsa_goods){
                 return $this->errorResponse(static::ERROR_PRODUCT_NOT_FOUND,static::ERROR_CODE_FLASH_EVENT_OUT_OF_STOCK);
