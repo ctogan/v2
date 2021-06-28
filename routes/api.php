@@ -97,7 +97,7 @@ Route::post('/news/point', 'Api\NewsController@point');
 //Flash Event
 Route::get('/flash-event/detail', 'Api\FlashEventController@get_flash_event');
 Route::get('/flash-event/detail/product', 'Api\FlashEventController@get_flash_event_product');
-Route::get('/flash-event/detail/product/buy', 'Api\FlashEventController@buy_product');
+Route::post('/flash-event/detail/product/buy', 'Api\FlashEventController@buy_product');
 
 //Cerdas Cermat
 Route::get('cerdas-cermat', 'Api\CerdasCermatController@index');
