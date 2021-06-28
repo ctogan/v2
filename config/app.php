@@ -184,6 +184,7 @@ return [
         App\Providers\CodeServiceProvider::class,
         App\Providers\UserServiceProvider::class,
         App\Providers\PulsaServiceProvider::class,
+        App\Providers\OperatorServiceProvider::class
        // BaoPham\DynamoDb\DynamoDbServiceProvider::class,
     ],
 

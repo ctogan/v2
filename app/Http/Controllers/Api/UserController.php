@@ -82,7 +82,7 @@ class UserController extends ApiController
             $updateUserTargetInfo = UserTargetInfo::where('uid', $user->uid)->update([
                 'locale' => $request->lc,
                 'device_name' => $request->dvc,
-                'opcode' => $request->opcode,
+//                'opcode' => $request->opcode,
                 'osver' => $request->ov,
                 'appver' => $request->av,
                 'resw' => $request->resw,
@@ -95,7 +95,9 @@ class UserController extends ApiController
                 'last_ip' => ip2long($request->getClientIp())
             ]);
 
-            $pushToken = PushToken::updateOrCreate(['uid' => $user->uid], ['failed' => 0, 'token' => $request->push_token]);
+            if ($request->push_token) {
+                $pushToken = PushToken::updateOrCreate(['uid' => $user->uid], ['failed' => 0, 'token' => $request->push_token]);
+            }
 
             $data = [
                 'session' => [
@@ -230,7 +232,7 @@ class UserController extends ApiController
 
             $userTargetInfo->locale = $request->lc;
             $userTargetInfo->device_name = $request->dvc;
-            $userTargetInfo->opcode = $request->opcode;
+//            $userTargetInfo->opcode = $request->opcode;
             $userTargetInfo->osver = $request->ov;
             $userTargetInfo->appver = $request->resw;
             $userTargetInfo->resw = $request->resh;
@@ -242,7 +244,9 @@ class UserController extends ApiController
             $userTime->last_ip = ip2long($request->getClientIp());
             $userTime->save();
 
-            $pushToken = PushToken::updateOrCreate(['uid' => $user->uid], ['failed' => 0, 'token' => $request->push_token]);
+            if ($request->push_token) {
+                $pushToken = PushToken::updateOrCreate(['uid' => $user->uid], ['failed' => 0, 'token' => $request->push_token]);
+            }
 
             $data = [
                 'session' => [
@@ -496,7 +500,7 @@ class UserController extends ApiController
                     'uid' => (int) $uid,
                     'tm_target_changed' => date("Y-m-d H:i:s"),
                     'locale' => 'id',
-                    'opcode' => $request->opcode,
+                    'opcode' => null,
                     'osver' => $request->ov,
                     'appver' => $request->av,
                     'resw' => $request->resw,
@@ -510,11 +514,13 @@ class UserController extends ApiController
                     'device_name' => null,
                 ]);
 
-                $createPushToken = PushToken::create([
-                    'uid' => (int) $uid,
-                    'failed' => 0,
-                    'token' => $request->push_token
-                ]);
+                if ($request->push_token) {
+                    $createPushToken = PushToken::create([
+                        'uid' => (int)$uid,
+                        'failed' => 0,
+                        'token' => $request->push_token
+                    ]);
+                }
 
                 DB::commit();
             }catch (\Exception $e) {
@@ -566,7 +572,6 @@ class UserController extends ApiController
                 'allow_noti' => true,
                 'invite_url' => 'http://inv.sctrk.site/',
 //                'opname' => strval(Operator::getNameByOpcode(strval($createUserTargetInfo->opcode))),
-                'opname' => 'Indosat',
                 'opcode' => $request->opcode,
                 'gender' => null,
                 'birth' => null,
