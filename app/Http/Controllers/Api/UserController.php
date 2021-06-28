@@ -124,7 +124,7 @@ class UserController extends ApiController
                     'full_name' => $user->full_name,
                     'first_name' => $user->first_name,
                     'last_name' => $user->last_name,
-                    'profile_img' => $user->profile_img
+                    'profile_img' => $request->photo_url
                 ],
                 'cash_status' => [
                     'total' => intval($userCash->cash),
@@ -230,6 +230,9 @@ class UserController extends ApiController
             $user->gaid = $request->gaid;
             $user->imei = $request->imei;
             $user->anid = $request->anid;
+            if ($request->photo_url) {
+                $user->profile_img = $request->photo_url;
+            }
             $user->save();
 
             $userTargetInfo->locale = $request->lc;
