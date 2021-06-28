@@ -78,6 +78,7 @@ class UserController extends ApiController
                 'gaid' => $request->gaid,
                 'imei' => $request->imei,
                 'anid' => $request->anid,
+                'profile_img' => $request->photo_url
             ]);
             $updateUserTargetInfo = UserTargetInfo::where('uid', $user->uid)->update([
                 'locale' => $request->lc,
@@ -200,7 +201,8 @@ class UserController extends ApiController
                     'last_name' => $request->family_name,
                     'full_name' => $request->display_name,
                     'email' => $request->email,
-                    'account_id' => $request->id
+                    'account_id' => $request->id,
+                    'profile_img' => $request->photo_url,
                 ]);
 
                 if ($connectEmail <= 0) {
@@ -444,7 +446,7 @@ class UserController extends ApiController
                 if (strlen($request->photo_url) > 5) {
                     $profile_img = $request->photo_url;
                 } else {
-                    $profile_img = null;
+                    $profile_img = "";
                 }
 
                 $createUser = UserApp::create([
