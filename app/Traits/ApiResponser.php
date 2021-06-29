@@ -21,7 +21,7 @@ trait ApiResponser{
             'message' => $message,
             'code' => $code,
             'data' => null
-        ], $code);
+        ], 200);
     }
 
 }
