@@ -76,7 +76,7 @@ class Utils {
     }
 
     public static function get_operator_from_phone($phone) {
-        $first_four = substr($phone, 0, 3);
+        $first_four = substr($phone, 0, 4);
 
         if ($first_four == '0817' || $first_four == '0818' || $first_four == '0819' || $first_four == '0859' || $first_four == '0877' || $first_four == '0878' || $first_four == '0879') {
             return 'xl';
