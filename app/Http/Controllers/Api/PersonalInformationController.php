@@ -7,11 +7,13 @@ use App\BioEntryValue;
 use App\CCSession;
 use App\Helpers\Code;
 use App\Helpers\User;
+use App\Helpers\Utils;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\PersonalInformationResource;
 use App\PersonalInformation;
 use Illuminate\Http\Request;
 use DB;
+use Illuminate\Support\Facades\Validator;
 
 class PersonalInformationController extends ApiController
 {
@@ -178,6 +180,39 @@ class PersonalInformationController extends ApiController
         return $this->successResponse($response);
     }
 
+    /**
+     * @OA\Get(
+     *   path="/api/get/operator",
+     *   summary="get operator from phone number",
+     *   tags={"biodata"},
+     *     @OA\Parameter(
+     *          name="phone_number",
+     *          required=true,
+     *
+     *          in="query",
+     *          @OA\Schema(
+     *              type="string"
+     *          )
+     *     ),
+     *   @OA\Response(
+     *     response=200,
+     *     description="operator from phone number"
+     *   )
+     * )
+     */
+    public function get_operator(Request $request) {
+        $validation = Validator::make($request->all(), [
+            'phone_number' => 'required'
+        ]);
 
+        if ($validation->fails()) {
+            return $this->errorResponse($validation->errors(),static::CODE_ERROR_VALIDATION);
+        }
 
+        $data = [
+            'operator' => Utils::get_operator_from_phone($request->phone_number)
+        ];
+
+        return $this->successResponse($data);
+    }
 }
