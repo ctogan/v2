@@ -160,6 +160,10 @@ class FlashEventController extends ApiController
      *   @OA\Response(
      *     response=226,
      *     description="Product not found"
+     *   ),
+     *   @OA\Response(
+     *     response=216,
+     *     description="insufficient point"
      *   )
      * )
      */
@@ -179,8 +183,14 @@ class FlashEventController extends ApiController
         usleep($rand);
 
         $flash_detail = FlashEventDetail::with('flash_event')->with('product')->where('flash_detail_code','=', $request->flash_detail_code)->first();
+
         if(!$flash_detail){
             return $this->errorResponse(static::ERROR_NOT_FOUND,static::CODE_ERROR_VALIDATION);
+        }
+
+        $point = $user->total_earn - $user->total_use;
+        if($flash_detail->point > $point){
+            return $this->errorResponse(static::ERROR_INSUFFICIENT_POINT,static::ERROR_CODE_INSUFFICIENT);
         }
 
         if(count(self::map_flash_event($flash_detail->flash_event->event_code)) == 0){
@@ -203,7 +213,7 @@ class FlashEventController extends ApiController
             ];
             PointPurchase::insert($data_point_purchase);
         }else{
-            $stock = PulsaBuy::where('flash_detail_code','=',$request->flash_detail_code)->count();
+            $stock = PulsaBuy::where('flash_detail_code','=',$request->flash_detail_code)->where('dt','=',date('Y-m-d'))->count();
 
             if($flash_detail->cap <= $stock){
                 return $this->errorResponse(static::ERROR_FLASH_EVENT_OUT_OF_STOCK,static::ERROR_CODE_FLASH_EVENT_OUT_OF_STOCK);
