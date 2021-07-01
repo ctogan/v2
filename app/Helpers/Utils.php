@@ -75,6 +75,26 @@ class Utils {
         return $randomString;
     }
 
+    public static function get_operator_from_phone($phone) {
+        $first_four = substr($phone, 0, 4);
+
+        if ($first_four == '0817' || $first_four == '0818' || $first_four == '0819' || $first_four == '0859' || $first_four == '0877' || $first_four == '0878' || $first_four == '0879') {
+            return 'xl';
+        } else if ($first_four == '0831' || $first_four == '0832' || $first_four == '0838') {
+            return 'axis';
+        } else if ($first_four == '0811' || $first_four == '0812' || $first_four == '0813' || $first_four == '0821' || $first_four == '0822' || $first_four == '0823' || $first_four == '0852' || $first_four == '0851') {
+            return 'telkomsel';
+        } else if ($first_four == '0896' || $first_four == '0897' || $first_four == '0898' || $first_four == '0899') {
+            return 'three';
+        } else if ($first_four == '0855' || $first_four == '0856' || $first_four == '0857' || $first_four == '0858' || $first_four == '0814' || $first_four == '0815' || $first_four == '0816') {
+            return 'indosat';
+        } else if ($first_four == '0881' || $first_four == '0882' || $first_four == '0887' || $first_four == '0888') {
+            return 'smartfren';
+        } else {
+            return null;
+        }
+    }
+
     public static function result_http_request($str , $key) {
         if(!static::tryJson($str)) return [];
         $data = json_decode($str , true);
