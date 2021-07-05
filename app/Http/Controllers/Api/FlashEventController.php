@@ -99,7 +99,7 @@ class FlashEventController extends ApiController
             return $this->errorResponse(static::ERROR_NOT_FOUND,static::CODE_ERROR_VALIDATION);
         }
 
-        $stock = PulsaBuy::where('flash_detail_code','=',$request->flash_detail_code)->count();
+        $stock = PulsaBuy::where('flash_detail_code','=',$request->flash_detail_code)->where('dt','=',date('Y-m-d'))->count();
 
         foreach ($product as &$item){
             $item['stock'] = $stock;
@@ -222,7 +222,7 @@ class FlashEventController extends ApiController
             $pulsa_goods = PulsaGoods::where('opcode','=',$user->opcode)->where('good_code','=',$flash_detail->product->product_code)->where('server_pulsa','=','MOBILEPULSA')->first();
 
             if(!$pulsa_goods){
-                return $this->errorResponse(static::ERROR_PRODUCT_NOT_FOUND,static::ERROR_CODE_FLASH_EVENT_OUT_OF_STOCK);
+                return $this->errorResponse(static::ERROR_FLASH_EVENT_OUT_OF_STOCK,static::ERROR_CODE_FLASH_EVENT_OUT_OF_STOCK);
             }
 
             $pulsa_buy = [

@@ -173,6 +173,7 @@ Route::post('/admin/cerdas-cermat/session-paging','CerdasCermatController@sessio
 Route::get('/admin/cerdas-cermat/edit/{id}','CerdasCermatController@edit');
 Route::post('/admin/cerdas-cermat/update','CerdasCermatController@update');
 Route::post('/admin/cerdas-cermat/prize/delete','CerdasCermatController@delete_prize');
+Route::get('/admin/cerdas-cermat/report/{id}','CerdasCermatController@report');
 
 Route::get('/admin/product','ProductController@index');
 Route::get('/admin/product/edit/{id}','ProductController@get');
