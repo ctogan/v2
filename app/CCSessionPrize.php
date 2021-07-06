@@ -11,7 +11,7 @@ class CCSessionPrize extends Model
     public $timestamps = false;
 
     protected $fillable = [
-        'row_status','cc_session_id','cc_question_id','rank','product_id','created_by','created_at','updated_by','updated_at'
+        'row_status','cc_session_id','rank','product_id','created_by','created_at','updated_by','updated_at'
     ];
 
     public function session(){

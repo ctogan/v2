@@ -491,4 +491,12 @@ class CerdasCermatController extends Controller
         return $this->data_table($query);
     }
 
+    public function report(Request $request){
+        $cc = CCSession::where('id','=',$request->id)->first();
+        $data = [
+            'cc' => $cc
+        ];
+
+        return view('admin.cerdas-cermat.report',$data);
+    }
 }

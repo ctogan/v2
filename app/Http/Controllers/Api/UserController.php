@@ -2,21 +2,27 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Earning;
+use App\Helpers\Code;
 use App\Helpers\Operator;
+use App\Helpers\User;
 use App\Helpers\Utils;
 use App\Http\Controllers\Controller;
 use App\Point;
+use App\PushToken;
 use App\UserApp;
 use App\UserCash;
 use App\UserConfig;
 use App\UserTargetInfo;
 use App\UserTime;
 use Aws\RAM\Exception\RAMException;
+use AWSHelper;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 use OpenApi\Util;
-
+use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Lang;
 
 class UserController extends ApiController
 {
@@ -50,7 +56,8 @@ class UserController extends ApiController
     public function login_email(Request $request){
         $validation = Validator::make($request->all(), [
             'id' => 'required',
-            'email' => 'required'
+            'email' => 'required',
+//            'push_token' => 'required'
         ]);
 
         if ($validation->fails()) {
@@ -71,11 +78,12 @@ class UserController extends ApiController
                 'gaid' => $request->gaid,
                 'imei' => $request->imei,
                 'anid' => $request->anid,
+                'profile_img' => $request->photo_url
             ]);
             $updateUserTargetInfo = UserTargetInfo::where('uid', $user->uid)->update([
                 'locale' => $request->lc,
                 'device_name' => $request->dvc,
-                'opcode' => $request->opcode,
+//                'opcode' => $request->opcode,
                 'osver' => $request->ov,
                 'appver' => $request->av,
                 'resw' => $request->resw,
@@ -87,6 +95,10 @@ class UserController extends ApiController
                 'ses' => $ses,
                 'last_ip' => ip2long($request->getClientIp())
             ]);
+
+            if ($request->push_token) {
+                $pushToken = PushToken::updateOrCreate(['uid' => $user->uid], ['failed' => 0, 'token' => $request->push_token]);
+            }
 
             $data = [
                 'session' => [
@@ -104,7 +116,7 @@ class UserController extends ApiController
                     'lock_screen' => boolval($userConfig->lock_screen),
                     'allow_noti' => boolval($userConfig->allow_noti),
                     'invite_url' => 'http://inv.sctrk.site/',
-                    'opname' => strval(Operator::getNameByOpcode($userTargetInfo->opcode)),
+//                    'opname' => strval(Operator::getNameByOpcode($userTargetInfo->opcode)),
                     'opcode' => strval($userTargetInfo->opcode),
                     'gender' => $userTargetInfo->gender ? $userTargetInfo->gender : 'U',
                     'birth' => strval($userTargetInfo->birth),
@@ -112,7 +124,7 @@ class UserController extends ApiController
                     'full_name' => $user->full_name,
                     'first_name' => $user->first_name,
                     'last_name' => $user->last_name,
-                    'profile_img' => $user->profile_img
+                    'profile_img' => $request->photo_url
                 ],
                 'cash_status' => [
                     'total' => intval($userCash->cash),
@@ -121,11 +133,17 @@ class UserController extends ApiController
                 ]
             ];
 
-//        Abuse::LogoutOtherUsersInSameMachine($user);
+            User::purge_cache($user->uid);
 
             return $this->successResponse($data);
         } else {
-            return $this->errorResponse($validation->errors(),static::ERROR_USER_NOT_FOUND);
+            $data = [
+                'code' => 401,
+                'status' => false,
+                'message' => 'Email not found.'
+            ];
+            return $this->successResponse($data);
+//            return $this->errorResponse($validation->errors(),static::ERROR_USER_NOT_FOUND);
         }
     }
 
@@ -164,7 +182,8 @@ class UserController extends ApiController
             'av' => 'required',
             'lc' => 'required',
             'phone_number' => 'required',
-            'id' => 'required'
+            'id' => 'required',
+//            'push_token' => 'required'
         ]);
 
         if ($validation->fails()) {
@@ -173,15 +192,17 @@ class UserController extends ApiController
 
         //Login Logic Here
         $user = UserApp::where('phone', '=', $request->phone_number)->first();
+        $user_by_account_id = UserApp::where('account_id', '=', $request->id)->first();
 
         if ($user) {
-            if (is_null($user->account_id)) {
+            if (is_null($user->account_id)) { //&& !$user_by_account_id
                 $connectEmail = UserApp::where('uid', $user->uid)->update([
                     'first_name' => $request->give_name,
                     'last_name' => $request->family_name,
                     'full_name' => $request->display_name,
                     'email' => $request->email,
-                    'account_id' => $request->id
+                    'account_id' => $request->id,
+                    'profile_img' => $request->photo_url,
                 ]);
 
                 if ($connectEmail <= 0) {
@@ -189,7 +210,13 @@ class UserController extends ApiController
                 }
             } else {
                 if ($user->email != $request->email) {
-                    return $this->errorResponse($validation->errors(),static::PHONE_EMAIL_NOT_SYNC);
+                    $data = [
+                        'code' => 401,
+                        'status' => false,
+                        'message' => 'Phone number and email does not match.'
+                    ];
+                    return $this->successResponse($data);
+//                    return $this->errorResponse($validation->errors(),static::PHONE_EMAIL_NOT_SYNC);
                 }
             }
 
@@ -203,11 +230,14 @@ class UserController extends ApiController
             $user->gaid = $request->gaid;
             $user->imei = $request->imei;
             $user->anid = $request->anid;
+            if ($request->photo_url) {
+                $user->profile_img = $request->photo_url;
+            }
             $user->save();
 
             $userTargetInfo->locale = $request->lc;
             $userTargetInfo->device_name = $request->dvc;
-            $userTargetInfo->opcode = $request->opcode;
+//            $userTargetInfo->opcode = $request->opcode;
             $userTargetInfo->osver = $request->ov;
             $userTargetInfo->appver = $request->resw;
             $userTargetInfo->resw = $request->resh;
@@ -218,6 +248,10 @@ class UserController extends ApiController
             $userTime->ses = $ses;
             $userTime->last_ip = ip2long($request->getClientIp());
             $userTime->save();
+
+            if ($request->push_token) {
+                $pushToken = PushToken::updateOrCreate(['uid' => $user->uid], ['failed' => 0, 'token' => $request->push_token]);
+            }
 
             $data = [
                 'session' => [
@@ -252,6 +286,8 @@ class UserController extends ApiController
                     'last_transaction' => strval($userCash->last_earn)
                 ]
             ];
+
+            User::purge_cache($user->uid);
 
             return $this->successResponse($data);
         } else {
@@ -392,7 +428,8 @@ class UserController extends ApiController
      */
     public function register(Request $request){
         $validation = Validator::make($request->all(), [
-            'email' => 'required'
+            'email' => 'required',
+//            'push_token' => 'required'
         ]);
 
         if ($validation->fails()) {
@@ -406,20 +443,22 @@ class UserController extends ApiController
             //Register logic
             $query = "nextval('uid') as uid";
             $uid = UserApp::selectRaw($query)->value('uid');
+            $inv_code = strval(Utils::generateInvCode());
             DB::beginTransaction();
             try {
-                if (count($request->profile_img) > 1) {
-                    $profile_img = $request->profile_img;
+                if (strlen($request->photo_url) > 5) {
+                    $profile_img = $request->photo_url;
                 } else {
-                    $profile_img = null;
+                    $profile_img = "";
                 }
 
                 $createUser = UserApp::create([
                     'uid' => (int) $uid,
-                    'sim' => $request->account_id,
+                    'sim' => $request->id,
                     'anid' => $request->anid,
                     'imei' => $request->imei,
                     'gaid' => $request->gaid,
+                    'inv_code' => $inv_code,
                     'first_name' => $request->give_name,
                     'last_name' => $request->family_name,
                     'full_name' => $request->display_name,
@@ -436,7 +475,7 @@ class UserController extends ApiController
                     'status' => '0',
                     'abuse' => '0',
                     'sel_goods_id' => null,
-                    'is_rooted' => false
+                    'is_rooted' => $request->rt == 't' ? 't' : 'f'
                 ]);
 
                 $createUserCash = UserCash::create([
@@ -456,17 +495,17 @@ class UserController extends ApiController
                     'register' => date("Y-m-d H:i:s"),
                     'changed' => date("Y-m-d H:i:s"),
                     'login' => date("Y-m-d H:i:s"),
-                    'last_ad_list' => null,
-                    'appopen' => date("Y-m-d H:i:s"),
                     'ses' => $ses,
-                    'last_ip' => ip2long($request->getClientIp())
+                    'appopen' => date("Y-m-d H:i:s"),
+                    'last_ip' => ip2long($request->getClientIp()),
+                    'last_ad_list' => null,
                 ]);
 
                 $createUserTargetInfo = UserTargetInfo::create([
                     'uid' => (int) $uid,
                     'tm_target_changed' => date("Y-m-d H:i:s"),
                     'locale' => 'id',
-                    'opcode' => $request->opcode,
+                    'opcode' => null,
                     'osver' => $request->ov,
                     'appver' => $request->av,
                     'resw' => $request->resw,
@@ -480,34 +519,64 @@ class UserController extends ApiController
                     'device_name' => null,
                 ]);
 
+                if ($request->push_token) {
+                    $createPushToken = PushToken::create([
+                        'uid' => (int)$uid,
+                        'failed' => 0,
+                        'token' => $request->push_token
+                    ]);
+                }
+
                 DB::commit();
             }catch (\Exception $e) {
                 DB::rollback();
             }
 
+            $updateUserTime = UserTime::where('uid', $uid)->update([
+                'ses' => $ses,
+                'appopen' => date("Y-m-d H:i:s"),
+                'last_ip' => ip2long($request->getClientIp()),
+            ]);
+
+            $updateUserTargetInfo = UserTargetInfo::where('uid', $uid)->update([
+                'locale' => 'id',
+                'opcode' => $request->opcode,
+                'osver' => $request->ov,
+                'appver' => $request->av,
+                'resw' => $request->resw,
+                'resh' => $request->resh,
+                'lat' => $request->lat,
+                'lng' => $request->lng,
+            ]);
+
         } else {
-            return $this->errorResponse($validation->errors(),static::USER_EMAIL_EXIST);
+            $data = [
+                'code' => 401,
+                'status' => false,
+                'message' => 'Email already registered.'
+            ];
+            return $this->successResponse($data);
+//            return $this->errorResponse($validation->errors(),static::USER_EMAIL_EXIST);
         }
 
         //Prepare login Here
         $data = [
             'session' => [
                 'u'             => strval($uid),
-                's'             => strval($request->account_id),
+                's'             => strval($request->id),
                 'ses'           => strval($ses),
                 'registered'    => true,
             ],
             'info' => [
                 'u' => intval($uid),
                 'id' => strval($uid),
-                'inv_code' => strval(Utils::generateInvCode()),
+                'inv_code' => $inv_code,
                 'reg_tm' => date("Y-m-d H:i:s"),
                 'ph' => null,
                 'lock_screen' => false,
                 'allow_noti' => true,
                 'invite_url' => 'http://inv.sctrk.site/',
 //                'opname' => strval(Operator::getNameByOpcode(strval($createUserTargetInfo->opcode))),
-                'opname' => 'Indosat',
                 'opcode' => $request->opcode,
                 'gender' => null,
                 'birth' => null,
@@ -523,6 +592,8 @@ class UserController extends ApiController
                 'last_transaction' => 0
             ]
         ];
+
+        User::purge_cache($uid);
 
         return $this->successResponse($data);
     }
@@ -695,14 +766,6 @@ class UserController extends ApiController
      *              type="string"
      *          )
      *     ),
-     *     @OA\Parameter(
-     *          name="page",
-     *          required=true,
-     *          in="query",
-     *          @OA\Schema(
-     *              type="integer"
-     *          )
-     *     ),
      *   @OA\Response(
      *     response=200,
      *     description="A list of notifications"
@@ -712,12 +775,40 @@ class UserController extends ApiController
     public function point_history(Request $request){
         $user = $this->user;
         $uid = $user->uid;
-        $point = Point::select('user_earning_detail.txt as title','user_earning_data.*')
-        ->leftJoin('user_earning_detail' , 'user_earning_data.detail' ,'user_earning_detail.id')
-        ->where('user_earning_data.uid' , $uid)
-        ->where('user_earning_data.tm' , '>' , date('Y-m-d', strtotime('today - 30 days')))
-        ->orderBy('user_earning_data.seq' , 'DESC')
+        $point = Earning::on(Utils::db_earning($user->uid))
+        ->where('uid' , $uid)
+        ->where('tm' , '>' , date('Y-m-d', strtotime('today - 30 days')))
+       ->orderBy('seq' , 'DESC')
         ->limit(50)->get();
+        $data = [];
+        foreach($point as $item){
+            $item['title'] = $item->detail;
+            $date = date('Y-m-d' , strtotime($item->tm));
+            if($item->detail == '' || $item->detail == null){
+                $item['title'] = trans('code.'.Code::getLang($item->code));
+            }
+            $data[$date][] = $item;
+        }
+        $d=[];
+        foreach($data as $k=>$v){
+            $d[] = array(
+                'date' => $k,
+                'detail' => $data[$k]
+            );
+
+        }
+         return $this->successResponse($d);
+    }
+
+    public function voucher_history(){
+        $user = $this->user;
+        $uid = $user->uid;
+        $point = Point::select('user_earning_detail.txt as title','user_earning_data.*')
+            ->leftJoin('user_earning_detail' , 'user_earning_data.detail' ,'user_earning_detail.id')
+            ->where('user_earning_data.uid' , $uid)
+            ->where('user_earning_data.tm' , '>' , date('Y-m-d', strtotime('today - 30 days')))
+            ->orderBy('user_earning_data.seq' , 'DESC')
+            ->limit(50)->get();
         if(!$point){
             return $this->successResponse([]);
         }
@@ -737,24 +828,109 @@ class UserController extends ApiController
             );
 
         }
+        return $this->successResponse($d);
 
-    
-
-        
-        // $notification = Notification::
-        //     with(['detail'=>function($q) use($uid){
-        //         return $q->where('uid','=', $uid);
-        //     }])->paginate();
-
-        // $response = [
-        //     'notification' => NotificationResource::collection($notification)
-        // ];
-
-         return $this->successResponse($d);
+    }
+    /**
+     * @OA\Get(
+     *   path="/api/invite-history",
+     *   summary="list of point",
+     *   tags={"point history"},
+     *     @OA\Parameter(
+     *          name="mmses",
+     *          required=true,
+     *          in="query",
+     *          @OA\Schema(
+     *              type="string"
+     *          )
+     *     ),
+     *   @OA\Response(
+     *     response=200,
+     *     description="A list of notifications"
+     *   )
+     * )
+     */
+    public function invite(Request $request){
+        $response = Http::post('https://api.ctree.id/api2/user/invite/daily.json', [
+            'mmses' => $request->mmses,
+        ]);
+        $datas = [];
+        $data = Utils::result_http_request($response->body() , 'list');
+        $count_data = Utils::result_http_request($response->body() , 'inv_count');
+        if(count($data) > 0){
+            $cnt = $count_data;
+            foreach($data as $v){
+                if($v['cash'] > 0){
+                    $date = trim($v['dt']);
+                    $item['tt'] = $cnt.'   '.$v['cnt'].' '.trans('code.friend');
+                    $item['c'] = '+P '.number_format($v['cash'] ,0,'.','.');
+                    $item['create_time'] = $v['dt'];
+                    $item['t'] = $v['dt'];
+                    $item['tm'] = $v['dt'];
+                    $datas[$date][] = $item;
+                    $cnt = ($cnt - $v['cnt']);
+                }
+                
+            }
+            $d=[];
+            foreach($datas as $k=>$v){
+                $d[] = array(
+                    'date' => $k,
+                    'detail' => $datas[$k]
+                );
+            }
+            return $this->successResponse($d);
+        }
     }
 
-    public function voucher_history(){
-        
+    /**
+     * @OA\Get(
+     *   path="/api/user/auth/update-push-token",
+     *   summary="list of point",
+     *   tags={"push token"},
+     *     @OA\Parameter(
+     *          name="uid",
+     *          required=true,
+     *          in="query",
+     *          @OA\Schema(
+     *              type="string"
+     *          )
+     *     ),
+     *     @OA\Parameter(
+     *          name="push_token",
+     *          required=true,
+     *          in="query",
+     *          @OA\Schema(
+     *              type="string"
+     *          )
+     *     ),
+     *   @OA\Response(
+     *     response=200,
+     *     description="Update push token"
+     *   )
+     * )
+     */
+    public function update_push_token(Request $request) {
+        $validation = Validator::make($request->all(), [
+            'uid' => 'required',
+            'push_token' => 'required'
+        ]);
+
+        if ($validation->fails()) {
+            return $this->errorResponse($validation->errors(),static::CODE_ERROR_VALIDATION);
+        }
+
+        $pushToken = PushToken::where('uid', $request->uid)->update([
+           'token' => $request->push_token
+        ]);
+
+        if ($pushToken > 0) {
+            return true;
+//            return $this->successResponse(true);
+        } else {
+            return false;
+//            return $this->errorResponse($validation->errors(),static::TRANSACTION_ERROR_GENERAL);
+        }
     }
 
 }

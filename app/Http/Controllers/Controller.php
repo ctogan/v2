@@ -44,6 +44,11 @@ class Controller extends BaseController
     protected const ERROR_CC_WAITING_WINNER = 'Kamu sudah menyelesaikan sesi ini. Pegumuman pemenang dilakukan diakhir sesi';
     const ERROR_USER_NOT_FOUND = 'User Not Found';
     const ERROR_USER_OTP = 'Invalid OTP';
+    const ERROR_FLASH_EVENT_EXPIRED = 'Event ini sudah berakhir atau belum dimulai';
+    const ERROR_FLASH_EVENT_OUT_OF_STOCK = 'Mohon maaf, stock telah habis.';
+    const ERROR_NEED_PHONE = 'Phone number required';
+    const ERROR_FLASH_BUY_DUPLICATE = 'Purchase can only be made once';
+    const ERROR_PRODUCT_NOT_FOUND = 'Product not found';
 
     // TRANSACTION
     protected const CODE_ERROR_ORDER_NUMBER_NOT_FOUND = '401';
@@ -71,6 +76,11 @@ class Controller extends BaseController
     protected const ERROR_CODE_CC_NOT_REGISTRERED = '219';
     protected const ERROR_CODE_CC_SESSION_ENDED = '220';
     protected const ERROR_CODE_CC_WAITING_WINNER = '221';
+    const ERROR_CODE_FLASH_EVENT_EXPIRED = '222';
+    const ERROR_CODE_FLASH_EVENT_OUT_OF_STOCK = '223';
+    const ERROR_CODE_PHONE_NUMBER = '224';
+    const ERROR_CODE_FLASH_BUY_DUPLICATE = '225';
+    const ERROR_CODE_PRODUCT_NOT_FOUND = '226';
 
 
     // MESAAGE
@@ -110,12 +120,9 @@ class Controller extends BaseController
         $mmses = null;
         if($request->mmses){
             $mmses = $request->mmses;
-            setcookie('mmses',$mmses,time() + (86400 * 30), "/"); //1 day
+            Cache::put('mmses',$request->mmses);
         }else{
-            $cookie = $_COOKIE['mmses'];
-            if($cookie){
-                $mmses = $cookie;
-            }
+            $mmses = Cache::get('mmses');
         }
 
         if($mmses == null){

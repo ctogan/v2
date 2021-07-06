@@ -158,6 +158,88 @@
                 }
             }
         },
+        "/api/flash-event/detail/product": {
+            "get": {
+                "tags": [
+                    "flash-event"
+                ],
+                "summary": "get product by flash event detail code",
+                "operationId": "App\\Http\\Controllers\\Api\\FlashEventController::get_flash_event_product",
+                "parameters": [
+                    {
+                        "name": "mmses",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "flash_detail_code",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Product details"
+                    }
+                }
+            }
+        },
+        "/api/flash-event/detail/product/buy": {
+            "post": {
+                "tags": [
+                    "flash-event"
+                ],
+                "summary": "buy the product by flash event detail code",
+                "operationId": "App\\Http\\Controllers\\Api\\FlashEventController::buy_product",
+                "parameters": [
+                    {
+                        "name": "mmses",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "flash_detail_code",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Transaction success"
+                    },
+                    "201": {
+                        "description": "Flash event not found"
+                    },
+                    "222": {
+                        "description": "Flash event expired"
+                    },
+                    "223": {
+                        "description": "Out of stock"
+                    },
+                    "224": {
+                        "description": "Please verify the phone number"
+                    },
+                    "225": {
+                        "description": "Purchase can only be made once, 1 user 1 transaction"
+                    },
+                    "226": {
+                        "description": "Product not found"
+                    }
+                }
+            }
+        },
         "/api/home": {
             "get": {
                 "tags": [
@@ -868,13 +950,29 @@
                         "schema": {
                             "type": "string"
                         }
-                    },
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "A list of notifications"
+                    }
+                }
+            }
+        },
+        "/api/invite-history": {
+            "get": {
+                "tags": [
+                    "point history"
+                ],
+                "summary": "list of point",
+                "operationId": "App\\Http\\Controllers\\Api\\UserController::invite",
+                "parameters": [
                     {
-                        "name": "page",
+                        "name": "mmses",
                         "in": "query",
                         "required": true,
                         "schema": {
-                            "type": "integer"
+                            "type": "string"
                         }
                     }
                 ],

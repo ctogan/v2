@@ -96,6 +96,8 @@ Route::post('/news/point', 'Api\NewsController@point');
 
 //Flash Event
 Route::get('/flash-event/detail', 'Api\FlashEventController@get_flash_event');
+Route::get('/flash-event/detail/product', 'Api\FlashEventController@get_flash_event_product');
+Route::post('/flash-event/detail/product/buy', 'Api\FlashEventController@buy_product');
 
 //Cerdas Cermat
 Route::get('cerdas-cermat', 'Api\CerdasCermatController@index');
@@ -108,6 +110,7 @@ Route::get('cerdas-cermat/question', 'Api\CerdasCermatController@get_question');
 Route::get('cerdas-cermat/start', 'Api\CerdasCermatController@start');
 Route::get('cerdas-cermat/history', 'Api\CerdasCermatController@history');
 Route::get('cerdas-cermat/result', 'Api\CerdasCermatController@result');
+Route::get('cerdas-cermat/prize/get', 'Api\CerdasCermatController@get_prize');
 
 //Notification
 Route::get('/notification', 'Api\NotificationController@index');
@@ -126,6 +129,7 @@ Route::post('/user/auth/verify-otp', 'Api\UserController@verify_otp');
 Route::post('/user/auth/request-otp', 'Api\UserController@request_otp');
 Route::post('/user/auth/login/email', 'Api\UserController@login_email');
 Route::post('/user/auth/login/phone', 'Api\UserController@login_phone');
+Route::post('/user/auth/update-push-token', 'Api\UserController@update_push_token');
 Route::post('/user/auth/register', 'Api\UserController@register');
 
 
@@ -133,8 +137,11 @@ Route::post('/user/auth/register', 'Api\UserController@register');
 Route::get('/get/personal/information', 'Api\PersonalInformationController@get');
 Route::get('/get/master/biodata', 'Api\PersonalInformationController@get_master');
 Route::post('/personal/biodata/update', 'Api\PersonalInformationController@update');
+Route::get('/get/operator', 'Api\PersonalInformationController@get_operator');
 
 // HISTORY POINT AND VOUCHER
 Route::get('/point-history', 'Api\UserController@point_history');
 Route::get('/voucher-history', 'Api\UserController@voucher_history');
 
+
+Route::get('/invite-history', 'Api\UserController@invite');

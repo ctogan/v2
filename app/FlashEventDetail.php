@@ -12,7 +12,7 @@ class FlashEventDetail extends Model
     public $timestamps = false;
 
     protected $fillable = [
-        'row_status','flash_detail_code','flash_event_id','product_id','point','cap','updated_by','updated_at'
+        'row_status','flash_detail_code','flash_event_id','product_id','point','cap','updated_by','updated_at','stock'
     ];
 
     public function flash_event(){

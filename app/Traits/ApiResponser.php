@@ -14,14 +14,14 @@ trait ApiResponser{
         ], $code);
     }
 
-    protected function errorResponse($message = '', $code)
+    protected function  errorResponse($message = '', $code)
     {
         return response()->json([
             'status'=>'error',
             'message' => $message,
             'code' => $code,
             'data' => null
-        ], $code);
+        ], 200);
     }
 
 }

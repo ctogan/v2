@@ -102,10 +102,11 @@
             </ul>
         </div>
 
-        <div id="prize_modal" class="modal" tabindex="-1" role="dialog">
+        <div id="prize_modal" class="modal" data-backdrop="static" tabindex="-1" role="dialog" aria-hidden="true">
             <div class="modal-dialog" role="document">
                 <div class="modal-content">
                     <div class="modal-body">
+                        <p>Daftar Hadiah</p>
                         <table v-if="prize" class="table table-striped w-100">
                             <thead>
                             <tr>
@@ -127,12 +128,14 @@
                 </div>
             </div>
         </div>
-        <div id="ccc_result_modal" class="modal" tabindex="-1" role="dialog">
+
+        <div id="ccc_result_modal" class="modal fade" data-backdrop="static" tabindex="-1" role="dialog">
             <div class="modal-dialog" role="document">
                 <div class="modal-content">
                     <div class="modal-body">
-                        <p>Daftar Pemenang</p>
-                        <div v-if="loading_prize">
+                        <p class="mb-0">Daftar Pemenang</p>
+                        <small>Hadiah dapat diambil setelah sesi selesai</small>
+                        <div class="mt-3" v-if="loading_prize">
                             <div class="mb-4">
                                 <div class="d-flex justify-content-between">
                                     <div class="h-25 w-50 bg-placeholder mb-2 flex-1 mr-5"></div>
@@ -147,7 +150,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div v-if="!loading_prize">
+                        <div class="mt-3" v-if="!loading_prize">
                             <table v-if="result" class="table table-sm table-striped w-100 responsive">
                                 <thead>
                                 <tr>
@@ -161,7 +164,7 @@
                                 <tbody>
                                 <tr v-for="item in result" :class="item.uid === uid ? 'my-position' :'' ">
                                     <td align="center">{{item.rank}}</td>
-                                    <td>{{item.uid}}</td>
+                                    <td>{{item.name}} <small class="d-block">{{item.phone}}</small></td>
                                     <td align="center">{{item.score}}</td>
                                     <td align="right">{{item.duration}}</td>
                                     <td align="center">
@@ -173,7 +176,22 @@
                         </div>
                     </div>
                     <div class="modal-footer">
+                        <div style="position: absolute;left: 15px;">Kamu Ranking : {{rank}}</div>
                         <button v-on:click="close_modal()" type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="ccc_progress_modal" class="modal fade" tabindex="-1" data-keyboard="false" data-backdrop="static">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content">
+                    <div class="modal-body">
+                        <div class="text-center">
+                            <img src="https://scdn.ctree.id/f/210623/1624430473937_Pulsa%20Mission@2x.webp" style="width: 80%;">
+                            <h5>Mohon Tunggu ....</h5>
+                            <p>Hadiah kamu sedang disiapkan</p>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -193,7 +211,8 @@
                 uid : 0,
                 rank : 0,
                 status : false,
-                loading_prize : true
+                loading_prize : true,
+                session_code : ''
             }
         },
         mounted () {
@@ -217,6 +236,8 @@
                 $('#prize_modal').modal('show');
             },
             showresult(index, session_code, status){
+                this.rank = 0;
+                this.session_code = session_code;
                 $('#ccc_result_modal').modal('show');
                 this.result = [];
                 this.loading_prize = true;
@@ -236,6 +257,31 @@
                         this.uid = response.data.data.uid;
                         this.rank = response.data.data.rank;
                         this.status = status === "expired" ? true : false;
+                    })
+            },
+            redeem_prize(){
+                var scode = this.session_code;
+                $('#ccc_result_modal').modal('hide');
+                var content = '<div class="text-center">\n' +
+                    '                            <img src="https://scdn.ctree.id/f/210623/1624430473937_Pulsa%20Mission@2x.webp" style="width: 80%;margin-bottom: 15px">\n' +
+                    '                            <h5>Mohon Tunggu ....</h5>\n' +
+                    '                            <p>Hadiah kamu sedang disiapkan</p>\n' +
+                    '                        </div>'
+                alertify.alert(content).setting({'title':'Cerdas Cermat','closable':false,'basic':true});
+
+                axios
+                    .get('/api/cerdas-cermat/prize/get' , {
+                        params: {
+                            mmses: $('meta[name=usr-token]').attr('content'),
+                            session_code : scode,
+                        }
+                    })
+                    .then(response => {
+                        if(response.data.code !== "200"){
+                            alertify.alert('<div style="text-align: center"><img style="width: 80%;margin-bottom: 15px;" src="https://scdn.ctree.id/f/210623/1624438905913_Shop%202@2x.webp"><h4>'+response.data.message +'</h4></div>').setting({'title':'Cerdas Cermat','closable':true,'basic':false});
+                        }else{
+                            alertify.alert('<div style="text-align: center"><img style="width: 80%;margin-bottom: 15px;" src="https://scdn.ctree.id/f/210623/1624438404738_Leaderboard@2x.webp"><h4>Selamat kamu mendapatkan '+response.data.data.prize +'</h4></div>').setting({'title':'Cerdas Cermat','closable':true,'basic':false});
+                        }
                     })
             },
             close_modal(){
