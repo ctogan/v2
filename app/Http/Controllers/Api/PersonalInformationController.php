@@ -6,6 +6,7 @@ use App\BioEntryCode;
 use App\BioEntryValue;
 use App\CCSession;
 use App\Helpers\Code;
+use App\Helpers\Push;
 use App\Helpers\User;
 use App\Helpers\Utils;
 use App\Http\Controllers\Controller;
@@ -40,20 +41,21 @@ class PersonalInformationController extends ApiController
      * )
      */
 
-    public function get(Request $request){
+    public function get(Request $request)
+    {
 
 
         $uid = $this->user->uid;
 
         $biodata = DB::connection('users')->select('
             select b.uid,a.code,a.code_name , c.value_name from bio_entry_code as a
-            LEFT JOIN user_bio_entry as b on b.code = a.code AND b.uid = '.$uid.'
+            LEFT JOIN user_bio_entry as b on b.code = a.code AND b.uid = ' . $uid . '
             LEFT JOIN bio_entry_value as c on c.value = b.value AND c.bio_entry_code_id = b.code ORDER BY a.code ASC;
             ');
 
 
-        $response =[
-            'personal_information'=> PersonalInformationResource::collection($biodata),
+        $response = [
+            'personal_information' => PersonalInformationResource::collection($biodata),
         ];
 
 
@@ -89,11 +91,12 @@ class PersonalInformationController extends ApiController
      * )
      */
 
-    public function get_master(Request $request){
+    public function get_master(Request $request)
+    {
 
-        $master = BioEntryValue::where('bio_entry_code_id',$request->code)->get();
-        $response =[
-            'list'=> $master ,
+        $master = BioEntryValue::where('bio_entry_code_id', $request->code)->get();
+        $response = [
+            'list' => $master,
         ];
         return $this->successResponse($response);
     }
@@ -136,47 +139,50 @@ class PersonalInformationController extends ApiController
      */
 
 
-    public function update(Request $request){
+    public function update(Request $request)
+    {
 
 
         $user = $this->user;
         $uid = $user->uid;
-        $check_user = PersonalInformation::where('uid',$uid)->where('code',$request->code)->first();
+        $check_user = PersonalInformation::where('uid', $uid)->where('code', $request->code)->first();
+        $response = Push::notification($user->token, 'Cashtree', 'Got Reward +100', '', '');
 
-        if($check_user){
-            try{
+        return $this->successResponse($response);
+
+        if ($check_user) {
+            try {
                 PersonalInformation::where([
-                    ['uid',$uid],
-                    ['code',$request->code]
+                    ['uid', $uid],
+                    ['code', $request->code]
                 ])->update
                 ([
                     "value" => $request->value,
                 ]);
 
                 DB::commit();
-            }
-            catch (Exception $e) {
+            } catch (Exception $e) {
                 DB::rollback();
             }
-        }else{
+        } else {
             $data = [
-                'uid'=>$uid,
-                'code'=> $request->code,
+                'uid' => $uid,
+                'code' => $request->code,
                 'value' => $request->value,
-                'register' =>  date('Y-m-d h:m:s'),
+                'register' => date('Y-m-d h:m:s'),
                 'got_rwd' => date('Y-m-d h:m:s'),
             ];
             PersonalInformation::insert($data);
 
-            User::earn_point($user, Code::CODE_BONUS,'100' ,'biodata reward'."..." );
+            User::earn_point($user, Code::CODE_BONUS, '100', 'biodata reward' . "...");
         }
 
         $biodata = DB::connection('users')->select('select b.uid,a.code,a.code_name , c.value_name from bio_entry_code as a
-            LEFT JOIN user_bio_entry as b on b.code = a.code AND b.uid = '.$uid.'
+            LEFT JOIN user_bio_entry as b on b.code = a.code AND b.uid = ' . $uid . '
             LEFT JOIN bio_entry_value as c on c.value = b.value AND c.bio_entry_code_id = b.code ORDER BY a.code ASC;');
 
-        $response =[
-            'personal_information'=> PersonalInformationResource::collection($biodata),
+        $response = [
+            'personal_information' => PersonalInformationResource::collection($biodata),
         ];
 
 
@@ -203,13 +209,14 @@ class PersonalInformationController extends ApiController
      *   )
      * )
      */
-    public function get_operator(Request $request) {
+    public function get_operator(Request $request)
+    {
         $validation = Validator::make($request->all(), [
             'phone_number' => 'required'
         ]);
 
         if ($validation->fails()) {
-            return $this->errorResponse($validation->errors(),static::CODE_ERROR_VALIDATION);
+            return $this->errorResponse($validation->errors(), static::CODE_ERROR_VALIDATION);
         }
 
         $data = [
@@ -248,20 +255,21 @@ class PersonalInformationController extends ApiController
      *   )
      * )
      */
-    public function request_otp(Request $request) {
+    public function request_otp(Request $request)
+    {
         $validation = Validator::make($request->all(), [
             'uid' => 'required',
             'phone_number' => 'required'
         ]);
 
         if ($validation->fails()) {
-            return $this->errorResponse($validation->errors(),static::CODE_ERROR_VALIDATION);
+            return $this->errorResponse($validation->errors(), static::CODE_ERROR_VALIDATION);
         }
 
         $user = UserApp::where('uid', '=', $request->uid)->first();
 
-        if(!$user){
-            return $this->errorResponse(static::ERROR_USER_NOT_FOUND,static::ERROR_CODE_USER_NOT_FOUND);
+        if (!$user) {
+            return $this->errorResponse(static::ERROR_USER_NOT_FOUND, static::ERROR_CODE_USER_NOT_FOUND);
         }
 
         $sms_token = Utils::get_sms_token(); //generate a random 4 digit code
@@ -312,7 +320,8 @@ class PersonalInformationController extends ApiController
      *   )
      * )
      */
-    public function verify_otp(Request $request) {
+    public function verify_otp(Request $request)
+    {
         $validation = Validator::make($request->all(), [
             'uid' => 'required',
             'phone_number' => 'required',
@@ -320,13 +329,13 @@ class PersonalInformationController extends ApiController
         ]);
 
         if ($validation->fails()) {
-            return $this->errorResponse($validation->errors(),static::CODE_ERROR_VALIDATION);
+            return $this->errorResponse($validation->errors(), static::CODE_ERROR_VALIDATION);
         }
 
         $user = UserApp::where('uid', '=', $request->uid)->first();
 
-        if(!$user){
-            return $this->errorResponse(static::ERROR_USER_NOT_FOUND,static::ERROR_CODE_USER_NOT_FOUND);
+        if (!$user) {
+            return $this->errorResponse(static::ERROR_USER_NOT_FOUND, static::ERROR_CODE_USER_NOT_FOUND);
         }
 
         if ($user->otp == $request->otp) {
@@ -339,7 +348,7 @@ class PersonalInformationController extends ApiController
 
             return $this->successResponse(true);
         } else {
-            return $this->errorResponse(static::ERROR_USER_OTP,static::ERROR_CODE_USER_OTP);
+            return $this->errorResponse(static::ERROR_USER_OTP, static::ERROR_CODE_USER_OTP);
         }
     }
 }
