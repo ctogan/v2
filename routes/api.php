@@ -138,6 +138,8 @@ Route::get('/get/personal/information', 'Api\PersonalInformationController@get')
 Route::get('/get/master/biodata', 'Api\PersonalInformationController@get_master');
 Route::post('/personal/biodata/update', 'Api\PersonalInformationController@update');
 Route::get('/get/operator', 'Api\PersonalInformationController@get_operator');
+Route::post('/personal/request-otp', 'Api\PersonalInformationController@request_otp');
+Route::post('/personal/verify-otp', 'Api\PersonalInformationController@verify_otp');
 
 // HISTORY POINT AND VOUCHER
 Route::get('/point-history', 'Api\UserController@point_history');
