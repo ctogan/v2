@@ -66,10 +66,11 @@ class Push {
         return true;
     }
 
-    public static function notification($token, $title, $body, $img, $deeplink){
+    public static function notification($token, $title, $body, $img, $deeplink , $noty = 'noty'){
         $data = array(
             'to' => $token,
             'notification' => array(
+                "type" => $noty,
                 "title"=> $title,
                 "body" => $body,
                 "image" => $img,
@@ -77,6 +78,7 @@ class Push {
             )
         );
         self::fcm_connect($data);
+        return $data;
     }
 
     static function fcm_connect($data){
