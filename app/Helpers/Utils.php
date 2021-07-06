@@ -95,6 +95,33 @@ class Utils {
         }
     }
 
+    public static function get_opcode_from_phone($phone) {
+        $first_four = substr($phone, 0, 4);
+
+        if ($first_four == '0817' || $first_four == '0818' || $first_four == '0819' || $first_four == '0859' || $first_four == '0877' || $first_four == '0878' || $first_four == '0879') {
+            return '51011';
+        } else if ($first_four == '0831' || $first_four == '0832' || $first_four == '0838') {
+            return '51008';
+        } else if ($first_four == '0811' || $first_four == '0812' || $first_four == '0813' || $first_four == '0821' || $first_four == '0822' || $first_four == '0823' || $first_four == '0852' || $first_four == '0851') {
+            return '51010';
+        } else if ($first_four == '0896' || $first_four == '0897' || $first_four == '0898' || $first_four == '0899') {
+            return '51089';
+        } else if ($first_four == '0855' || $first_four == '0856' || $first_four == '0857' || $first_four == '0858' || $first_four == '0814' || $first_four == '0815' || $first_four == '0816') {
+            return '51001';
+        } else if ($first_four == '0881' || $first_four == '0882' || $first_four == '0887' || $first_four == '0888') {
+            return '51009';
+        } else {
+            return null;
+        }
+    }
+
+    public static function get_sms_token($length = 4) {
+        return rand(
+            ((int) str_pad(1, $length, 0, STR_PAD_RIGHT)),
+            ((int) str_pad(9, $length, 9, STR_PAD_RIGHT))
+        );
+    }
+
     public static function result_http_request($str , $key) {
         if(!static::tryJson($str)) return [];
         $data = json_decode($str , true);

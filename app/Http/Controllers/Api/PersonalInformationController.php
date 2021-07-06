@@ -10,7 +10,10 @@ use App\Helpers\User;
 use App\Helpers\Utils;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\PersonalInformationResource;
+use App\Jobs\SendSmsJob;
 use App\PersonalInformation;
+use App\UserApp;
+use App\UserTargetInfo;
 use Illuminate\Http\Request;
 use DB;
 use Illuminate\Support\Facades\Validator;
@@ -214,5 +217,129 @@ class PersonalInformationController extends ApiController
         ];
 
         return $this->successResponse($data);
+    }
+
+    /**
+     * @OA\Post(
+     *   path="/api/personal/request-otp",
+     *   summary="get otp to phone number",
+     *   tags={"biodata"},
+     *     @OA\Parameter(
+     *          name="uid",
+     *          required=true,
+     *
+     *          in="query",
+     *          @OA\Schema(
+     *              type="string"
+     *          )
+     *     ),
+     *     @OA\Parameter(
+     *          name="phone_number",
+     *          required=true,
+     *
+     *          in="query",
+     *          @OA\Schema(
+     *              type="string"
+     *          )
+     *     ),
+     *   @OA\Response(
+     *     response=200,
+     *     description="otp to phone number"
+     *   )
+     * )
+     */
+    public function request_otp(Request $request) {
+        $validation = Validator::make($request->all(), [
+            'uid' => 'required',
+            'phone_number' => 'required'
+        ]);
+
+        if ($validation->fails()) {
+            return $this->errorResponse($validation->errors(),static::CODE_ERROR_VALIDATION);
+        }
+
+        $user = UserApp::where('uid', '=', $request->uid)->first();
+
+        if(!$user){
+            return $this->errorResponse(static::ERROR_USER_NOT_FOUND,static::ERROR_CODE_USER_NOT_FOUND);
+        }
+
+        $sms_token = Utils::get_sms_token(); //generate a random 4 digit code
+
+        $user->otp = $sms_token;
+        $user->save();
+
+        SendSmsJob::dispatch($request->phone_number, "Cashtree phone number verification code: " . $sms_token, $request->uid);
+
+        return $this->successResponse(true);
+    }
+
+    /**
+     * @OA\Post(
+     *   path="/api/personal/verify-otp",
+     *   summary="check otp to verify phone number",
+     *   tags={"biodata"},
+     *     @OA\Parameter(
+     *          name="uid",
+     *          required=true,
+     *
+     *          in="query",
+     *          @OA\Schema(
+     *              type="string"
+     *          )
+     *     ),
+     *     @OA\Parameter(
+     *          name="phone_number",
+     *          required=true,
+     *
+     *          in="query",
+     *          @OA\Schema(
+     *              type="string"
+     *          )
+     *     ),
+     *     @OA\Parameter(
+     *          name="otp",
+     *          required=true,
+     *
+     *          in="query",
+     *          @OA\Schema(
+     *              type="string"
+     *          )
+     *     ),
+     *   @OA\Response(
+     *     response=200,
+     *     description="check otp to verify phone number"
+     *   )
+     * )
+     */
+    public function verify_otp(Request $request) {
+        $validation = Validator::make($request->all(), [
+            'uid' => 'required',
+            'phone_number' => 'required',
+            'otp' => 'required'
+        ]);
+
+        if ($validation->fails()) {
+            return $this->errorResponse($validation->errors(),static::CODE_ERROR_VALIDATION);
+        }
+
+        $user = UserApp::where('uid', '=', $request->uid)->first();
+
+        if(!$user){
+            return $this->errorResponse(static::ERROR_USER_NOT_FOUND,static::ERROR_CODE_USER_NOT_FOUND);
+        }
+
+        if ($user->otp == $request->otp) {
+            $opcode = Utils::get_opcode_from_phone($request->phone_number);
+            $update = UserTargetInfo::where('uid', $user->uid)->first();
+            $update->opcode = $opcode;
+            $update->save();
+            $user->phone = $request->phone_number;
+            $user->save();
+
+            return $this->successResponse(true);
+        } else {
+            return $this->errorResponse(static::ERROR_USER_OTP,static::ERROR_CODE_USER_OTP);
+        }
     }
 }
