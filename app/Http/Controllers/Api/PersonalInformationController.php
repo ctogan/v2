@@ -257,29 +257,30 @@ class PersonalInformationController extends ApiController
      */
     public function request_otp(Request $request)
     {
-        $validation = Validator::make($request->all(), [
-            'uid' => 'required',
-            'phone_number' => 'required'
-        ]);
-
-        if ($validation->fails()) {
-            return $this->errorResponse($validation->errors(), static::CODE_ERROR_VALIDATION);
-        }
-
-        $user = UserApp::where('uid', '=', $request->uid)->first();
-
-        if (!$user) {
-            return $this->errorResponse(static::ERROR_USER_NOT_FOUND, static::ERROR_CODE_USER_NOT_FOUND);
-        }
-
-        $sms_token = Utils::get_sms_token(); //generate a random 4 digit code
-
-        $user->otp = $sms_token;
-        $user->save();
-
-        SendSmsJob::dispatch($request->phone_number, "Cashtree phone number verification code: " . $sms_token, $request->uid);
-
-        return $this->successResponse(true);
+        return $this->successResponse(false);
+//        $validation = Validator::make($request->all(), [
+//            'uid' => 'required',
+//            'phone_number' => 'required'
+//        ]);
+//
+//        if ($validation->fails()) {
+//            return $this->errorResponse($validation->errors(), static::CODE_ERROR_VALIDATION);
+//        }
+//
+//        $user = UserApp::where('uid', '=', $request->uid)->first();
+//
+//        if (!$user) {
+//            return $this->errorResponse(static::ERROR_USER_NOT_FOUND, static::ERROR_CODE_USER_NOT_FOUND);
+//        }
+//
+//        $sms_token = Utils::get_sms_token(); //generate a random 4 digit code
+//
+//        $user->otp = $sms_token;
+//        $user->save();
+//
+//        SendSmsJob::dispatch($request->phone_number, "Cashtree phone number verification code: " . $sms_token, $request->uid);
+//
+//        return $this->successResponse(true);
     }
 
     /**
