@@ -22,7 +22,9 @@ class ApiController extends Controller
         'api/user/auth/login/email',
         'api/user/auth/login/phone',
         'api/user/auth/register',
-        'api/user/auth/update-push-token'
+        'api/user/auth/update-push-token',
+        'api/personal/request-otp',
+        'api/personal/verify-otp',
     );
 
     public function __construct()

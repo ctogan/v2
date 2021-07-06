@@ -236,6 +236,9 @@
                     },
                     "226": {
                         "description": "Product not found"
+                    },
+                    "216": {
+                        "description": "insufficient point"
                     }
                 }
             }
@@ -544,7 +547,7 @@
                         "in": "query",
                         "required": true,
                         "schema": {
-                            "type": "string"
+                            "type": "integer"
                         }
                     },
                     {
@@ -559,6 +562,102 @@
                 "responses": {
                     "200": {
                         "description": "update personal information successfully"
+                    }
+                }
+            }
+        },
+        "/api/get/operator": {
+            "get": {
+                "tags": [
+                    "biodata"
+                ],
+                "summary": "get operator from phone number",
+                "operationId": "App\\Http\\Controllers\\Api\\PersonalInformationController::get_operator",
+                "parameters": [
+                    {
+                        "name": "phone_number",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "operator from phone number"
+                    }
+                }
+            }
+        },
+        "/api/personal/request-otp": {
+            "post": {
+                "tags": [
+                    "biodata"
+                ],
+                "summary": "get otp to phone number",
+                "operationId": "App\\Http\\Controllers\\Api\\PersonalInformationController::request_otp",
+                "parameters": [
+                    {
+                        "name": "uid",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "phone_number",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "otp to phone number"
+                    }
+                }
+            }
+        },
+        "/api/personal/verify-otp": {
+            "post": {
+                "tags": [
+                    "biodata"
+                ],
+                "summary": "check otp to verify phone number",
+                "operationId": "App\\Http\\Controllers\\Api\\PersonalInformationController::verify_otp",
+                "parameters": [
+                    {
+                        "name": "uid",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "phone_number",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "otp",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "check otp to verify phone number"
                     }
                 }
             }
@@ -979,6 +1078,38 @@
                 "responses": {
                     "200": {
                         "description": "A list of notifications"
+                    }
+                }
+            }
+        },
+        "/api/user/auth/update-push-token": {
+            "get": {
+                "tags": [
+                    "push token"
+                ],
+                "summary": "list of point",
+                "operationId": "App\\Http\\Controllers\\Api\\UserController::update_push_token",
+                "parameters": [
+                    {
+                        "name": "uid",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "push_token",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Update push token"
                     }
                 }
             }
