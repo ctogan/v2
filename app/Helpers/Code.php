@@ -8,6 +8,8 @@ namespace App\Helpers;
  */
 
 class Code {
+
+	const BIO_ENTRY_REWARD = 100;
     const TYPE_CPR = 'cpr';
     const CODE_RELEASE = 'E101';            //[적립]화면을 열기  화면을 release 하여 적립 earn
     const CODE_CPC = 'E102';                //[적립]{광고 제목} CPC 광고 적립 earn
@@ -92,6 +94,30 @@ class Code {
     const USING_EXTERNAL = 'U999';          //
 
     const USING_PAY_CCC = 'U801';
+	
+	// BIO ENTRY
+	const REWARD = 10;
+	const CODE_GENDER = 91;
+	const CODE_BIRTH = 92;
+	const CODE_MARRIAGE = 93;
+	const CODE_RELIGION = 94;
+
+	const CODE_EDU = 102;
+
+	const CODE_CAR = 104;
+	const CODE_JOB = 105;
+	const CODE_ADDR = 106;
+	const CODE_CARD = 107;
+	const CODE_BANK = 108;
+
+	const CODE_VEHICLE = 109;
+	const CODE_PET = 110;
+	const CODE_GRADUATED = 111;
+
+	const CODE_HAVE_CHILD = 112;
+	const CODE_INCOME = 113;
+	const CODE_SMOKING = 114;
+
 
 	const AD_TYPE = [
 		'cpc' => Code::CODE_CPC,         //visit
@@ -255,7 +281,26 @@ class Code {
 		Code::USING_HOROSCOPE_GAME => 'using_code_horoscope',
 		Code::USING_LOVECALC_GAME => 'using_code_lovecalc',
 		Code::USING_EXTERNAL => 'using_code_external',
-        Code::USING_PAY_CCC => 'cerdas_cermat'
+        Code::USING_PAY_CCC => 'cerdas_cermat',
+		
+		// FOR BIO ENTRY
+		Code::CODE_GENDER => 'gender',
+		Code::CODE_BIRTH => 'birth',
+		Code::CODE_RELIGION => 'religion',
+		Code::CODE_MARRIAGE => 'marriage',
+		Code::CODE_HAVE_CHILD => 'have_child',
+		Code::CODE_INCOME => 'income',
+		Code::CODE_SMOKING => 'smoking',
+
+		Code::CODE_VEHICLE => 'private_transportation',
+		Code::CODE_PET => 'pet',
+		Code::CODE_GRADUATED => 'have_you_graduated_from_college',
+
+		Code::CODE_ADDR => 'address',
+		Code::CODE_EDU => 'education',
+		Code::CODE_JOB => 'job',
+		Code::CODE_BANK => 'do_you_have_a_bank_account',
+		Code::CODE_CARD => 'do_you_have_a_credit_card',
 	];
 
 	//=== false 이면 푸쉬를 보내지 않고, 값이 있으면 보내고, 없으면 'got_rp' 를 보낸다
@@ -293,12 +338,11 @@ class Code {
 		Code::CODE_RCMD, //invite
 		Code::CODE_PHONE_AUTH,
 	];
-
-
     const ADCOLONY_ZONE_ID = ['18'=>'vz3526e166b8ed4ddea2' , '19'=>'vz5ab55c75fe154bcbb2' ,'skyblaster' => 'vz58053d9fb3f74f1798'];
     const INMOBY_PLACEMENT_ID = ['18'=>'1595188844203' , '19'=>'1592941605245' ,'17' => '1593832416993'];
 
     public static function getLang($code){
         return static::$msgCodes[$code];
     }
+	
 }

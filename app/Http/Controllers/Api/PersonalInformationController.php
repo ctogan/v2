@@ -6,7 +6,6 @@ use App\BioEntryCode;
 use App\BioEntryValue;
 use App\CCSession;
 use App\Helpers\Code;
-use App\Helpers\Push;
 use App\Helpers\User;
 use App\Helpers\Utils;
 use App\Http\Controllers\Controller;
@@ -140,10 +139,7 @@ class PersonalInformationController extends ApiController
         $user = $this->user;
         $uid = $user->uid;
         $check_user = PersonalInformation::where('uid',$uid)->where('code',$request->code)->first();
-        $response  = Push::notification($user->token, 'Cashtree', 'Got Reward +100', '','');
-        
-        return $this->successResponse($response);
-        
+        $status = false;
         if($check_user){
             try{
                 PersonalInformation::where([
@@ -168,18 +164,24 @@ class PersonalInformationController extends ApiController
                 'got_rwd' => date('Y-m-d h:m:s'),
             ];
             PersonalInformation::insert($data);
-
-            User::earn_point($user, Code::CODE_BONUS, '100' ,'biodata reward'."..." );
+            if(User::earn_point($user, Code::CODE_BONUS, Code::BIO_ENTRY_REWARD , trans('code.'.Code::getLang($request->code)))){
+                $status = true;
+            }
         }
 
-        $biodata = DB::connection('users')->select('select b.uid,a.code,a.code_name , c.value_name from bio_entry_code as a
-            LEFT JOIN user_bio_entry as b on b.code = a.code AND b.uid = '.$uid.'
-            LEFT JOIN bio_entry_value as c on c.value = b.value AND c.bio_entry_code_id = b.code ORDER BY a.code ASC;');
+        // $biodata = DB::connection('users')->select('select b.uid,a.code,a.code_name , c.value_name from bio_entry_code as a
+        //     LEFT JOIN user_bio_entry as b on b.code = a.code AND b.uid = '.$uid.'
+        //     LEFT JOIN bio_entry_value as c on c.value = b.value AND c.bio_entry_code_id = b.code ORDER BY a.code ASC;');
 
-        $response =[
-            'personal_information'=> PersonalInformationResource::collection($biodata),
-        ];
-
+        // $response =[
+        //     'personal_information'=> PersonalInformationResource::collection($biodata),
+        // ];
+        
+        if($status){
+            $response = ['status' => 'success', 'message' => 'Berhasil diupdate.' , 'status_earn' => true , 'cash' => Code::BIO_ENTRY_REWARD];
+        }else{
+            $response = ['status' => 'success', 'message' => 'Berhasil diupdate.' , 'status_earn' => true , 'cash' => 0];
+        }
 
         return $this->successResponse($response);
     }
