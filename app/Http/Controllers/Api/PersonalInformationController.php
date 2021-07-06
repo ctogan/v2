@@ -114,7 +114,7 @@ class PersonalInformationController extends ApiController
      *          required=true,
      *          in="query",
      *          @OA\Schema(
-     *              type="string"
+     *              type="integer"
      *          )
      *     ),
      *     @OA\Parameter(
@@ -138,20 +138,9 @@ class PersonalInformationController extends ApiController
 
         $user = $this->user;
         $uid = $user->uid;
-//        $check_user = PersonalInformation::where('uid',$uid)->where('code',$request->code)->first();
+        $check_user = PersonalInformation::where('uid',$uid)->where('code',$request->code)->first();
 
-        $codes = $request->code;
-
-//        foreach ($codes as $code)
-//        {
-//            echo $code.',';
-//        }
-
-        die();
-        
-        /*if($check_user){
-
-
+        if($check_user){
             try{
                 PersonalInformation::where([
                     ['uid',$uid],
@@ -176,8 +165,8 @@ class PersonalInformationController extends ApiController
             ];
             PersonalInformation::insert($data);
 
-//            User::earn_point($user, Code::CODE_BONUS,'100' ,'biodata reward'."..." );
-        }*/
+            User::earn_point($user, Code::CODE_BONUS,'100' ,'biodata reward'."..." );
+        }
 
         $biodata = DB::connection('users')->select('select b.uid,a.code,a.code_name , c.value_name from bio_entry_code as a
             LEFT JOIN user_bio_entry as b on b.code = a.code AND b.uid = '.$uid.'
