@@ -6,6 +6,7 @@ use App\BioEntryCode;
 use App\BioEntryValue;
 use App\CCSession;
 use App\Helpers\Code;
+use App\Helpers\Push;
 use App\Helpers\User;
 use App\Helpers\Utils;
 use App\Http\Controllers\Controller;
@@ -144,6 +145,9 @@ class PersonalInformationController extends ApiController
             'code' => 'required',
             'value' => 'required'
         ]);
+        
+
+        
 
         if ($validation->fails()) {
             return $this->errorResponse($validation->errors(), static::CODE_ERROR_VALIDATION);
@@ -151,6 +155,9 @@ class PersonalInformationController extends ApiController
 
         $user = $this->user;
         $uid = $user->uid;
+        
+        // $notif = Push::notification($user->token, 'Cashtree', 'Got Reward +' .Code::BIO_ENTRY_REWARD , '','');
+        // print_r($notif); exit;
         $check_user = PersonalInformation::where('uid',$uid)->where('code',$request->code)->first();
         $status = false;
         if($check_user){
@@ -192,7 +199,7 @@ class PersonalInformationController extends ApiController
         if($status){
             $response = ['status' => 'success', 'message' => 'Berhasil diupdate.' , 'status_earn' => true , 'cash' => Code::BIO_ENTRY_REWARD];
         }else{
-            $response = ['status' => 'success', 'message' => 'Berhasil diupdate.' , 'status_earn' => true , 'cash' => 0];
+            $response = ['status' => 'success', 'message' => 'Berhasil diupdate.' , 'status_earn' => false , 'cash' => 0];
         }
 
         return $this->successResponse($response);

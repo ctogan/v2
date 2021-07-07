@@ -786,7 +786,9 @@ class UserController extends ApiController
             $date = date('Y-m-d' , strtotime($item->tm));
             if($item->detail == '' || $item->detail == null){
                 $item['title'] = trans('code.'.Code::getLang($item->code));
+                
             }
+            $item['tm'] = date('d M Y H:i', strtotime($item['tm']));
             $data[$date][] = $item;
         }
         $d=[];
@@ -866,7 +868,7 @@ class UserController extends ApiController
                     $item['c'] = '+P '.number_format($v['cash'] ,0,'.','.');
                     $item['create_time'] = $v['dt'];
                     $item['t'] = $v['dt'];
-                    $item['tm'] = $v['dt'];
+                    $item['tm'] = date('d m Y H:i', strtotime($v['dt']));
                     $datas[$date][] = $item;
                     $cnt = ($cnt - $v['cnt']);
                 }

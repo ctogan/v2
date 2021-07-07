@@ -1,9 +1,11 @@
 <?php
 namespace App\Helpers;
 
+use App\Jobs\SendNotification;
 use App\Notification;
 use App\NotificationDetail;
 use App\UserToken;
+use Illuminate\Support\Facades\Http;
 
 class Push {
 
@@ -66,18 +68,26 @@ class Push {
         return true;
     }
 
-    public static function notification($token, $title, $body, $img, $deeplink , $noty = 'noti'){
-        $data = array(
+    public static function notification($token, $title, $body, $img, $deeplink , $noty = 'notif'){
+        $payload = array(
             'to' => $token,
             'notification' => array(
                 "type" => $noty,
                 "title"=> $title,
                 "body" => $body,
                 "image" => $img,
-                "click_action" => $deeplink
+                "click_action" => $deeplink,
             )
         );
-        self::fcm_connect($data);
+        $client = Http::withHeaders([
+            'Content-Type' => 'application/json',
+            'Authorization' => 'key='.env('FCM_SERVER_KEY','')
+        ])
+        ->post('https://fcm.googleapis.com/fcm/send', $payload);
+        print_r($client->body()); 
+        
+        //SendNotification::dispatch($payload);
+        //self::fcm_connect($payload);
     }
 
     static function fcm_connect($data){
