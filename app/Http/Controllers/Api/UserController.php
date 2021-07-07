@@ -83,7 +83,6 @@ class UserController extends ApiController
             $updateUserTargetInfo = UserTargetInfo::where('uid', $user->uid)->update([
                 'locale' => $request->lc,
                 'device_name' => $request->dvc,
-//                'opcode' => $request->opcode,
                 'osver' => $request->ov,
                 'appver' => $request->av,
                 'resw' => $request->resw,
@@ -237,7 +236,7 @@ class UserController extends ApiController
 
             $userTargetInfo->locale = $request->lc;
             $userTargetInfo->device_name = $request->dvc;
-//            $userTargetInfo->opcode = $request->opcode;
+            $userTargetInfo->opcode = Utils::get_opcode_from_phone($request->phone_number);
             $userTargetInfo->osver = $request->ov;
             $userTargetInfo->appver = $request->resw;
             $userTargetInfo->resw = $request->resh;
@@ -269,8 +268,8 @@ class UserController extends ApiController
                     'lock_screen' => boolval($userConfig->lock_screen),
                     'allow_noti' => boolval($userConfig->allow_noti),
                     'invite_url' => 'http://inv.sctrk.site/',
-//                    'opname' => Operator::getNameByOpcode($userTargetInfo->opcode),
-                    'opname' => 'Indosat',
+                    'opname' => Utils::get_operator_from_phone($user->phone),
+//                    'opname' => 'Indosat',
                     'opcode' => strval($userTargetInfo->opcode),
                     'gender' => $userTargetInfo->gender ? $userTargetInfo->gender : 'U',
                     'birth' => strval($userTargetInfo->birth),
