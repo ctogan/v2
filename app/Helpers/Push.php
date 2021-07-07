@@ -84,7 +84,7 @@ class Push {
             'Authorization' => 'key='.env('FCM_SERVER_KEY','')
         ])
         ->post('https://fcm.googleapis.com/fcm/send', $payload);
-        print_r($client->body()); 
+        //print_r($client->body()); 
         
         //SendNotification::dispatch($payload);
         //self::fcm_connect($payload);
