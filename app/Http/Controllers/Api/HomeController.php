@@ -201,7 +201,8 @@ class HomeController extends ApiController
 
         $config = [
             'background_color' => $background_color,
-            'background_image' => $background_image
+            'background_image' => $background_image,
+            'lucky_chance' => true
         ];
 
         $uid = $user->uid;
