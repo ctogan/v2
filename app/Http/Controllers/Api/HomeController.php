@@ -202,7 +202,7 @@ class HomeController extends ApiController
         $config = [
             'background_color' => $background_color,
             'background_image' => $background_image,
-            'lucky_chance' => true
+            'lucky_chance' => !$user->phone_auth_tm
         ];
 
         $uid = $user->uid;
