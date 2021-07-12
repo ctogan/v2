@@ -257,7 +257,7 @@ class FlashEventController extends ApiController
 
             if($trans){
                 $status = true;
-//                User::use_cash($user,Code::USING_PAY_PULSA, $flash_detail->point, null, 'pulsa_'.$trans->id);
+                User::use_cash($user,Code::USING_PAY_PULSA, $flash_detail->point, null, 'pulsa_'.$trans->id);
             }else{
 
                 $status = false;
