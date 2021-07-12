@@ -234,8 +234,6 @@ class FlashEventController extends ApiController
             if(!$pulsa_goods){
                 return $this->errorResponse(static::ERROR_FLASH_EVENT_OUT_OF_STOCK,static::ERROR_CODE_FLASH_EVENT_OUT_OF_STOCK);
             }
-//            print_r($pulsa_goods);
-//            die();
 
             $exist_goods  = PulsaBuy::where('pulsa_goods_id','=',$pulsa_goods->id)
                 ->where('uid','=',$user->uid)
@@ -249,15 +247,8 @@ class FlashEventController extends ApiController
             $trans = PulsaBuy::create(
                 ([
                     'uid' => $user->uid,
-                    'dt' =>date('Y-m-d'),
                     'pulsa_goods_id' => $pulsa_goods->id,
-                    'is_auto'=>false,
-                    'tm'=>date('Y-m-d H:i:s'),
-                    'run_at'=>date('Y-m-d H:i:s'),
-                    'changed' => date('Y-m-d H:i:s'),
                     'cash' => $flash_detail->point,
-                    'status'=> 3,
-                    'req_count'=>0,
                     'phone' => $user->phone,
                     'flash_detail_code' => $request->flash_detail_code,
                     'additional_1' => $request->flash_detail_code
@@ -266,8 +257,9 @@ class FlashEventController extends ApiController
 
             if($trans){
                 $status = true;
-                User::use_cash($user,Code::USING_PAY_PULSA, $flash_detail->point, null, 'pulsa_'.$trans->id);
+//                User::use_cash($user,Code::USING_PAY_PULSA, $flash_detail->point, null, 'pulsa_'.$trans->id);
             }else{
+
                 $status = false;
                 return $this->errorResponse(static::ERROR_FLASH_EVENT_OUT_OF_STOCK,static::ERROR_CODE_FLASH_EVENT_OUT_OF_STOCK);
             }
