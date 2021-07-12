@@ -191,8 +191,6 @@ class FlashEventController extends ApiController
 
         $flash_detail = FlashEventDetail::with('flash_event')->with('product')->where('flash_detail_code','=', $request->flash_detail_code)->first();
 
-        $cap = $flash_detail->cap;
-
 
         if(!$flash_detail){
             return $this->errorResponse(static::ERROR_NOT_FOUND,static::CODE_ERROR_VALIDATION);
