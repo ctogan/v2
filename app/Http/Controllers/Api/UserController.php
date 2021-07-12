@@ -8,6 +8,7 @@ use App\Helpers\Operator;
 use App\Helpers\User;
 use App\Helpers\Utils;
 use App\Http\Controllers\Controller;
+use App\Jobs\SendSmsJob;
 use App\Point;
 use App\PushToken;
 use App\UserApp;
@@ -83,7 +84,6 @@ class UserController extends ApiController
             $updateUserTargetInfo = UserTargetInfo::where('uid', $user->uid)->update([
                 'locale' => $request->lc,
                 'device_name' => $request->dvc,
-//                'opcode' => $request->opcode,
                 'osver' => $request->ov,
                 'appver' => $request->av,
                 'resw' => $request->resw,
@@ -237,7 +237,7 @@ class UserController extends ApiController
 
             $userTargetInfo->locale = $request->lc;
             $userTargetInfo->device_name = $request->dvc;
-//            $userTargetInfo->opcode = $request->opcode;
+            $userTargetInfo->opcode = Utils::get_opcode_from_phone($request->phone_number);
             $userTargetInfo->osver = $request->ov;
             $userTargetInfo->appver = $request->resw;
             $userTargetInfo->resw = $request->resh;
@@ -269,8 +269,8 @@ class UserController extends ApiController
                     'lock_screen' => boolval($userConfig->lock_screen),
                     'allow_noti' => boolval($userConfig->allow_noti),
                     'invite_url' => 'http://inv.sctrk.site/',
-//                    'opname' => Operator::getNameByOpcode($userTargetInfo->opcode),
-                    'opname' => 'Indosat',
+                    'opname' => Utils::get_operator_from_phone($user->phone),
+//                    'opname' => 'Indosat',
                     'opcode' => strval($userTargetInfo->opcode),
                     'gender' => $userTargetInfo->gender ? $userTargetInfo->gender : 'U',
                     'birth' => strval($userTargetInfo->birth),
@@ -734,11 +734,12 @@ class UserController extends ApiController
                 $need_otp = false;
             }else{
 //                $otp = rand(1000,9000);
-                $otp = 1234;
+//                $otp = 1234;
+                $otp = Utils::get_sms_token();
                 $user->otp = $otp;
                 $user->save();
 
-                //todo send sms
+                SendSmsJob::dispatch($request->phone_number, "Cashtree phone number verification code: " . $otp, $user->uid);
             }
         }
 

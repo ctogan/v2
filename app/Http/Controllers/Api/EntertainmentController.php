@@ -46,7 +46,8 @@ class EntertainmentController extends ApiController
         ];
         $leaderboard = [
             [
-                'image' => 'https://scdn.ctree.id/f/200625/1593073004462_Friendmatch_1000x1000.webp',
+//                'image' => 'https://scdn.ctree.id/f/200625/1593073004462_Friendmatch_1000x1000.webp',
+                'image' => 'https://scdn.ctree.id/f/210707/1625647376677_leaderboard_game.webp',
                 'deeplink' => 'cashtree://webnew/cashplus/leaderboard/game?title=Leaderboard&gm=2',
                 'rank' => [
                     [

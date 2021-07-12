@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\FlashEvent;
 use App\FlashEventDetail;
 use App\Helpers\Code;
+use App\Helpers\Pulsa;
 use App\Helpers\User;
 use App\Http\Resources\FlashEventDetailResource;
 use App\Http\Resources\FlashEventResource;
@@ -168,8 +169,12 @@ class FlashEventController extends ApiController
      * )
      */
     public function buy_product(Request $request){
+
         $user = $this->user;
-        $exist  = PulsaBuy::where('flash_detail_code','=',$request->flash_detail_code)->where('uid','=',$user->uid)->count();
+
+        $exist  = PulsaBuy::where('flash_detail_code','=',$request->flash_detail_code)
+            ->where('uid','=',$user->uid)
+            ->where('dt', date('Y-m-d'))->count();
         if($exist > 0){
             return $this->errorResponse(static::ERROR_FLASH_BUY_DUPLICATE,static::ERROR_CODE_FLASH_BUY_DUPLICATE);
         }
@@ -182,7 +187,10 @@ class FlashEventController extends ApiController
         $rand = rand(1000000,2000000);
         usleep($rand);
 
+
+
         $flash_detail = FlashEventDetail::with('flash_event')->with('product')->where('flash_detail_code','=', $request->flash_detail_code)->first();
+
 
         if(!$flash_detail){
             return $this->errorResponse(static::ERROR_NOT_FOUND,static::CODE_ERROR_VALIDATION);
@@ -219,26 +227,43 @@ class FlashEventController extends ApiController
                 return $this->errorResponse(static::ERROR_FLASH_EVENT_OUT_OF_STOCK,static::ERROR_CODE_FLASH_EVENT_OUT_OF_STOCK);
             }
 
+
             $pulsa_goods = PulsaGoods::where('opcode','=',$user->opcode)->where('good_code','=',$flash_detail->product->product_code)->where('server_pulsa','=','MOBILEPULSA')->first();
+
 
             if(!$pulsa_goods){
                 return $this->errorResponse(static::ERROR_FLASH_EVENT_OUT_OF_STOCK,static::ERROR_CODE_FLASH_EVENT_OUT_OF_STOCK);
             }
 
-            $pulsa_buy = [
-                'uid' => $user->uid,
-                'pulsa_goods_id' => $pulsa_goods->id,
-                'cash' => $flash_detail->point,
-                'phone' => $user->phone,
-                'flash_detail_code' => $request->flash_detail_code,
-                'additional_1' => $request->flash_detail_code
-            ];
+            $exist_goods  = PulsaBuy::where('pulsa_goods_id','=',$pulsa_goods->id)
+                ->where('uid','=',$user->uid)
+                ->where('dt', date('Y-m-d'))->count();
 
-            $trans = PulsaBuy::create($pulsa_buy);
+
+            if($exist_goods > 0){
+                return $this->errorResponse(static::ERROR_FLASH_BUY_DUPLICATE,static::ERROR_CODE_FLASH_BUY_DUPLICATE);
+            }
+
+            $trans = PulsaBuy::create(
+                ([
+                    'uid' => $user->uid,
+                    'pulsa_goods_id' => $pulsa_goods->id,
+                    'cash' => $flash_detail->point,
+                    'phone' => $user->phone,
+                    'flash_detail_code' => $request->flash_detail_code,
+                    'additional_1' => $request->flash_detail_code
+                ])
+            );
+
             if($trans){
                 $status = true;
-                User::use_cash($user,Code::USING_PAY_PULSA, $flash_detail->point, null, 'pulsa_'.$trans->seq);
+                User::use_cash($user,Code::USING_PAY_PULSA, $flash_detail->point, null, 'pulsa_'.$trans->id);
+            }else{
+
+                $status = false;
+                return $this->errorResponse(static::ERROR_FLASH_EVENT_OUT_OF_STOCK,static::ERROR_CODE_FLASH_EVENT_OUT_OF_STOCK);
             }
+
         }
 
         $response = [
