@@ -8,6 +8,7 @@ use App\Helpers\Operator;
 use App\Helpers\User;
 use App\Helpers\Utils;
 use App\Http\Controllers\Controller;
+use App\Jobs\SendSmsJob;
 use App\Point;
 use App\PushToken;
 use App\UserApp;
@@ -733,11 +734,12 @@ class UserController extends ApiController
                 $need_otp = false;
             }else{
 //                $otp = rand(1000,9000);
-                $otp = 1234;
+//                $otp = 1234;
+                $otp = Utils::get_sms_token();
                 $user->otp = $otp;
                 $user->save();
 
-                //todo send sms
+                SendSmsJob::dispatch($request->phone_number, "Cashtree phone number verification code: " . $otp, $user->uid);
             }
         }
 
