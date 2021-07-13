@@ -18,6 +18,7 @@ use App\UserTargetInfo;
 use Illuminate\Http\Request;
 use DB;
 use Illuminate\Support\Facades\Validator;
+use App\Helpers\Cache;
 
 class PersonalInformationController extends ApiController
 {
@@ -294,6 +295,7 @@ class PersonalInformationController extends ApiController
         $user->save();
 
         SendSmsJob::dispatch($request->phone_number, "Cashtree phone number verification code: " . $sms_token, $request->uid);
+        Cache::put($request->uid . '_' . $sms_token, true, 300);
 
         return $this->successResponse(true);
     }
@@ -354,7 +356,7 @@ class PersonalInformationController extends ApiController
             return $this->errorResponse(static::ERROR_USER_NOT_FOUND, static::ERROR_CODE_USER_NOT_FOUND);
         }
 
-        if ($user->otp == $request->otp) {
+        if ($user->otp == $request->otp && Cache::get($request->uid . '_' . $request->otp) == true) {
             $opcode = Utils::get_opcode_from_phone($request->phone_number);
             $update = UserTargetInfo::where('uid', $user->uid)->first();
             $update->opcode = $opcode;

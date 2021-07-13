@@ -24,6 +24,7 @@ use Illuminate\Support\Facades\Validator;
 use OpenApi\Util;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Lang;
+use App\Helpers\Cache;
 
 class UserController extends ApiController
 {
@@ -683,6 +684,10 @@ class UserController extends ApiController
             return $this->errorResponse(static::ERROR_USER_OTP,static::ERROR_CODE_USER_OTP);
         }
 
+        if (Cache::get($user->uid . '_' . $request->otp) == null || !Cache::get($user->uid . '_' . $request->otp)) {
+            return $this->errorResponse(static::ERROR_USER_OTP,static::ERROR_CODE_USER_OTP);
+        }
+
         return $this->successResponse(true);
     }
 
@@ -740,6 +745,7 @@ class UserController extends ApiController
                 $user->save();
 
                 SendSmsJob::dispatch($request->phone_number, "Cashtree phone number verification code: " . $otp, $user->uid);
+                Cache::put($request->uid . '_' . $otp, true, 300);
             }
         }
 
