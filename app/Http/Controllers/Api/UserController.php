@@ -24,7 +24,7 @@ use Illuminate\Support\Facades\Validator;
 use OpenApi\Util;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Lang;
-use App\Helpers\Cache;
+use Illuminate\Support\Facades\Cache;
 
 class UserController extends ApiController
 {
@@ -745,7 +745,7 @@ class UserController extends ApiController
                 $user->save();
 
                 SendSmsJob::dispatch($request->phone_number, "Cashtree phone number verification code: " . $otp, $user->uid);
-//                Cache::put($request->uid . '_' . $otp, true, 300);
+                Cache::put($request->uid . '_' . $otp, true, 300);
             }
         }
 

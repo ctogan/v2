@@ -18,7 +18,7 @@ use App\UserTargetInfo;
 use Illuminate\Http\Request;
 use DB;
 use Illuminate\Support\Facades\Validator;
-use App\Helpers\Cache;
+use Illuminate\Support\Facades\Cache;
 
 class PersonalInformationController extends ApiController
 {
