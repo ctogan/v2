@@ -745,7 +745,7 @@ class UserController extends ApiController
                 $user->save();
 
                 SendSmsJob::dispatch($request->phone_number, "Cashtree phone number verification code: " . $otp, $user->uid);
-                Cache::put($request->uid . '_' . $otp, true, 300);
+//                Cache::put($request->uid . '_' . $otp, true, 300);
             }
         }
 
