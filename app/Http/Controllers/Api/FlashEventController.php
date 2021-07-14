@@ -172,21 +172,20 @@ class FlashEventController extends ApiController
 
         $user = $this->user;
 
-//        $exist  = PulsaBuy::where('flash_detail_code','=',$request->flash_detail_code)
-//            ->where('uid','=',$user->uid)
-//            ->where('dt', date('Y-m-d'))->count();
-//        if($exist > 0){
-//            return $this->errorResponse(static::ERROR_FLASH_BUY_DUPLICATE,static::ERROR_CODE_FLASH_BUY_DUPLICATE);
-//        }
-//
-//        $point_purchase = PointPurchase::where('transaction_code','=',$request->flash_detail_code)->where('uid','=',$user->uid)->count();
-//        if($point_purchase > 0){
-//            return $this->errorResponse(static::ERROR_FLASH_BUY_DUPLICATE,static::ERROR_CODE_FLASH_BUY_DUPLICATE);
-//        }
-//
-//        $rand = rand(1000000,2000000);
-//        usleep($rand);
+        $exist  = PulsaBuy::where('flash_detail_code','=',$request->flash_detail_code)
+            ->where('uid','=',$user->uid)
+            ->where('dt', date('Y-m-d'))->count();
+        if($exist > 0){
+            return $this->errorResponse(static::ERROR_FLASH_BUY_DUPLICATE,static::ERROR_CODE_FLASH_BUY_DUPLICATE);
+        }
 
+        $point_purchase = PointPurchase::where('transaction_code','=',$request->flash_detail_code)->where('uid','=',$user->uid)->count();
+        if($point_purchase > 0){
+            return $this->errorResponse(static::ERROR_FLASH_BUY_DUPLICATE,static::ERROR_CODE_FLASH_BUY_DUPLICATE);
+        }
+
+        $rand = rand(1000000,2000000);
+        usleep($rand);
 
 
         $flash_detail = FlashEventDetail::with('flash_event')->with('product')->where('flash_detail_code','=', $request->flash_detail_code)->first();
