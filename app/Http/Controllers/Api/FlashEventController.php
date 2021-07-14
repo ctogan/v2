@@ -212,7 +212,6 @@ class FlashEventController extends ApiController
             return $this->errorResponse(static::ERROR_FLASH_EVENT_EXPIRED,static::ERROR_CODE_FLASH_EVENT_EXPIRED);
         }
 
-
         if(!$flash_detail){
             return $this->errorResponse(static::ERROR_NOT_FOUND,static::CODE_ERROR_VALIDATION);
         }
