@@ -364,6 +364,8 @@ class PersonalInformationController extends ApiController
             $user->phone = $request->phone_number;
             $user->save();
 
+            Cache::forget($request->uid . '_' . trim($request->otp));
+
             return $this->successResponse(true);
         } else {
             return $this->errorResponse(static::ERROR_USER_OTP, static::ERROR_CODE_USER_OTP);

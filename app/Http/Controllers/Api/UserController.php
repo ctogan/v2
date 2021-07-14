@@ -594,8 +594,6 @@ class UserController extends ApiController
             ]
         ];
 
-        User::purge_cache($uid);
-
         return $this->successResponse($data);
     }
 
@@ -687,6 +685,8 @@ class UserController extends ApiController
         if (Cache::has($user->uid . '_' . trim($request->otp))) {
             return $this->errorResponse(static::ERROR_USER_OTP,static::ERROR_CODE_USER_OTP);
         }
+
+        Cache::forget($user->uid . '_' . trim($request->otp));
 
         return $this->successResponse(true);
     }
