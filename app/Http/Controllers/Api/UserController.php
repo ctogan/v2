@@ -24,6 +24,7 @@ use Illuminate\Support\Facades\Validator;
 use OpenApi\Util;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Lang;
+use Illuminate\Support\Facades\Cache;
 
 class UserController extends ApiController
 {
@@ -195,7 +196,7 @@ class UserController extends ApiController
         $user_by_account_id = UserApp::where('account_id', '=', $request->id)->first();
 
         if ($user) {
-            if (is_null($user->account_id)) { //&& !$user_by_account_id
+            if (is_null($user->account_id) && !$user_by_account_id) {
                 $connectEmail = UserApp::where('uid', $user->uid)->update([
                     'first_name' => $request->give_name,
                     'last_name' => $request->family_name,
@@ -593,8 +594,6 @@ class UserController extends ApiController
             ]
         ];
 
-        User::purge_cache($uid);
-
         return $this->successResponse($data);
     }
 
@@ -683,6 +682,12 @@ class UserController extends ApiController
             return $this->errorResponse(static::ERROR_USER_OTP,static::ERROR_CODE_USER_OTP);
         }
 
+        if (Cache::has($user->uid . '_' . trim($request->otp))) {
+            return $this->errorResponse(static::ERROR_USER_OTP,static::ERROR_CODE_USER_OTP);
+        }
+
+        Cache::forget($user->uid . '_' . trim($request->otp));
+
         return $this->successResponse(true);
     }
 
@@ -740,6 +745,7 @@ class UserController extends ApiController
                 $user->save();
 
                 SendSmsJob::dispatch($request->phone_number, "Cashtree phone number verification code: " . $otp, $user->uid);
+                Cache::put($request->uid . '_' . $otp, true, 300);
             }
         }
 
@@ -863,7 +869,7 @@ class UserController extends ApiController
         if(count($data) > 0){
             $cnt = $count_data;
             foreach($data as $v){
-                if($v['cash'] > 0){
+                //if($v['cash'] > 0){
                     $date = trim($v['dt']);
                     $item['tt'] = $cnt.'   '.$v['cnt'].' '.trans('code.friend');
                     $item['c'] = '+P '.number_format($v['cash'] ,0,'.','.');
@@ -872,7 +878,7 @@ class UserController extends ApiController
                     $item['tm'] = date('d m Y H:i', strtotime($v['dt']));
                     $datas[$date][] = $item;
                     $cnt = ($cnt - $v['cnt']);
-                }
+                //}
                 
             }
             $d=[];
