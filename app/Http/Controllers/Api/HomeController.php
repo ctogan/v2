@@ -94,6 +94,7 @@ class HomeController extends ApiController
                 ->where('tm_end', '>=', date('Y-m-d H:i'))
                 ->get();;
         }
+        
 
         $query_flash_event = FlashEvent::where('row_status','=','active')->with('detail');
         if($user->is_tester){
@@ -104,6 +105,7 @@ class HomeController extends ApiController
         $arr_flash_event = $query_flash_event->get();
         $arr_flash = [];
         foreach ($arr_flash_event as $item){
+
             if($item->ut_by_register_date){
                 $register = Carbon::parse(date_format(date_create($user->register),"Y-m-d"));
                 $from = Carbon::parse(date_format(date_create($item->registered_from),"Y-m-d"));

@@ -188,9 +188,29 @@ class FlashEventController extends ApiController
         usleep($rand);
 
 
-
         $flash_detail = FlashEventDetail::with('flash_event')->with('product')->where('flash_detail_code','=', $request->flash_detail_code)->first();
+        $flash_event_id = $flash_detail->flash_event_id;
 
+        $query_flash_event = FlashEvent::where('id','=',$flash_event_id)->first();
+
+        $now = date('Y-m-d H:i:s');
+        if($query_flash_event->event_period == 'daily'){
+            $date_from = date('Y-m-d');
+            $date_to = date('Y-m-d');
+        }else{
+            $date_from = $query_flash_event->date_from;
+            $date_to= $query_flash_event->date_to;
+        }
+
+        $start_date_time = $date_from.' '.$query_flash_event->time_from;
+        $end_date_time = $date_to.' '.$query_flash_event->time_to;
+
+
+        if($now < $start_date_time){
+            return $this->errorResponse(static::ERROR_FLASH_BUY_NOT_STARTED,static::ERROR_CODE_FLASH_EVENT_NOT_STARTED);
+        }else if($now > $end_date_time){
+            return $this->errorResponse(static::ERROR_FLASH_EVENT_EXPIRED,static::ERROR_CODE_FLASH_EVENT_EXPIRED);
+        }
 
         if(!$flash_detail){
             return $this->errorResponse(static::ERROR_NOT_FOUND,static::CODE_ERROR_VALIDATION);
