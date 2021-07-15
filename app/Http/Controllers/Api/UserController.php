@@ -454,7 +454,7 @@ class UserController extends ApiController
 
                 $createUser = UserApp::create([
                     'uid' => (int) $uid,
-                    'sim' => $request->id,
+                    'sim' => substr($request->id, 0, 19),
                     'anid' => $request->anid,
                     'imei' => $request->imei,
                     'gaid' => $request->gaid,
