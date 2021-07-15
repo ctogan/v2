@@ -73,6 +73,14 @@ class HomeController extends ApiController
             return Category::where('row_status','=','active')->get();
         });
 
+
+
+        $date_now = date('Y-m-d');
+        $today = date('l', strtotime($date_now));
+        $timenow = date('H:i:s');
+
+
+
         $unfinished=[];
         for($i=1;$i<=2;$i++){
             $adpart = ADPart::on(Utils::ad_part($i))
@@ -94,51 +102,76 @@ class HomeController extends ApiController
                 ->where('tm_end', '>=', date('Y-m-d H:i'))
                 ->get();;
         }
+
         
 
         $query_flash_event = FlashEvent::where('row_status','=','active')->with('detail');
+
         if($user->is_tester){
             $query_flash_event->where('is_tester','=',true);
         }else{
             $query_flash_event->where('is_tester','=',false);
         }
         $arr_flash_event = $query_flash_event->get();
+
+
         $arr_flash = [];
+        $arr_flash_daily = [];
         foreach ($arr_flash_event as $item){
-
-            if($item->ut_by_register_date){
-                $register = Carbon::parse(date_format(date_create($user->register),"Y-m-d"));
-                $from = Carbon::parse(date_format(date_create($item->registered_from),"Y-m-d"));
-                $to = Carbon::parse(date_format(date_create($item->registered_to),"Y-m-d"));
-                if(!($register->gte($from) && $register->lte($to))){
-                   continue;
+            if($item->event_period == 'daily'){
+                if( $timenow < $item->time_from || $item->time_from <= $timenow and $item->time_to >= $timenow  and $item->time_to <= '23:59:59'){
+                    array_push($arr_flash, $item);
                 }
-            }elseif ($item->ut_by_point_count){
-                $point = $user->total_earn - $user->total_use;
-                if(!($point >= $item->target_point_from && $point <= $item->target_point_to)){
-                    continue;
+            }else if($item->event_period == 'weekly'){
+                if($item->day_now == $today){
+                    array_push($arr_flash, $item);
+                }
+            }else if($item->event_period == 'special_date'){
+                $datetime = date('Y-m-d H:i:s');
+                $date_event_start = $item->date_from.' '.$item->time_from;
+                $date_event_end = $item->date_to.' '.$item->time_to;
+
+                if($date_event_start >= $datetime && $date_event_end <=$datetime){
+                    array_push($arr_flash, $item);
                 }
             }
 
-            if($item->event_period == 'weekly'){
-                $date = date('Y-m-d');
-                $d = new \DateTime($date);
-                $day_name = $d->format('l');
-                if($day_name == $item->day_name){
-                    if(!($today->gte($item->event_start) && $today->lte($item->event_end))){
-                        continue;
-                    }
-                }else{
-                    continue;
-                }
-            }else{
-                if(!($today->gte($item->event_start) && $today->lte($item->event_end))){
-                    continue;
-                }
-            }
+//            if($item->ut_by_register_date){
+//                $register = Carbon::parse(date_format(date_create($user->register),"Y-m-d"));
+//                $from = Carbon::parse(date_format(date_create($item->registered_from),"Y-m-d"));
+//                $to = Carbon::parse(date_format(date_create($item->registered_to),"Y-m-d"));
+//                if(!($register->gte($from) && $register->lte($to))){
+//                   continue;
+//                }
+//            }elseif ($item->ut_by_point_count){
+//                $point = $user->total_earn - $user->total_use;
+//                if(!($point >= $item->target_point_from && $point <= $item->target_point_to)){
+//                    continue;
+//                }
+//            }
+//
+//            if($item->event_period == 'weekly'){
+//                $date = date('Y-m-d');
+//                $d = new \DateTime($date);
+//                $day_name = $d->format('l');
+//                if($day_name == $item->day_name){
+//                    if(!($today->gte($item->event_start) && $today->lte($item->event_end))){
+//                        continue;
+//                    }
+//                }else{
+//                    continue;
+//                }
+//            }else if($item->event_period == 'daily'){
+//                if(!($today->gte($item->event_start) && $today->lte($item->event_end))){
+//                    continue;
+//                }
+//            }
 
-            array_push($arr_flash, $item);
+
+//            array_push($arr_flash, $item);
         }
+
+
 
         $arr_dynamic_section = Cache::rememberForever('__dynamic_section',function (){
             $dynamic_section =[];
