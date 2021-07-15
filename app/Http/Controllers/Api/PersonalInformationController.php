@@ -361,8 +361,9 @@ class PersonalInformationController extends ApiController
             $update = UserTargetInfo::where('uid', $user->uid)->first();
             $update->opcode = $opcode;
             $update->save();
-            $user->phone = $request->phone_number;
-            $user->save();
+            $updatePhone = UserApp::where('uid', $user->uid)->first();
+            $updatePhone->phone = $request->phone_number;
+            $updatePhone->save();
 
             Cache::forget($request->uid . '_' . trim($request->otp));
 
