@@ -234,13 +234,15 @@ class FlashEventController extends ApiController
 
         if($flash_detail->product->product_type == 'point'){
             User::earn_point($user, Code::CODE_BONUS, $flash_detail->product->product_value, 'Flash Event');
-            $data_point_purchase = [
-                'uid' => $user->uid,
-                'transaction_code' => $request->flash_detail_code,
-                'description' => 'Flash Event - '.$flash_detail->flash_event->event_name,
-                'price' => $flash_detail->point
-            ];
-            PointPurchase::insert($data_point_purchase);
+
+            $data_point_purchase = PointPurchase::create(
+                ([
+                    'uid' => $user->uid,
+                    'transaction_code' => $request->flash_detail_code,
+                    'description' => 'Flash Event - '.$flash_detail->flash_event->event_name,
+                    'price' => $flash_detail->point
+                ])
+            );
             User::use_cash($user,Code::USING_PAY_POINT, $flash_detail->point, null, 'point_'.$data_point_purchase->id);
         }else{
             $stock = PulsaBuy::where('flash_detail_code','=',$request->flash_detail_code)->where('dt','=',date('Y-m-d'))->count();
