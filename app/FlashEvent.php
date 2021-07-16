@@ -15,7 +15,7 @@ class FlashEvent extends Model
     public function getEventStartAttribute()
     {
         if($this->attributes['event_period'] == 'daily'){
-            return Carbon::parse(date_format(date_create(date('Y-m-d') .' '. $this->attributes['time_from']),"Y-m-d H:i"));
+            return Carbon::parse(date_format(date_create(date('Y-m-d H:i',strtotime('+7 hour',strtotime(date('Y-m-d') .' '.$this->attributes['time_from'])))),"Y-m-d H:i"));
         }elseif ($this->attributes['event_period'] == 'special_date'){
             return Carbon::parse(date_format(date_create($this->attributes['date_from'] .' '. $this->attributes['time_from']),"Y-m-d H:i"));
         }else{
@@ -26,7 +26,7 @@ class FlashEvent extends Model
     public function getEventEndAttribute()
     {
         if($this->attributes['event_period'] == 'daily'){
-            return Carbon::parse(date_format(date_create(date('Y-m-d') .' '. $this->attributes['time_to']),"Y-m-d H:i"));
+            return Carbon::parse(date_format(date_create(date('Y-m-d H:i',strtotime('+7 hour',strtotime(date('Y-m-d') .' '.$this->attributes['time_to'])))),"Y-m-d H:i"));
         }elseif ($this->attributes['event_period'] == 'special_date'){
             return Carbon::parse(date_format(date_create($this->attributes['date_to'] .' '. $this->attributes['time_to']),"Y-m-d H:i"));
         }else{
@@ -40,7 +40,7 @@ class FlashEvent extends Model
         $status = 'waiting';
         if($this->attributes['event_period'] == 'weekly'){
             $date = date('Y-m-d');
-            $d = new \DateTime($date , new \DateTimeZone( 'Asia/Jakarta' ));
+            $d = new \DateTime($date);
             $day_name = $d->format('l');
             if($day_name == $this->attributes['day_name']){
                 $start = Carbon::parse(date_format(date_create(date('Y-m-d') .' '. $this->attributes['time_from']),"Y-m-d H:i"));
