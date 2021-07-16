@@ -24,5 +24,8 @@ class FlashEventResource extends JsonResource
             'event_end' => $this->event_end,
             'detail' => FlashEventDetailResource::collection($this->detail),
         ];
+
+        // $item->event_start = date("Y-m-d H:i:s", strtotime('+5 hours'));
+        // $item->event_end = date("Y-m-d H:i:s", strtotime('+5 hours'));
     }
 }

@@ -40,7 +40,7 @@ class FlashEvent extends Model
         $status = 'waiting';
         if($this->attributes['event_period'] == 'weekly'){
             $date = date('Y-m-d');
-            $d = new \DateTime($date);
+            $d = new \DateTime($date , new \DateTimeZone( 'Asia/Jakarta' ));
             $day_name = $d->format('l');
             if($day_name == $this->attributes['day_name']){
                 $start = Carbon::parse(date_format(date_create(date('Y-m-d') .' '. $this->attributes['time_from']),"Y-m-d H:i"));
