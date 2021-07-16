@@ -110,7 +110,7 @@ class NewsController extends ApiController
 
         $code = $request->news_code;
         $uid = $user->uid;
-
+        Cache::forget('__news_detail5'.$code);
         $news = Cache::remember('__news_detail5'.$code, 3600, function () use ($code, $uid){
             $objNews = News::where('news_code','=',$code)->first();
             if($objNews){
