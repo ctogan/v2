@@ -115,6 +115,10 @@ class Utils {
         }
     }
 
+    public static function gmt_plus_seven($date){
+        return date('Y-m-d H:i',strtotime('-7 hour',strtotime($date)));
+    }
+
     public static function get_sms_token($length = 4) {
         return rand(
             ((int) str_pad(1, $length, 0, STR_PAD_RIGHT)),

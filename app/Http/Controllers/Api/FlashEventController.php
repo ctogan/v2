@@ -7,6 +7,7 @@ use App\FlashEventDetail;
 use App\Helpers\Code;
 use App\Helpers\Pulsa;
 use App\Helpers\User;
+use App\Helpers\Utils;
 use App\Http\Resources\FlashEventDetailResource;
 use App\Http\Resources\FlashEventResource;
 use App\PointPurchase;
@@ -54,7 +55,7 @@ class FlashEventController extends ApiController
             return $this->errorResponse($validation->errors(),static::CODE_ERROR_VALIDATION);
         }
 
-        $arr_flash = self::map_flash_event($request->event_code);
+        $arr_flash = $this->map_flash_event($request->event_code);
         if(!$arr_flash){
             return $this->errorResponse(static::ERROR_NOT_FOUND,static::CODE_ERROR_VALIDATION);
         }
@@ -298,6 +299,7 @@ class FlashEventController extends ApiController
         $today = Carbon::now();
 
         $query_flash_event = FlashEvent::where('row_status','=','active')->with('detail')->where('event_code','=',$event_code);
+        
         if($user->is_tester){
             $query_flash_event->where('is_tester','=',true);
         }else{
@@ -305,6 +307,7 @@ class FlashEventController extends ApiController
         }
 
         $arr_flash_event = $query_flash_event->get();
+
         $arr_flash = [];
         foreach ($arr_flash_event as $item){
             if($item->ut_by_register_date){
@@ -323,17 +326,18 @@ class FlashEventController extends ApiController
 
             if($item->event_period == 'weekly'){
                 $date = date('Y-m-d');
-                $d = new \DateTime($date);
+                $d = new \DateTime($date , new \DateTimeZone('Asia/jakarta'));
                 $day_name = $d->format('l');
                 if($day_name == $item->day_name){
-                    if(!($today->gte($item->event_start) && $today->lte($item->event_end))){
+                    if(!($today->gte(Utils::gmt_plus_seven($item->event_start)) && $today->lte(Utils::gmt_plus_seven($item->event_end)))){
                         continue;
                     }
                 }else{
                     continue;
                 }
             }else{
-                if(!($today->gte($item->event_start) && $today->lte($item->event_end))){
+                if(!($today->gte(Utils::gmt_plus_seven($item->event_start)) && $today->lte(Utils::gmt_plus_seven($item->event_end)))){
+                    echo 'a';
                     continue;
                 }
             }
@@ -343,4 +347,6 @@ class FlashEventController extends ApiController
 
         return $arr_flash;
     }
+
+    
 }
