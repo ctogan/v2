@@ -368,6 +368,7 @@ class PersonalInformationController extends ApiController
             Cache::forget($request->uid . '_' . trim($request->otp));
 
             return $this->successResponse(['user' => DB::connection("users")->table("view_user_2")->where("uid",'=',$request->uid)->first()]);
+            
         } else {
             return $this->errorResponse(static::ERROR_USER_OTP, static::ERROR_CODE_USER_OTP);
         }

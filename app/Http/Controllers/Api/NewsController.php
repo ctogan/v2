@@ -221,7 +221,7 @@ class NewsController extends ApiController
             User::earn_point($user, Code::CODE_BONUS, $news->reward,'News : '.substr($news->title,0,20)."..." );
         }
 
-        $news->reward = 0;
+        //$news->reward = 0;
         $response = [
             'news' => $news
         ];
