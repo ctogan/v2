@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class PulsaBuy extends Model
 {
     protected $connection = 'common';
-    protected $table = 'pulsa_buy';
+    protected $table = 'pulsa_buy_backup';
 
     public $timestamps = false;
 
