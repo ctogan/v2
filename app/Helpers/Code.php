@@ -86,6 +86,7 @@ class Code {
     const USING_PAY_BIDDINGSHOP = 'U909';   //[출금]Bidding Shop 구입
     const USING_PAY_AIDO_MPL = 'U910';
     const USING_PAY_WEEKEND_EVENT = 'U911';
+    const USING_PAY_POINT = 'U912';
 
     const USING_FRUIT_GAME = 'U931';        //[출금]과일당첨 이벤트 참여, 과일 이벤트에 참여하기 위해 적립금 차감 (음수로 저장)
     const USING_AB_GAME = 'U932';           //[출금]사다리 게임 참여 (음수로 저장)

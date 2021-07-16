@@ -241,6 +241,7 @@ class FlashEventController extends ApiController
                 'price' => $flash_detail->point
             ];
             PointPurchase::insert($data_point_purchase);
+            User::use_cash($user,Code::USING_PAY_POINT, $flash_detail->point, null, 'point_'.$data_point_purchase->id);
         }else{
             $stock = PulsaBuy::where('flash_detail_code','=',$request->flash_detail_code)->where('dt','=',date('Y-m-d'))->count();
 
