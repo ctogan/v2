@@ -196,6 +196,7 @@ class NewsController extends ApiController
                 ->where('news_code','=',$news_code)
                 ->first();
         });
+        
 
         if(!$news){
             return $this->errorResponse(static::ERROR_NOT_FOUND,static::ERROR_CODE_NOT_FOUND);
@@ -208,6 +209,7 @@ class NewsController extends ApiController
                 ->where('uid','=',$uid)->first();
         });
 
+        
         if(!$news_read){
             $arr_insert = [
                 'id_news' => $news->id,
@@ -215,13 +217,14 @@ class NewsController extends ApiController
                 'reward' => $news->reward,
                 'created_at' => date('Y-m-d h:m:s')
             ];
-
+            $news->reward = $news->reward;
             NewsRead::insert($arr_insert);
 
             User::earn_point($user, Code::CODE_BONUS, $news->reward,'News : '.substr($news->title,0,20)."..." );
+        }else{
+            $news->reward = 0;
         }
 
-        //$news->reward = 0;
         $response = [
             'news' => $news
         ];
