@@ -294,10 +294,10 @@ class PersonalInformationController extends ApiController
         $user->otp = $sms_token;
         $user->save();
 
-        SendSmsJob::dispatch($request->phone_number, "Cashtree phone number verification code: " . $sms_token, $request->uid);
+        //SendSmsJob::dispatch($request->phone_number, "Cashtree phone number verification code: " . $sms_token, $request->uid);
         Cache::put($request->uid . '_' . $sms_token, true, 300);
 
-        return $this->successResponse(true);
+        return $this->successResponse(['otp' => $sms_token]);
     }
 
     /**
@@ -367,7 +367,7 @@ class PersonalInformationController extends ApiController
 
             Cache::forget($request->uid . '_' . trim($request->otp));
 
-            return $this->successResponse(true);
+            return $this->successResponse(['user' => DB::connection("users")->table("view_user_2")->where("uid",'=',$request->uid)->first()]);
         } else {
             return $this->errorResponse(static::ERROR_USER_OTP, static::ERROR_CODE_USER_OTP);
         }
