@@ -263,7 +263,7 @@ class HomeController extends ApiController
         }
         $response['dynamic_position'] = $dynamic_position;
         $response['config']= $config;
-        $user->sex = $user->sex == '0' ? 'Male' : 'Female';
+        //$user->sex = $user->sex == '0' ? 'Male' : 'Female';
         $response['user'] = $user;
         $response['notification'] = ['count'=>$notification];
 
