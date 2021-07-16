@@ -297,7 +297,7 @@ class PersonalInformationController extends ApiController
         //SendSmsJob::dispatch($request->phone_number, "Cashtree phone number verification code: " . $sms_token, $request->uid);
         Cache::put($request->uid . '_' . $sms_token, true, 300);
 
-        return $this->successResponse(['otp' => $sms_token]);
+        return $this->successResponse(true);
     }
 
     /**
