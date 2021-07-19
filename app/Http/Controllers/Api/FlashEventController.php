@@ -180,7 +180,10 @@ class FlashEventController extends ApiController
             return $this->errorResponse(static::ERROR_FLASH_BUY_DUPLICATE,static::ERROR_CODE_FLASH_BUY_DUPLICATE);
         }
 
-        $point_purchase = PointPurchase::where('transaction_code','=',$request->flash_detail_code)->where('uid','=',$user->uid)->count();
+        $point_purchase = PointPurchase::where('transaction_code','=',$request->flash_detail_code)
+            ->where('uid','=',$user->uid)
+            ->whereDate('tm','=',date('Y-m-d'))
+            ->count();
         if($point_purchase > 0){
             return $this->errorResponse(static::ERROR_FLASH_BUY_DUPLICATE,static::ERROR_CODE_FLASH_BUY_DUPLICATE);
         }
@@ -233,6 +236,7 @@ class FlashEventController extends ApiController
         $status = false;
 
         if($flash_detail->product->product_type == 'point'){
+
             User::earn_point($user, Code::CODE_BONUS, $flash_detail->product->product_value, 'Flash Event');
 
             $data_point_purchase = PointPurchase::create(
@@ -244,6 +248,7 @@ class FlashEventController extends ApiController
                 ])
             );
             User::use_cash($user,Code::USING_PAY_POINT, $flash_detail->point, null, 'point_'.$data_point_purchase->id);
+
         }else{
             $stock = PulsaBuy::where('flash_detail_code','=',$request->flash_detail_code)->where('dt','=',date('Y-m-d'))->count();
 
